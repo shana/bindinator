@@ -1,0 +1,150 @@
+#!/bin/sh
+usage()
+{
+cat <<EOF
+Usage: gir [package]
+	gir: gir filename to process (without extension)
+	package: name of pc file (if the gir data with the package name is wrong)
+EOF
+}
+
+sh_append()
+{
+        printf "%s=%s\n" "$1" "$2" >> $SH
+}
+
+echo "Processing $1"
+
+
+if [ ! -e @GIRDIR@/$1.gir ]; then
+	echo "@GIRDIR@/$1.gir not found, exiting"
+	exit 1
+fi
+
+OUTDIR=$1/
+
+if [ ! -d $OUTDIR ]; then
+	mkdir -p $OUTDIR
+fi
+
+PACKAGE=`@XSLTPROC@ --stringparam type package @prefix@/lib/bindinator/preprocess.xslt @GIRDIR@/$1.gir`
+ORIGINAL=$PACKAGE
+LIBS=`@XSLTPROC@ --stringparam type libs @prefix@/lib/bindinator/preprocess.xslt @GIRDIR@/$1.gir|sed 's/,/ /'`
+NS=`@XSLTPROC@ --stringparam type namespace @prefix@/lib/bindinator/preprocess.xslt @GIRDIR@/$1.gir`
+VERSION=`@XSLTPROC@ --stringparam type version @prefix@/lib/bindinator/preprocess.xslt @GIRDIR@/$1.gir`
+GAPI=`@XSLTPROC@ --stringparam type gapi @prefix@/lib/bindinator/preprocess.xslt @GIRDIR@/$1.gir`
+
+if [ ! $(@PKG_CONFIG@ --exists $PACKAGE) ]; then
+	if [ -z $2 ]; then
+		echo "$PACKAGE not found and no package name given on the command line"
+		exit 1
+	else
+		PACKAGE="$2"
+	fi
+fi
+
+MODVERSION=$(@PKG_CONFIG@ --modversion $PACKAGE)
+NAME=$(echo $NS|tr '[:upper:]' '[:lower:]')
+UNAME=$(echo $NS|tr '[:lower:]' '[:upper:]')
+LIB=$PACKAGE
+SOLIB=
+
+DLLMAP=$PACKAGE.dll.config
+CONFIGURE=configure.ac
+
+for lib in $LIBS; do
+	case "$lib" in
+	*$PACKAGE*)
+	    SOLIB=$lib
+	    ;;
+	*$ORIGINAL*)
+	    SOLIB=$lib
+	    ;;
+	esac
+done
+
+echo "PACKAGE: $PACKAGE"
+echo "LIBS: $LIBS"
+echo "LIB: $LIB"
+echo "SOLIB: $SOLIB"
+
+cat >$OUTDIR/$DLLMAP <<EOF
+<configuration>
+  <dllmap dll="$PACKAGE" target="$SOLIB"/>
+</configuration>
+EOF
+
+cat >$OUTDIR/$CONFIGURE <<EOF
+AC_INIT([$NAME-sharp], [$MODVERSION])
+AC_CONFIG_SRCDIR([README])
+AC_CANONICAL_TARGET
+AM_INIT_AUTOMAKE
+AM_MAINTAINER_MODE
+AC_PROG_INSTALL
+
+dnl Package settings
+ASSEMBLY_COMPANY=""
+ASSEMBLY_COPYRIGHT="2012 Andreia Gaita"
+ASSEMBLY_DESCRIPTION="$1 bindings for Mono"
+ASSEMBLY_NAME="$NAME-sharp"
+ASSEMBLY_NAMESPACE="$NS"
+ASSEMBLY_PC="$NAME-sharp-$VERSION"
+ASSEMBLY_SHORTNAME="$NAME"
+ASSEMBLY_TITLE="$NS"
+ASSEMBLY_VERSION="$MODVERSION"
+EOF
+
+sed "s/#GAPI#/$GAPI/g" @prefix@/lib/bindinator/configure.ac.template >>$OUTDIR/$CONFIGURE
+
+PR=$NAME"_prefix"
+
+cat >>$OUTDIR/$CONFIGURE <<EOF
+dnl Check for $NS
+PKG_CHECK_MODULES($UNAME, $PACKAGE)
+AC_SUBST(WEBKIT_LIBS)
+$PR=`pkg-config --variable=prefix $PACKAGE`
+AC_SUBST($PR)
+
+AC_CONFIG_FILES([
+	Makefile
+	AssemblyInfo.cs
+])
+AC_CONFIG_COMMANDS([default],[[ echo timestamp > stamp-h ]],[[]])
+AC_OUTPUT
+
+echo ""
+echo "Configuration summary"
+echo "---------------------"
+echo ""
+echo "   * Installation prefix: \$prefix"
+echo "   * compiler: \$CSC"
+echo "   * Documentation: $enable_monodoc (\$MONODOC)"
+echo ""
+EOF
+
+cp @prefix@/lib/bindinator/Makefile.am.template $OUTDIR/Makefile.am 
+cp @prefix@/lib/bindinator/AssemblyInfo.cs.in $OUTDIR/.
+cp @prefix@/lib/bindinator/autogen.sh $OUTDIR/.
+chmod +x $OUTDIR/autogen.sh
+
+if [ ! -e $OUTDIR/$NAME-sharp.metadata ]; then
+	cp @prefix@/lib/bindinator/metadata.template $OUTDIR/$NAME-sharp.metadata 
+fi
+
+if [ ! -e "$OUTDIR/NEWS" ]; then touch $OUTDIR/NEWS; fi
+if [ ! -e "$OUTDIR/README" ]; then touch $OUTDIR/README; fi
+if [ ! -e "$OUTDIR/AUTHORS" ]; then touch $OUTDIR/AUTHORS; fi
+if [ ! -e "$OUTDIR/ChangeLog" ]; then touch $OUTDIR/ChangeLog; fi
+if [ ! -e "$OUTDIR/COPYING" ]; then touch $OUTDIR/COPYING; fi
+
+if [ ! -e $OUTDIR/$NAME-sharp.snk ]; then
+	sn -k $OUTDIR/$NAME-sharp.snk
+fi
+
+#if test -e @GIRDIR@/$1.gir; then
+#	echo "AAAAH"
+#	@XSLTPROC@ @prefix@/lib/bindinator/gir2gapi.xslt -o "$1"/$1-api.raw @GIRDIR@/$1.gir
+#fi
+
+echo "Processing @GIRDIR@/$1.gir and outputting $OUTDIR/$NAME-sharp-api.raw"
+@XSLTPROC@ -o $OUTDIR/$NAME-sharp-api.raw @prefix@/lib/bindinator/gir2gapi.xslt @GIRDIR@/$1.gir
