@@ -108,6 +108,7 @@ AC_SUBST($PR)
 AC_CONFIG_FILES([
 	Makefile
 	AssemblyInfo.cs
+	$NAME-sharp-$VERSION.pc
 ])
 AC_CONFIG_COMMANDS([default],[[ echo timestamp > stamp-h ]],[[]])
 AC_OUTPUT
@@ -141,10 +142,16 @@ if [ ! -e $OUTDIR/$NAME-sharp.snk ]; then
 	sn -k $OUTDIR/$NAME-sharp.snk
 fi
 
+if [ ! -x $OUTDIR/$NAME-sharp-$VERSION.pc.in ]; then
+	cp @prefix@/lib/bindinator/pc.template $OUTDIR/$NAME-sharp-$VERSION.pc.in
+fi
+
 #if test -e @GIRDIR@/$1.gir; then
 #	echo "AAAAH"
 #	@XSLTPROC@ @prefix@/lib/bindinator/gir2gapi.xslt -o "$1"/$1-api.raw @GIRDIR@/$1.gir
 #fi
 
-echo "Processing @GIRDIR@/$1.gir and outputting $OUTDIR/$NAME-sharp-api.raw"
-@XSLTPROC@ -o $OUTDIR/$NAME-sharp-api.raw @prefix@/lib/bindinator/gir2gapi.xslt @GIRDIR@/$1.gir
+if [ ! -e $OUTDIR/$NAME-sharp-api.raw ]; then
+	echo "Processing @GIRDIR@/$1.gir and outputting $OUTDIR/$NAME-sharp-api.raw"
+	@XSLTPROC@ -o $OUTDIR/$NAME-sharp-api.raw @prefix@/lib/bindinator/gir2gapi.xslt @GIRDIR@/$1.gir
+fi
