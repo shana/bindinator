@@ -34,7 +34,10 @@ NS=`@XSLTPROC@ --stringparam type namespace @prefix@/lib/bindinator/preprocess.x
 VERSION=`@XSLTPROC@ --stringparam type version @prefix@/lib/bindinator/preprocess.xslt @GIRDIR@/$1.gir`
 GAPI=`@XSLTPROC@ --stringparam type gapi @prefix@/lib/bindinator/preprocess.xslt @GIRDIR@/$1.gir`
 
-if [ ! $(@PKG_CONFIG@ --exists $PACKAGE) ]; then
+echo "PACKAGE: $PACKAGE"
+echo "LIBS: $LIBS"
+
+if ! $(@PKG_CONFIG@ --exists $PACKAGE); then
 	if [ -z $2 ]; then
 		echo "$PACKAGE not found and no package name given on the command line"
 		exit 1
@@ -63,8 +66,6 @@ for lib in $LIBS; do
 	esac
 done
 
-echo "PACKAGE: $PACKAGE"
-echo "LIBS: $LIBS"
 echo "LIB: $LIB"
 echo "SOLIB: $SOLIB"
 
