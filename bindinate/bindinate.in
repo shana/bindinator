@@ -102,9 +102,23 @@ PR=$NAME"_prefix"
 cat >>$OUTDIR/$CONFIGURE <<EOF
 dnl Check for $NS
 PKG_CHECK_MODULES($UNAME, $PACKAGE)
-AC_SUBST(WEBKIT_LIBS)
 $PR=`pkg-config --variable=prefix $PACKAGE`
 AC_SUBST($PR)
+
+EOF
+
+if [ -e $OUTDIR/m4.custom ]; then
+	cat >>$OUTDIR/$CONFIGURE <<EOF
+dnl extra m4 calls
+EOF
+	while read l;do
+		REF="$REF $""("$l"_LIBS"")"
+		echo "CHECK_$l" >>$OUTDIR/$CONFIGURE
+	done <$OUTDIR/m4.custom
+fi
+
+cat >>$OUTDIR/$CONFIGURE <<EOF
+
 
 AC_CONFIG_FILES([
 	Makefile
@@ -124,7 +138,8 @@ echo "   * Documentation: $enable_monodoc (\$MONODOC)"
 echo ""
 EOF
 
-cp @prefix@/lib/bindinator/Makefile.am.template $OUTDIR/Makefile.am 
+sed "s/#REFERENCES#/$REF/g" @prefix@/lib/bindinator/Makefile.am.template>$OUTDIR/Makefile.am 
+#cp @prefix@/lib/bindinator/Makefile.am.template $OUTDIR/Makefile.am 
 cp @prefix@/lib/bindinator/AssemblyInfo.cs.in $OUTDIR/.
 cp @prefix@/lib/bindinator/autogen.sh $OUTDIR/.
 chmod +x $OUTDIR/autogen.sh

@@ -1,0 +1,40 @@
+The bindinator installs a tool called bindinate, which can be called
+with the name of a gir file to generate a binding project.
+
+Example:
+
+bindinate WebKit-3.0
+
+If the package name in the gir file does not match the system package
+(i.e., the .pc file), it can be supplied to bindinate.
+
+Example:
+
+bindinate WebKit-1.0 webkit-1.0
+
+
+The bindinate tool creates a directory of the same name as the supplied
+gir file name and produces the needed files for compiling a binding.
+Customization of the gapi output can be done via the usual metadata file.
+
+If the build requires checking for extra packages and getting assembly
+references, rules can be added by creating an m4 directory inside the
+output directory and placing there all the needed checks. To include them
+in the build, you need to create an m4.custom file which lists the
+base name of every check.
+
+Example:
+
+m4.custom:
+MONOCAIRO
+
+m4/cairo.m4:
+AC_DEFUN([CHECK_MONOCAIRO],
+[
+	PKG_CHECK_MODULES(MONOCAIRO, mono-cairo)
+	AC_SUBST(MONOCAIRO_LIBS)
+])
+
+
+The bindinate tool will add a CHECK_MONOCAIRO call to configure.ac and
+$(MONOCAIRO_LIBS) will be added to the assembly build line automatically.
