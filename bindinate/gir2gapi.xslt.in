@@ -697,7 +697,16 @@ exclude-result-prefixes="xsl exsl gir c glib"
 					</xsl:when>
 					<xsl:when test="$l/gir:record[@name=$t]">
 						<xsl:attribute name="ctype"><xsl:value-of select="$l/gir:record[@name=$t]/@c:type" />*</xsl:attribute>
-						<xsl:attribute name="gtype"><xsl:value-of select="$l/gir:record[@name=$t]/@name" /></xsl:attribute>
+						<xsl:choose>
+						<xsl:when test="$l/gir:record[@name=$t]/@glib:type-name">
+							<xsl:attribute name="gtype"><xsl:value-of select="$l/gir:record[@name=$t]/@glib:type-name" /></xsl:attribute>
+						</xsl:when>
+						<xsl:otherwise>
+						<xsl:attribute name="gtype"><xsl:value-of select="$l/gir:record[@name=$t]/@c:type" /></xsl:attribute>
+						<xsl:attribute name="warning">missing glib:type-name</xsl:attribute>
+						</xsl:otherwise>
+						</xsl:choose>
+						<xsl:attribute name="warning">missing glib:type-name</xsl:attribute>
 					</xsl:when>
 					<xsl:when test="$l/gir:union[@name=$t]">
 						<xsl:attribute name="ctype"><xsl:value-of select="$l/gir:union[@name=$t]/@c:type" />*</xsl:attribute>
