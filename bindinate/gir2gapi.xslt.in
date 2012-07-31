@@ -51,6 +51,8 @@ exclude-result-prefixes="xsl exsl gir c glib"
 			<mapping from="default" to="_default"/>
 			<mapping from="object" to="_object"/>
 			<mapping from="GObjectObject" to="GObject"/>
+			<mapping from="ret" to="_ret"/>
+			<mapping from="result" to="_result"/>
 		</mappings>
 	</xsl:variable>
 
@@ -59,6 +61,11 @@ exclude-result-prefixes="xsl exsl gir c glib"
 			<type name="char*" />
 			<type name="gchar*" />
 			<type name="gfilename*" />
+
+			<ctor>
+				<type name="GType" />
+				<type name="gpointer" />
+			</ctor>
 		</types>
 	</xsl:variable>
 
@@ -124,6 +131,10 @@ exclude-result-prefixes="xsl exsl gir c glib"
 				<xsl:with-param name="external" select="$external" />
 			</xsl:apply-templates>
 
+			<xsl:apply-templates select="*/gir:field/gir:callback">
+				<xsl:with-param name="external" select="$external" />
+			</xsl:apply-templates>
+
 			<object name="Global" cname="{@name}Global" opaque="true">
 				<xsl:for-each select="gir:function">
 					<xsl:call-template name="output-method">
@@ -150,22 +161,6 @@ exclude-result-prefixes="xsl exsl gir c glib"
 
 		<xsl:variable name="parent">
 			<xsl:value-of select="exsl:node-set($ptype)/type/@gtype" />
-<!--
-
-			<xsl:call-template name="map-name">
-				<xsl:with-param name="name">
-					<xsl:choose><xsl:when test="contains(@parent, '.')">
-						<xsl:call-template name="capitalize">
-							<xsl:with-param name="string" select="@parent" />
-							<xsl:with-param name="sep">.</xsl:with-param>
-							<xsl:with-param name="external" select="$external" />
-						</xsl:call-template>
-					</xsl:when><xsl:otherwise>
-					<xsl:value-of select="@parent"/>
-					</xsl:otherwise></xsl:choose>
-				</xsl:with-param>
-			</xsl:call-template>
--->
 		</xsl:variable>
 
 		<xsl:variable name="type">
@@ -220,6 +215,30 @@ exclude-result-prefixes="xsl exsl gir c glib"
 		</xsl:if>
 	</xsl:template>	
 
+	<xsl:template match="gir:interface[not(@private) and not(@disguised)]">
+		<xsl:param name="external" />
+
+		<xsl:variable name="type">
+			<xsl:call-template name="map-type">
+				<xsl:with-param name="type" select="@c:type"/>
+				<xsl:with-param name="name" select="@name"/>
+				<xsl:with-param name="external" select="$external" />
+			</xsl:call-template>
+		</xsl:variable>
+
+		<xsl:variable name="name">
+			<xsl:call-template name="sanitize">
+				<xsl:with-param name="name" select="@name" />
+			</xsl:call-template>
+		</xsl:variable>
+
+		<interface name="{$name}" cname="{exsl:node-set($type)/type/@gtype}">
+			<xsl:apply-templates>
+				<xsl:with-param name="external" select="$external" />
+			</xsl:apply-templates>
+		</interface>
+	</xsl:template>	
+
 	<xsl:template match="gir:method[not(@private) and not(@disguised)]">
 		<xsl:param name="external" />
 
@@ -253,10 +272,12 @@ exclude-result-prefixes="xsl exsl gir c glib"
 		<xsl:param name="external" />
 
 		<xsl:variable name="name"><xsl:call-template name="capitalize"><xsl:with-param name="string" select="@name" /></xsl:call-template></xsl:variable>
+		<xsl:variable name="type"><xsl:choose><xsl:when test="@c:type"><xsl:value-of select="@c:type" /></xsl:when><xsl:otherwise><xsl:value-of select="//gir:repository/gir:namespace/@name"/><xsl:value-of select="$name"/>Func</xsl:otherwise></xsl:choose></xsl:variable>
 
-		<callback name="{$name}" cname="{@c:type}">
+		<callback name="{$name}" cname="{$type}">
 
 			<!-- xsl:if test="gir:return-value/gir:type/@name != 'none'" -->
+			<xsl:for-each select="gir:return-value">
 				<return-type>
 					<xsl:call-template name="output-type">
 						<xsl:with-param name="nodename">return-type</xsl:with-param>
@@ -267,6 +288,7 @@ exclude-result-prefixes="xsl exsl gir c glib"
 						<xsl:with-param name="external" select="$external" />
 					</xsl:call-template>
 				</return-type>
+			</xsl:for-each>
 			<!-- /xsl:if -->
 
 			<xsl:if test="gir:parameters">
@@ -292,12 +314,22 @@ exclude-result-prefixes="xsl exsl gir c glib"
 	<xsl:template match="gir:constructor[not(@private) and not(@disguised)]">
 		<xsl:param name="external" />
 
+		<xsl:variable name="t" select="gir:parameters/gir:parameter/gir:type/@name" />
+
 		<constructor cname="{@c:identifier}">
+
+			<xsl:if test="count(gir:parameters/gir:parameter)=0">
+				<xsl:attribute name="disable_void_ctor" />
+			</xsl:if>
+			<xsl:if test="count(gir:parameters/gir:parameter) = 1 and exsl:node-set($consttypes)/types/ctor/type[@name=$t]">
+				<xsl:attribute name="disable_raw_ctor" />
+			</xsl:if>
+
 			<xsl:if test="gir:parameters">
-				<parameters>
+				<xsl:element name="parameters">
 				<xsl:for-each select="gir:parameters/gir:parameter">
 
-					<parameter>
+					<xsl:element name="parameter">
 					<xsl:call-template name="output-type">
 						<xsl:with-param name="name" select="@name" />
 						<xsl:with-param name="typename" select="gir:type/@name" />
@@ -305,10 +337,10 @@ exclude-result-prefixes="xsl exsl gir c glib"
 						<xsl:with-param name="transfer-ownership" select="@transfer-ownership" />
 						<xsl:with-param name="external" select="$external" />
 					</xsl:call-template>
-					</parameter>
+					</xsl:element>
 
 				</xsl:for-each>
-				</parameters>
+				</xsl:element>
 			</xsl:if>
 		</constructor>
 	</xsl:template>	
@@ -402,6 +434,41 @@ exclude-result-prefixes="xsl exsl gir c glib"
 		</enum>
 	</xsl:template>	
 
+	<xsl:template match="gir:bitfield[not(@private) and not(@disguised)]">
+		<xsl:param name="external" />
+
+		<xsl:variable name="name">
+			<xsl:call-template name="sanitize">
+				<xsl:with-param name="name" select="@name" />
+			</xsl:call-template>
+		</xsl:variable>
+
+		<enum name="{$name}" cname="{@c:type}" type="flags">
+			<xsl:choose>
+			<xsl:when test="@glib:get-type">
+				<xsl:attribute name="gtype"><xsl:value-of select="@glib:get-type" /></xsl:attribute>
+				<xsl:attribute name="type">enum</xsl:attribute>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:attribute name="type">enum</xsl:attribute>
+			</xsl:otherwise>
+			</xsl:choose>
+			<xsl:for-each select="gir:member">
+				<xsl:sort select="@value" />
+
+				<xsl:variable name="ename">
+					<xsl:choose><xsl:when test="@name = @value">
+						<xsl:call-template name="capitalize"><xsl:with-param name="string" select="@c:identifier"/></xsl:call-template>
+					</xsl:when><xsl:otherwise>
+						<xsl:call-template name="capitalize"><xsl:with-param name="string" select="@name"/></xsl:call-template>
+					</xsl:otherwise></xsl:choose>
+				</xsl:variable>
+				<xsl:variable name="mname"><xsl:call-template name="map-name"><xsl:with-param name="name" select="$ename"/></xsl:call-template></xsl:variable>
+				<member cname="{@c:identifier}" name="{$mname}" />
+			</xsl:for-each>
+		</enum>
+	</xsl:template>	
+
 	<xsl:template match="gir:field[not(@private) and not(@disguised)]">
 		<xsl:param name="external" />
 
@@ -417,7 +484,6 @@ exclude-result-prefixes="xsl exsl gir c glib"
 					<xsl:with-param name="external" select="$external" />
 				</xsl:call-template>
 			</field>
-
 		</xsl:if>
 	</xsl:template>	
 
@@ -448,7 +514,9 @@ exclude-result-prefixes="xsl exsl gir c glib"
 				</xsl:otherwise></xsl:choose>
 			</xsl:variable>
 
-			<property name="{$name}" cname="{@name}" type="{$type}" readable="true" writable="{$writable}"/>
+			<xsl:if test="$type!=''">
+				<property name="{$name}" cname="{@name}" type="{$type}" readable="true" writable="{$writable}"/>
+			</xsl:if>
 		</xsl:if>
 	</xsl:template>	
 
@@ -482,14 +550,16 @@ exclude-result-prefixes="xsl exsl gir c glib"
 			<xsl:if test="$shared = 'true'"><xsl:attribute name="shared">true</xsl:attribute></xsl:if>
 
 			<!-- xsl:if test="gir:return-value/gir:type/@name != 'none'" -->
+			<xsl:for-each select="gir:return-value">
 				<return-type>
 					<xsl:call-template name="output-type">
-						<xsl:with-param name="typename" select="gir:return-value/gir:type/@name" />
-						<xsl:with-param name="type" select="gir:return-value/gir:type/@c:type" />
-						<xsl:with-param name="transfer-ownership" select="gir:return-value/@transfer-ownership" />
+						<xsl:with-param name="typename" select="gir:type/@name" />
+						<xsl:with-param name="type" select="gir:type/@c:type" />
+						<xsl:with-param name="transfer-ownership" select="@transfer-ownership" />
 						<xsl:with-param name="external" select="$external" />
 					</xsl:call-template>
 				</return-type>
+			</xsl:for-each>
 			<!-- / xsl:if -->
 
 			<xsl:if test="gir:parameters">
@@ -520,7 +590,16 @@ exclude-result-prefixes="xsl exsl gir c glib"
 
 
 		<xsl:variable name="pname"><xsl:call-template name="map-name"><xsl:with-param name="name" select="$name"/></xsl:call-template></xsl:variable>
-		<xsl:variable name="ptypemap"><xsl:call-template name="map-type"><xsl:with-param name="type" select="$type"/><xsl:with-param name="name" select="$typename"/><xsl:with-param name="transfer-ownership" select="@transfer-ownership" /><xsl:with-param name="external" select="$external"/></xsl:call-template></xsl:variable>
+		<xsl:variable name="thetype"><xsl:choose><xsl:when test="$type"><xsl:value-of select="$type"/></xsl:when><xsl:when test="$typename"><xsl:value-of select="$typename"/></xsl:when><xsl:otherwise><xsl:value-of select="$pname"/></xsl:otherwise></xsl:choose></xsl:variable>
+
+		<xsl:variable name="ptypemap">
+			<xsl:call-template name="map-type">
+				<xsl:with-param name="type" select="$thetype"/>
+				<xsl:with-param name="name" select="$typename"/>
+				<xsl:with-param name="transfer-ownership" select="@transfer-ownership" />
+				<xsl:with-param name="external" select="$external"/>
+			</xsl:call-template>
+		</xsl:variable>
 
 		<!-- hack to replace enums with int because gapi is silly and doesn't register their types -->
 		<xsl:variable name="ptype">
@@ -533,7 +612,19 @@ exclude-result-prefixes="xsl exsl gir c glib"
 				<xsl:text>const-</xsl:text><xsl:value-of select="exsl:node-set($ptypemap)/type/@ctype"/>
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:value-of select="exsl:node-set($ptypemap)/type/@ctype"/>
+				<xsl:choose>
+					<xsl:when test="exsl:node-set($ptypemap)/type/@ctype">
+						<xsl:value-of select="exsl:node-set($ptypemap)/type/@ctype"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:choose>
+							<xsl:when test="gir:callback[@name=$name]">
+								<xsl:value-of select="//gir:repository/gir:namespace/@name"/><xsl:value-of select="@name"/>Func
+							</xsl:when>
+							<xsl:otherwise>none</xsl:otherwise>
+						</xsl:choose>
+					</xsl:otherwise>
+				</xsl:choose>
 			</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
@@ -546,20 +637,41 @@ exclude-result-prefixes="xsl exsl gir c glib"
 		</xsl:if>
 
 		<xsl:if test="gir:array">
-			<xsl:attribute name="array_len"><xsl:value-of select="gir:array/@length"/></xsl:attribute>
+			<xsl:choose>
+			<xsl:when test="gir:array/@length">
+				<xsl:attribute name="array_len"><xsl:value-of select="gir:array/@length"/></xsl:attribute>
+			</xsl:when>
+			<xsl:when test="gir:array/@fixed-size">
+				<xsl:attribute name="array_len"><xsl:value-of select="gir:array/@fixed-size"/></xsl:attribute>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:attribute name="array">true</xsl:attribute>
+			</xsl:otherwise>
+			</xsl:choose>
 		</xsl:if>
 
-		<!-- debug s="1" name="{$name}" pname="{$pname}" ptypemap="{$ptypemap}" typename="{$typename}" typea="{$type}" transfer-ownership="{$transfer-ownership}" mapping="{exsl:node-set($typemappings)/mappings/mapping[@from=$typename]/@to}" dotype="{$dotype}" />
 
+		<xsl:if test="exsl:node-set($ptypemap)/type/@warning">
+			<warning><xsl:value-of select="exsl:node-set($ptypemap)/type/@warning"/></warning>
+		</xsl:if>
+		<!-- debug s="1" name="{$name}" pname="{$pname}" ptypemap="{$ptypemap}" typename="{$typename}" typea="{$type}" transfer-ownership="{$transfer-ownership}" mapping="{exsl:node-set($typemappings)/mappings/mapping[@from=$typename]/@to}" dotype="{$dotype}" / -->
+<!--
 		<gtypes>
 			<name><xsl:value-of select="$typename" /></name>
+			<aname><xsl:value-of select="@name" /></aname>
+			<thetype><xsl:value-of select="$thetype" /></thetype>
+			<typemap>
+				<xsl:copy-of select="$ptypemap" />
+			</typemap>
 			<type>
-			<xsl:call-template name="map-gtype">
-				<xsl:with-param name="type" select="$typename"/>
-				<xsl:with-param name="external" select="$external"/>
-			</xsl:call-template>
+				<xsl:call-template name="map-gtype">
+					<xsl:with-param name="type" select="$typename"/>
+					<xsl:with-param name="external" select="$external"/>
+				</xsl:call-template>
 			</type>
-		</gtypes -->
+		</gtypes>
+-->
+
 	</xsl:template>
 
 	<xsl:template name="map-name">
@@ -611,22 +723,31 @@ exclude-result-prefixes="xsl exsl gir c glib"
 		<type>
 
 		<xsl:choose>
-			<xsl:when test="not($type) and gir:varargs">
+			<xsl:when test="gir:varargs">
 				<xsl:attribute name="ctype">va_list</xsl:attribute>
 				<xsl:attribute name="gtype">va_list</xsl:attribute>
 			</xsl:when>
-			<xsl:when test="not($type) and gir:array">
-				<xsl:attribute name="ctype"><xsl:value-of select="gir:array/@c:type" /></xsl:attribute>
-				<xsl:attribute name="gtype"><xsl:value-of select="gir:array/@c:type" /></xsl:attribute>
+			<xsl:when test="gir:array">
+				<xsl:call-template name="map-gtype">
+					<xsl:with-param name="type" select="gir:array/@c:type" />
+					<xsl:with-param name="transfer-ownership" select="$transfer-ownership" />
+					<xsl:with-param name="external" select="$external" />
+				</xsl:call-template>
 			</xsl:when>
 			<xsl:when test="not($name)">
-				<xsl:attribute name="ctype"><xsl:value-of select="$type" /></xsl:attribute>
-				<xsl:attribute name="gtype"><xsl:value-of select="$type" /></xsl:attribute>
+				<xsl:call-template name="map-gtype">
+					<xsl:with-param name="type" select="$type" />
+					<xsl:with-param name="transfer-ownership" select="$transfer-ownership" />
+					<xsl:with-param name="external" select="$external" />
+				</xsl:call-template>
 			</xsl:when>
 
 			<xsl:otherwise>
-				<xsl:call-template name="map-gtype"><xsl:with-param name="type" select="$name" /><xsl:with-param name="transfer-ownership" select="$transfer-ownership" /><xsl:with-param name="external" select="$external" /></xsl:call-template>
-				
+				<xsl:call-template name="map-gtype">
+					<xsl:with-param name="type" select="$name" />
+					<xsl:with-param name="transfer-ownership" select="$transfer-ownership" />
+					<xsl:with-param name="external" select="$external" />
+				</xsl:call-template>
 			</xsl:otherwise>
 		</xsl:choose>
 		
@@ -644,67 +765,60 @@ exclude-result-prefixes="xsl exsl gir c glib"
 				<xsl:variable name="ns" select="substring-before($type, '.')" />
 				<xsl:variable name="t" select="substring-after($type, '.')" />
 				<xsl:variable name="l" select="exsl:node-set($external)/include[@name=$ns]/gir:repository/gir:namespace[@name=$ns]" />
-				<xsl:choose>
-					<xsl:when test="$l/gir:class[@name=$t]">
-						<xsl:attribute name="ctype"><xsl:value-of select="$l/gir:class[@name=$t]/@c:type" />*</xsl:attribute>
-						<xsl:attribute name="gtype"><xsl:value-of select="$l/gir:class[@name=$t]/@glib:type-name" /></xsl:attribute>
-					</xsl:when>
-					<xsl:when test="$l/gir:record[@name=$t]">
-						<xsl:attribute name="ctype"><xsl:value-of select="$l/gir:record[@name=$t]/@c:type" />*</xsl:attribute>
-						<xsl:attribute name="gtype"><xsl:value-of select="$l/gir:record[@name=$t]/@name" /></xsl:attribute>
-					</xsl:when>
-					<xsl:when test="$l/gir:union[@name=$t]">
-						<xsl:attribute name="ctype"><xsl:value-of select="$l/gir:union[@name=$t]/@c:type" />*</xsl:attribute>
-						<xsl:attribute name="gtype"><xsl:value-of select="$l/gir:union[@name=$t]/@glib:type-name" /></xsl:attribute>
-					</xsl:when>
-					<xsl:when test="$l/gir:boxed[@name=$t]">
-						<xsl:attribute name="ctype"><xsl:value-of select="$l/gir:boxed[@name=$t]/@c:type" />*</xsl:attribute>
-						<xsl:attribute name="gtype"><xsl:value-of select="$l/gir:boxed[@name=$t]/@glib:type-name" /></xsl:attribute>
-					</xsl:when>
-					<xsl:when test="$l/gir:interface[@name=$t]">
-						<xsl:attribute name="ctype"><xsl:value-of select="$l/gir:interface[@name=$t]/@c:type" />*</xsl:attribute>
-						<xsl:attribute name="gtype"><xsl:value-of select="$l/gir:interface[@name=$t]/@glib:type-name" /></xsl:attribute>
-					</xsl:when>
 
-					<xsl:when test="$l/gir:bitfield[@name=$t]">
-						<xsl:attribute name="ctype"><xsl:value-of select="$l/gir:bitfield[@name=$t]/@c:type" /></xsl:attribute>
-						<xsl:attribute name="gtype"><xsl:value-of select="$l/gir:bitfield[@name=$t]/@glib:type-name" /></xsl:attribute>
-					</xsl:when>
-					<xsl:when test="$l/gir:enumeration[@name=$t]">
-						<xsl:attribute name="ctype"><xsl:value-of select="$l/gir:enumeration[@name=$t]/@c:type" /></xsl:attribute>
-						<xsl:attribute name="gtype"><xsl:value-of select="$l/gir:enumeration[@name=$t]/@glib:type-name" /></xsl:attribute>
-					</xsl:when>
-					<xsl:when test="$l/gir:callback[@name=$t]">
-						<xsl:attribute name="ctype"><xsl:value-of select="$t" /></xsl:attribute>
-						<!-- It appears callbacks need to have the name as the type (and not the c:type) -->
-						<!-- xsl:attribute name="ctype"><xsl:value-of select="$l/gir:callback[@name=$t]/@c:type" /></xsl:attribute -->
-						<xsl:attribute name="gtype"><xsl:value-of select="$l/gir:callback[@name=$t]/@glib:type-name" /></xsl:attribute>
-					</xsl:when>
-					<xsl:when test="$l/gir:alias[@name=$t]">
-						<xsl:attribute name="ctype"><xsl:value-of select="$l/gir:alias[@name=$t]/gir:type/@c:type" /></xsl:attribute>
-						<xsl:attribute name="gtype"><xsl:value-of select="$l/gir:alias[@name=$t]/gir:type/@glib:type-name" /></xsl:attribute>
-					</xsl:when>
-				</xsl:choose>
+				<xsl:call-template name="map-gtype-inner">
+					<xsl:with-param name="type" select="$type" />
+					<xsl:with-param name="transfer-ownership" select="$transfer-ownership" />
+					<xsl:with-param name="l" select="$l" />
+					<xsl:with-param name="t" select="$t" />
+				</xsl:call-template>
+
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:variable name="t" select="$type" />
 				<xsl:variable name="l" select="//gir:repository/gir:namespace" />
 				
+				<xsl:call-template name="map-gtype-inner">
+					<xsl:with-param name="type" select="$type" />
+					<xsl:with-param name="transfer-ownership" select="$transfer-ownership" />
+					<xsl:with-param name="l" select="$l" />
+					<xsl:with-param name="t" select="$t" />
+				</xsl:call-template>
+
+			</xsl:otherwise>
+		</xsl:choose>
+
+	</xsl:template>
+
+	<xsl:template name="map-gtype-inner">
+		<xsl:param name="type" />
+		<xsl:param name="transfer-ownership" />
+		<xsl:param name="l" />
+		<xsl:param name="t" />
+
 				<xsl:choose>
 					<xsl:when test="$l/gir:class[@name=$t]">
 						<xsl:attribute name="ctype"><xsl:value-of select="$l/gir:class[@name=$t]/@c:type" />*</xsl:attribute>
 						<xsl:attribute name="gtype"><xsl:value-of select="$l/gir:class[@name=$t]/@glib:type-name" /></xsl:attribute>
 					</xsl:when>
 					<xsl:when test="$l/gir:record[@name=$t]">
-						<xsl:attribute name="ctype"><xsl:value-of select="$l/gir:record[@name=$t]/@c:type" />*</xsl:attribute>
 						<xsl:choose>
-						<xsl:when test="$l/gir:record[@name=$t]/@glib:type-name">
-							<xsl:attribute name="gtype"><xsl:value-of select="$l/gir:record[@name=$t]/@glib:type-name" /></xsl:attribute>
+						<xsl:when test="gir:type/@c:type and concat($l/gir:record[@name=$t]/@c:type,'*') != string(gir:type/@c:type)">
+							<xsl:attribute name="warning">type does not match c:type - record:<xsl:value-of select="$l/@name"/>/<xsl:value-of select="$t"/>. '<xsl:value-of select="$l/gir:record[@name=$t]/@c:type" />*' == '<xsl:value-of select="gir:type/@c:type"/>'(ctype)</xsl:attribute>
+							<xsl:attribute name="ctype"><xsl:value-of select="gir:type/@c:type" /></xsl:attribute>
 						</xsl:when>
 						<xsl:otherwise>
-						<xsl:attribute name="gtype"><xsl:value-of select="$l/gir:record[@name=$t]/@c:type" /></xsl:attribute>
-						<xsl:attribute name="warning">missing glib:type-name</xsl:attribute>
+							<xsl:attribute name="ctype"><xsl:value-of select="$l/gir:record[@name=$t]/@c:type" />*</xsl:attribute>
 						</xsl:otherwise>
+						</xsl:choose>
+						<xsl:choose>
+							<xsl:when test="$l/gir:record[@name=$t]/@glib:type-name">
+								<xsl:attribute name="gtype"><xsl:value-of select="$l/gir:record[@name=$t]/@glib:type-name" /></xsl:attribute>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:attribute name="gtype"><xsl:value-of select="$l/gir:record[@name=$t]/@c:type" /></xsl:attribute>
+								<xsl:attribute name="warning">missing glib:type-name</xsl:attribute>
+							</xsl:otherwise>
 						</xsl:choose>
 						<xsl:attribute name="warning">missing glib:type-name</xsl:attribute>
 					</xsl:when>
@@ -730,9 +844,15 @@ exclude-result-prefixes="xsl exsl gir c glib"
 						<xsl:attribute name="gtype"><xsl:value-of select="$l/gir:enumeration[@name=$t]/@glib:type-name" /></xsl:attribute>
 					</xsl:when>
 					<xsl:when test="$l/gir:callback[@name=$t]">
-						<xsl:attribute name="ctype"><xsl:value-of select="$t" /></xsl:attribute>
 						<!-- It appears callbacks need to have the name as the type (and not the c:type) -->
-						<!-- xsl:attribute name="ctype"><xsl:value-of select="$l/gir:callback[@name=$t]/@c:type" /></xsl:attribute -->
+						<xsl:choose>
+							<xsl:when test="$l/gir:callback[@name=$t]/@c:type">
+								<xsl:attribute name="ctype"><xsl:value-of select="$l/gir:callback[@name=$t]/@c:type" /></xsl:attribute>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:attribute name="ctype"><xsl:value-of select="$t" /></xsl:attribute>
+							</xsl:otherwise>
+						</xsl:choose>
 						<xsl:attribute name="gtype"><xsl:value-of select="$l/gir:callback[@name=$t]/@glib:type-name" /></xsl:attribute>
 					</xsl:when>
 					<xsl:when test="$l/gir:alias[@name=$t]">
@@ -740,10 +860,21 @@ exclude-result-prefixes="xsl exsl gir c glib"
 						<xsl:attribute name="gtype"><xsl:value-of select="$l/gir:alias[@name=$t]/gir:type/@glib:type-name" /></xsl:attribute>
 					</xsl:when>
 
+					<xsl:when test="exsl:node-set($typemappings)/mappings/mapping[@from=$t]">
+						<xsl:attribute name="ctype"><xsl:value-of select="exsl:node-set($typemappings)/mappings/mapping[@from=$t]/@to" /></xsl:attribute>
+						<xsl:attribute name="gtype"><xsl:value-of select="exsl:node-set($typemappings)/mappings/mapping[@from=$t]/@to" /></xsl:attribute>
+					</xsl:when>
+
 					<xsl:when test="exsl:node-set($typemappings)/mappings/mapping[@from=$type]">
 						<xsl:attribute name="ctype"><xsl:value-of select="exsl:node-set($typemappings)/mappings/mapping[@from=$type]/@to" /></xsl:attribute>
 						<xsl:attribute name="gtype"><xsl:value-of select="exsl:node-set($typemappings)/mappings/mapping[@from=$type]/@to" /></xsl:attribute>
 					</xsl:when>
+
+					<xsl:when test="gir:callback[@name=current()/@name]">
+						<xsl:attribute name="ctype"><xsl:value-of select="$l/@name" /><xsl:value-of select="$type" />Func</xsl:attribute>
+						<xsl:attribute name="gtype"><xsl:value-of select="$l/@name" /><xsl:value-of select="$type" />Func</xsl:attribute>
+					</xsl:when>
+
 					<xsl:otherwise>
 						<xsl:choose>
 							<xsl:when test="$transfer-ownership='full'">
@@ -757,8 +888,6 @@ exclude-result-prefixes="xsl exsl gir c glib"
 						</xsl:choose>
 					</xsl:otherwise>
 				</xsl:choose>
-			</xsl:otherwise>
-		</xsl:choose>
 
 	</xsl:template>
 

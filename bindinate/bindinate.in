@@ -143,6 +143,7 @@ sed "s/#REFERENCES#/$REF/g" @prefix@/lib/bindinator/Makefile.am.template>$OUTDIR
 cp @prefix@/lib/bindinator/AssemblyInfo.cs.in $OUTDIR/.
 cp @prefix@/lib/bindinator/autogen.sh $OUTDIR/.
 chmod +x $OUTDIR/autogen.sh
+mkdir -p $OUTDIR/m4
 
 if [ ! -e $OUTDIR/$NAME-sharp.metadata ]; then
 	cp @prefix@/lib/bindinator/metadata.template $OUTDIR/$NAME-sharp.metadata 
