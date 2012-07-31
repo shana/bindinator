@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<metadata>
+
+	<attr path="/api/namespace/object[@name='DBusConnection']/property[@name='Closed']" name="name">GetClosed</attr>
+	<attr path="/api/namespace/struct[@name='DBusInterfaceInfo']" name="opaque">true</attr>
+	<attr path="/api/namespace/struct[@name='SettingsSchema']" name="opaque">true</attr>
+	<!--attr path="/api/namespace/callback[@name='DBusSubtreeEnumerateFunc']/return-type" name="type">gpointer</attr>
+	<attr path="/api/namespace/object[@name='Vfs']/virtual_method[@name='GetSupportedUriSchemes']/return-type" name="type">gpointer</attr -->
+	<attr path="/api/namespace/*/return-type[@type='gchar**']" name="type">gpointer</attr>
+	<attr path="/api/namespace/*/return-type[@type='char**']" name="type">gpointer</attr>
+	<attr path="/api/namespace/*/return-type[@type='gchar***']" name="type">gpointer</attr>
+	<attr path="/api/namespace/*/return-type[@type='char***']" name="type">gpointer</attr>
+	<attr path="/api/namespace/object[@name='TlsCertificate']" name="abstract">false</attr>
+</metadata>
+
