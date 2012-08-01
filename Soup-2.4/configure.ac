@@ -134,6 +134,8 @@ PKG_CHECK_MODULES(SOUP, libsoup-2.4)
 soup_prefix=/usr
 AC_SUBST(soup_prefix)
 
+dnl extra m4 calls
+CHECK_GIOSHARP
 
 
 AC_CONFIG_FILES([

@@ -38,7 +38,7 @@ generated-stamp: $(API)
 
 $(ASSEMBLY_NAME).dll: $(build_sources) generated-stamp
 	$(CSC) -nowarn:169 -unsafe -target:library $(GTK_SHARP_LIBS) \
-		$(build_sources)  generated/*.cs -out:$(ASSEMBLY_NAME).dll
+		$(build_sources)  $(GIOSHARP_LIBS) generated/*.cs -out:$(ASSEMBLY_NAME).dll
 
 install-data-local:
 	echo "$(GACUTIL) /i $(ASSEMBLY_NAME).dll /f $(GACUTIL_FLAGS)";  \

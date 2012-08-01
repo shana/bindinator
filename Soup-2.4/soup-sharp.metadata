@@ -1,4 +1,7 @@
 <?xml version="1.0"?>
 <metadata>
+	<attr path="/api/namespace/struct[@cname='SoupMessageBody']" name="opaque">true</attr>
+	<attr path="/api/namespace/struct[@cname='SoupMessageHeaders']" name="opaque">true</attr>
+	<attr path="/api/namespace/struct[@cname='SoupURI']" name="opaque">true</attr>
 </metadata>
 
