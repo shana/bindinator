@@ -7,7 +7,97 @@
       <member cname="WEBKIT_CACHE_MODEL_WEB_BROWSER" name="WebBrowser"/>
       <member cname="WEBKIT_CACHE_MODEL_DOCUMENT_BROWSER" name="DocumentBrowser"/>
     </enum>
-    <object name="DOMAttr" cname="WebKitDOMAttr" parent="WebKitDOMNode">
+    <enum name="DownloadError" cname="WebKitDownloadError" gtype="webkit_download_error_get_type" type="enum">
+      <member cname="WEBKIT_DOWNLOAD_ERROR_CANCELLED_BY_USER" name="CancelledByUser"/>
+      <member cname="WEBKIT_DOWNLOAD_ERROR_DESTINATION" name="Destination"/>
+      <member cname="WEBKIT_DOWNLOAD_ERROR_NETWORK" name="Network"/>
+    </enum>
+    <enum name="DownloadStatus" cname="WebKitDownloadStatus" gtype="webkit_download_status_get_type" type="enum">
+      <member cname="WEBKIT_DOWNLOAD_STATUS_ERROR" name="Error"/>
+      <member cname="WEBKIT_DOWNLOAD_STATUS_CREATED" name="Created"/>
+      <member cname="WEBKIT_DOWNLOAD_STATUS_STARTED" name="Started"/>
+      <member cname="WEBKIT_DOWNLOAD_STATUS_CANCELLED" name="Cancelled"/>
+      <member cname="WEBKIT_DOWNLOAD_STATUS_FINISHED" name="Finished"/>
+    </enum>
+    <enum name="EditingBehavior" cname="WebKitEditingBehavior" gtype="webkit_editing_behavior_get_type" type="enum">
+      <member cname="WEBKIT_EDITING_BEHAVIOR_MAC" name="Mac"/>
+      <member cname="WEBKIT_EDITING_BEHAVIOR_WINDOWS" name="Windows"/>
+      <member cname="WEBKIT_EDITING_BEHAVIOR_UNIX" name="Unix"/>
+    </enum>
+    <enum name="InsertAction" cname="WebKitInsertAction" gtype="webkit_insert_action_get_type" type="enum">
+      <member cname="WEBKIT_INSERT_ACTION_TYPED" name="Typed"/>
+      <member cname="WEBKIT_INSERT_ACTION_PASTED" name="Pasted"/>
+      <member cname="WEBKIT_INSERT_ACTION_DROPPED" name="Dropped"/>
+    </enum>
+    <enum name="LoadStatus" cname="WebKitLoadStatus" gtype="webkit_load_status_get_type" type="enum">
+      <member cname="WEBKIT_LOAD_PROVISIONAL" name="Provisional"/>
+      <member cname="WEBKIT_LOAD_COMMITTED" name="Committed"/>
+      <member cname="WEBKIT_LOAD_FINISHED" name="Finished"/>
+      <member cname="WEBKIT_LOAD_FIRST_VISUALLY_NON_EMPTY_LAYOUT" name="FirstVisuallyNonEmptyLayout"/>
+      <member cname="WEBKIT_LOAD_FAILED" name="Failed"/>
+    </enum>
+    <enum name="NavigationResponse" cname="WebKitNavigationResponse" gtype="webkit_navigation_response_get_type" type="enum">
+      <member cname="WEBKIT_NAVIGATION_RESPONSE_ACCEPT" name="Accept"/>
+      <member cname="WEBKIT_NAVIGATION_RESPONSE_IGNORE" name="Ignore"/>
+      <member cname="WEBKIT_NAVIGATION_RESPONSE_DOWNLOAD" name="Download"/>
+    </enum>
+    <enum name="NetworkError" cname="WebKitNetworkError" gtype="webkit_network_error_get_type" type="enum">
+      <member cname="WEBKIT_NETWORK_ERROR_TRANSPORT" name="Transport"/>
+      <member cname="WEBKIT_NETWORK_ERROR_UNKNOWN_PROTOCOL" name="UnknownProtocol"/>
+      <member cname="WEBKIT_NETWORK_ERROR_CANCELLED" name="Cancelled"/>
+      <member cname="WEBKIT_NETWORK_ERROR_FILE_DOES_NOT_EXIST" name="FileDoesNotExist"/>
+      <member cname="WEBKIT_NETWORK_ERROR_FAILED" name="Failed"/>
+    </enum>
+    <enum name="PluginError" cname="WebKitPluginError" gtype="webkit_plugin_error_get_type" type="enum">
+      <member cname="WEBKIT_PLUGIN_ERROR_CANNOT_FIND_PLUGIN" name="CannotFindPlugin"/>
+      <member cname="WEBKIT_PLUGIN_ERROR_CANNOT_LOAD_PLUGIN" name="CannotLoadPlugin"/>
+      <member cname="WEBKIT_PLUGIN_ERROR_JAVA_UNAVAILABLE" name="JavaUnavailable"/>
+      <member cname="WEBKIT_PLUGIN_ERROR_CONNECTION_CANCELLED" name="ConnectionCancelled"/>
+      <member cname="WEBKIT_PLUGIN_ERROR_WILL_HANDLE_LOAD" name="WillHandleLoad"/>
+      <member cname="WEBKIT_PLUGIN_ERROR_FAILED" name="Failed"/>
+    </enum>
+    <enum name="PolicyError" cname="WebKitPolicyError" gtype="webkit_policy_error_get_type" type="enum">
+      <member cname="WEBKIT_POLICY_ERROR_CANNOT_SHOW_MIME_TYPE" name="CannotShowMimeType"/>
+      <member cname="WEBKIT_POLICY_ERROR_CANNOT_SHOW_URL" name="CannotShowUrl"/>
+      <member cname="WEBKIT_POLICY_ERROR_FRAME_LOAD_INTERRUPTED_BY_POLICY_CHANGE" name="FrameLoadInterruptedByPolicyChange"/>
+      <member cname="WEBKIT_POLICY_ERROR_CANNOT_USE_RESTRICTED_PORT" name="CannotUseRestrictedPort"/>
+      <member cname="WEBKIT_POLICY_ERROR_FAILED" name="Failed"/>
+    </enum>
+    <enum name="SelectionAffinity" cname="WebKitSelectionAffinity" gtype="webkit_selection_affinity_get_type" type="enum">
+      <member cname="WEBKIT_SELECTION_AFFINITY_UPSTREAM" name="Upstream"/>
+      <member cname="WEBKIT_SELECTION_AFFINITY_DOWNSTREAM" name="Downstream"/>
+    </enum>
+    <enum name="WebNavigationReason" cname="WebKitWebNavigationReason" gtype="webkit_web_navigation_reason_get_type" type="enum">
+      <member cname="WEBKIT_WEB_NAVIGATION_REASON_LINK_CLICKED" name="LinkClicked"/>
+      <member cname="WEBKIT_WEB_NAVIGATION_REASON_FORM_SUBMITTED" name="FormSubmitted"/>
+      <member cname="WEBKIT_WEB_NAVIGATION_REASON_BACK_FORWARD" name="BackForward"/>
+      <member cname="WEBKIT_WEB_NAVIGATION_REASON_RELOAD" name="Reload"/>
+      <member cname="WEBKIT_WEB_NAVIGATION_REASON_FORM_RESUBMITTED" name="FormResubmitted"/>
+      <member cname="WEBKIT_WEB_NAVIGATION_REASON_OTHER" name="Other"/>
+    </enum>
+    <enum name="WebViewTargetInfo" cname="WebKitWebViewTargetInfo" gtype="webkit_web_view_target_info_get_type" type="enum">
+      <member cname="WEBKIT_WEB_VIEW_TARGET_INFO_HTML" name="Html"/>
+      <member cname="WEBKIT_WEB_VIEW_TARGET_INFO_TEXT" name="Text"/>
+      <member cname="WEBKIT_WEB_VIEW_TARGET_INFO_IMAGE" name="Image"/>
+      <member cname="WEBKIT_WEB_VIEW_TARGET_INFO_URI_LIST" name="UriList"/>
+      <member cname="WEBKIT_WEB_VIEW_TARGET_INFO_NETSCAPE_URL" name="NetscapeUrl"/>
+    </enum>
+    <enum name="WebViewViewMode" cname="WebKitWebViewViewMode" gtype="webkit_web_view_view_mode_get_type" type="enum">
+      <member cname="WEBKIT_WEB_VIEW_VIEW_MODE_WINDOWED" name="Windowed"/>
+      <member cname="WEBKIT_WEB_VIEW_VIEW_MODE_FLOATING" name="Floating"/>
+      <member cname="WEBKIT_WEB_VIEW_VIEW_MODE_FULLSCREEN" name="Fullscreen"/>
+      <member cname="WEBKIT_WEB_VIEW_VIEW_MODE_MAXIMIZED" name="Maximized"/>
+      <member cname="WEBKIT_WEB_VIEW_VIEW_MODE_MINIMIZED" name="Minimized"/>
+    </enum>
+    <enum name="HitTestResultContext" cname="WebKitHitTestResultContext" type="enum" gtype="webkit_hit_test_result_context_get_type">
+      <member cname="WEBKIT_HIT_TEST_RESULT_CONTEXT_MEDIA" name="Media"/>
+      <member cname="WEBKIT_HIT_TEST_RESULT_CONTEXT_DOCUMENT" name="Document"/>
+      <member cname="WEBKIT_HIT_TEST_RESULT_CONTEXT_SELECTION" name="Selection"/>
+      <member cname="WEBKIT_HIT_TEST_RESULT_CONTEXT_LINK" name="Link"/>
+      <member cname="WEBKIT_HIT_TEST_RESULT_CONTEXT_EDITABLE" name="Editable"/>
+      <member cname="WEBKIT_HIT_TEST_RESULT_CONTEXT_IMAGE" name="Image"/>
+    </enum>
+    <object name="DOMAttr" cname="WebKitDOMAttr" parent="WebKitDOMNode" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_attr_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -39,7 +129,7 @@
       <property name="Value" cname="value" type="gchar*" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMNode*"/>
     </object>
-    <object name="DOMBarInfo" cname="WebKitDOMBarInfo" parent="WebKitDOMObject">
+    <object name="DOMBarInfo" cname="WebKitDOMBarInfo" parent="WebKitDOMObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_bar_info_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -49,7 +139,7 @@
       <property name="Visible" cname="visible" type="gboolean" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMObject*"/>
     </object>
-    <object name="DOMBlob" cname="WebKitDOMBlob" parent="WebKitDOMObject">
+    <object name="DOMBlob" cname="WebKitDOMBlob" parent="WebKitDOMObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_blob_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -76,13 +166,13 @@
       <property name="Type" cname="type" type="gchar*" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMObject*"/>
     </object>
-    <object name="DOMCDATASection" cname="WebKitDOMCDATASection" parent="WebKitDOMText">
+    <object name="DOMCDATASection" cname="WebKitDOMCDATASection" parent="WebKitDOMText" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_cdata_section_get_type" shared="true">
         <return-type type="GType"/>
       </method>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMText*"/>
     </object>
-    <object name="DOMCSSRule" cname="WebKitDOMCSSRule" parent="WebKitDOMObject">
+    <object name="DOMCSSRule" cname="WebKitDOMCSSRule" parent="WebKitDOMObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_css_rule_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -107,7 +197,7 @@
       <property name="Type" cname="type" type="guint" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMObject*"/>
     </object>
-    <object name="DOMCSSRuleList" cname="WebKitDOMCSSRuleList" parent="WebKitDOMObject">
+    <object name="DOMCSSRuleList" cname="WebKitDOMCSSRuleList" parent="WebKitDOMObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_css_rule_list_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -123,7 +213,7 @@
       <property name="Length" cname="length" type="gulong" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMObject*"/>
     </object>
-    <object name="DOMCSSStyleDeclaration" cname="WebKitDOMCSSStyleDeclaration" parent="WebKitDOMObject">
+    <object name="DOMCSSStyleDeclaration" cname="WebKitDOMCSSStyleDeclaration" parent="WebKitDOMObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_css_style_declaration_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -197,7 +287,7 @@
       <property name="ParentRule" cname="parent-rule" type="WebKitDOMCSSRule*" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMObject*"/>
     </object>
-    <object name="DOMCSSStyleSheet" cname="WebKitDOMCSSStyleSheet" parent="WebKitDOMStyleSheet">
+    <object name="DOMCSSStyleSheet" cname="WebKitDOMCSSStyleSheet" parent="WebKitDOMStyleSheet" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_css_style_sheet_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -242,7 +332,7 @@
       <property name="Rules" cname="rules" type="WebKitDOMCSSRuleList*" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMStyleSheet*"/>
     </object>
-    <object name="DOMCSSValue" cname="WebKitDOMCSSValue" parent="WebKitDOMObject">
+    <object name="DOMCSSValue" cname="WebKitDOMCSSValue" parent="WebKitDOMObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_css_value_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -262,7 +352,7 @@
       <property name="CssValueType" cname="css-value-type" type="guint" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMObject*"/>
     </object>
-    <object name="DOMCharacterData" cname="WebKitDOMCharacterData" parent="WebKitDOMNode">
+    <object name="DOMCharacterData" cname="WebKitDOMCharacterData" parent="WebKitDOMNode" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_character_data_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -317,13 +407,13 @@
       <property name="Length" cname="length" type="gulong" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMNode*"/>
     </object>
-    <object name="DOMComment" cname="WebKitDOMComment" parent="WebKitDOMCharacterData">
+    <object name="DOMComment" cname="WebKitDOMComment" parent="WebKitDOMCharacterData" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_comment_get_type" shared="true">
         <return-type type="GType"/>
       </method>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMCharacterData*"/>
     </object>
-    <object name="DOMConsole" cname="WebKitDOMConsole" parent="WebKitDOMObject">
+    <object name="DOMConsole" cname="WebKitDOMConsole" parent="WebKitDOMObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_console_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -342,7 +432,7 @@
       <property name="Memory" cname="memory" type="WebKitDOMMemoryInfo*" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMObject*"/>
     </object>
-    <object name="DOMDOMApplicationCache" cname="WebKitDOMDOMApplicationCache" parent="WebKitDOMObject">
+    <object name="DOMDOMApplicationCache" cname="WebKitDOMDOMApplicationCache" parent="WebKitDOMObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_dom_application_cache_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -367,7 +457,7 @@
       <property name="Status" cname="status" type="guint" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMObject*"/>
     </object>
-    <object name="DOMDOMImplementation" cname="WebKitDOMDOMImplementation" parent="WebKitDOMObject">
+    <object name="DOMDOMImplementation" cname="WebKitDOMDOMImplementation" parent="WebKitDOMObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_dom_implementation_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -409,7 +499,7 @@
       </method>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMObject*"/>
     </object>
-    <object name="DOMDOMMimeType" cname="WebKitDOMDOMMimeType" parent="WebKitDOMObject">
+    <object name="DOMDOMMimeType" cname="WebKitDOMDOMMimeType" parent="WebKitDOMObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_dom_mime_type_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -428,7 +518,7 @@
       <property name="Type" cname="type" type="gchar*" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMObject*"/>
     </object>
-    <object name="DOMDOMMimeTypeArray" cname="WebKitDOMDOMMimeTypeArray" parent="WebKitDOMObject">
+    <object name="DOMDOMMimeTypeArray" cname="WebKitDOMDOMMimeTypeArray" parent="WebKitDOMObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_dom_mime_type_array_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -450,7 +540,7 @@
       <property name="Length" cname="length" type="gulong" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMObject*"/>
     </object>
-    <object name="DOMDOMPlugin" cname="WebKitDOMDOMPlugin" parent="WebKitDOMObject">
+    <object name="DOMDOMPlugin" cname="WebKitDOMDOMPlugin" parent="WebKitDOMObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_dom_plugin_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -484,7 +574,7 @@
       <property name="Name" cname="name" type="gchar*" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMObject*"/>
     </object>
-    <object name="DOMDOMPluginArray" cname="WebKitDOMDOMPluginArray" parent="WebKitDOMObject">
+    <object name="DOMDOMPluginArray" cname="WebKitDOMDOMPluginArray" parent="WebKitDOMObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_dom_plugin_array_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -512,7 +602,7 @@
       <property name="Length" cname="length" type="gulong" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMObject*"/>
     </object>
-    <object name="DOMDOMSelection" cname="WebKitDOMDOMSelection" parent="WebKitDOMObject">
+    <object name="DOMDOMSelection" cname="WebKitDOMDOMSelection" parent="WebKitDOMObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_dom_selection_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -637,7 +727,7 @@
       <property name="Type" cname="type" type="gchar*" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMObject*"/>
     </object>
-    <object name="DOMDOMSettableTokenList" cname="WebKitDOMDOMSettableTokenList" parent="WebKitDOMDOMTokenList">
+    <object name="DOMDOMSettableTokenList" cname="WebKitDOMDOMSettableTokenList" parent="WebKitDOMDOMTokenList" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_dom_settable_token_list_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -653,7 +743,7 @@
       <property name="Value" cname="value" type="gchar*" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMDOMTokenList*"/>
     </object>
-    <object name="DOMDOMStringList" cname="WebKitDOMDOMStringList" parent="WebKitDOMObject">
+    <object name="DOMDOMStringList" cname="WebKitDOMDOMStringList" parent="WebKitDOMObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_dom_string_list_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -675,13 +765,13 @@
       <property name="Length" cname="length" type="gulong" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMObject*"/>
     </object>
-    <object name="DOMDOMStringMap" cname="WebKitDOMDOMStringMap" parent="WebKitDOMObject">
+    <object name="DOMDOMStringMap" cname="WebKitDOMDOMStringMap" parent="WebKitDOMObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_dom_string_map_get_type" shared="true">
         <return-type type="GType"/>
       </method>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMObject*"/>
     </object>
-    <object name="DOMDOMTokenList" cname="WebKitDOMDOMTokenList" parent="WebKitDOMObject">
+    <object name="DOMDOMTokenList" cname="WebKitDOMDOMTokenList" parent="WebKitDOMObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_dom_token_list_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -721,7 +811,7 @@
       <property name="Length" cname="length" type="gulong" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMObject*"/>
     </object>
-    <object name="DOMDOMWindow" cname="WebKitDOMDOMWindow" parent="WebKitDOMObject">
+    <object name="DOMDOMWindow" cname="WebKitDOMDOMWindow" parent="WebKitDOMObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_dom_window_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -1086,7 +1176,7 @@
       <property name="Window" cname="window" type="WebKitDOMDOMWindow*" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMObject*"/>
     </object>
-    <object name="DOMDatabase" cname="WebKitDOMDatabase" parent="WebKitDOMObject">
+    <object name="DOMDatabase" cname="WebKitDOMDatabase" parent="WebKitDOMObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_database_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -1096,7 +1186,7 @@
       <property name="Version" cname="version" type="gchar*" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMObject*"/>
     </object>
-    <object name="DOMDocument" cname="WebKitDOMDocument" parent="WebKitDOMNode">
+    <object name="DOMDocument" cname="WebKitDOMDocument" parent="WebKitDOMNode" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_document_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -1522,7 +1612,7 @@
       <property name="XmlVersion" cname="xml-version" type="gchar*" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMNode*"/>
     </object>
-    <object name="DOMDocumentFragment" cname="WebKitDOMDocumentFragment" parent="WebKitDOMNode">
+    <object name="DOMDocumentFragment" cname="WebKitDOMDocumentFragment" parent="WebKitDOMNode" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_document_fragment_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -1540,7 +1630,7 @@
       </method>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMNode*"/>
     </object>
-    <object name="DOMDocumentType" cname="WebKitDOMDocumentType" parent="WebKitDOMNode">
+    <object name="DOMDocumentType" cname="WebKitDOMDocumentType" parent="WebKitDOMNode" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_document_type_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -1570,7 +1660,7 @@
       <property name="SystemId" cname="system-id" type="gchar*" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMNode*"/>
     </object>
-    <object name="DOMElement" cname="WebKitDOMElement" parent="WebKitDOMNode">
+    <object name="DOMElement" cname="WebKitDOMElement" parent="WebKitDOMNode" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -1830,13 +1920,13 @@
       <property name="WebkitRegionOverflow" cname="webkit-region-overflow" type="gchar*" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMNode*"/>
     </object>
-    <object name="DOMEntityReference" cname="WebKitDOMEntityReference" parent="WebKitDOMNode">
+    <object name="DOMEntityReference" cname="WebKitDOMEntityReference" parent="WebKitDOMNode" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_entity_reference_get_type" shared="true">
         <return-type type="GType"/>
       </method>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMNode*"/>
     </object>
-    <object name="DOMEvent" cname="WebKitDOMEvent" parent="WebKitDOMObject">
+    <object name="DOMEvent" cname="WebKitDOMEvent" parent="WebKitDOMObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_event_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -1912,55 +2002,7 @@
       <property name="Type" cname="type" type="gchar*" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMObject*"/>
     </object>
-    <interface name="DOMEventTarget" cname="WebKitDOMEventTarget">
-      <virtual_method name="AddEventListener" cname="add_event_listener">
-        <return-type type="gboolean"/>
-        <parameters>
-          <parameter name="eventName" type="const-gchar*"/>
-          <parameter name="handler" type="GCallback"/>
-          <parameter name="bubble" type="gboolean"/>
-          <parameter name="userData" type="gpointer"/>
-        </parameters>
-      </virtual_method>
-      <virtual_method name="DispatchEvent" cname="dispatch_event">
-        <return-type type="void"/>
-        <parameters>
-          <parameter name="event" type="WebKitDOMEvent*"/>
-        </parameters>
-      </virtual_method>
-      <virtual_method name="RemoveEventListener" cname="remove_event_listener">
-        <return-type type="gboolean"/>
-        <parameters>
-          <parameter name="eventName" type="const-gchar*"/>
-          <parameter name="handler" type="GCallback"/>
-          <parameter name="bubble" type="gboolean"/>
-        </parameters>
-      </virtual_method>
-      <method name="AddEventListener" cname="webkit_dom_event_target_add_event_listener">
-        <return-type type="gboolean"/>
-        <parameters>
-          <parameter name="eventName" type="const-gchar*"/>
-          <parameter name="handler" type="GCallback"/>
-          <parameter name="bubble" type="gboolean"/>
-          <parameter name="userData" type="gpointer"/>
-        </parameters>
-      </method>
-      <method name="DispatchEvent" cname="webkit_dom_event_target_dispatch_event">
-        <return-type type="void"/>
-        <parameters>
-          <parameter name="event" type="WebKitDOMEvent*"/>
-        </parameters>
-      </method>
-      <method name="RemoveEventListener" cname="webkit_dom_event_target_remove_event_listener">
-        <return-type type="gboolean"/>
-        <parameters>
-          <parameter name="eventName" type="const-gchar*"/>
-          <parameter name="handler" type="GCallback"/>
-          <parameter name="bubble" type="gboolean"/>
-        </parameters>
-      </method>
-    </interface>
-    <object name="DOMFile" cname="WebKitDOMFile" parent="WebKitDOMBlob">
+    <object name="DOMFile" cname="WebKitDOMFile" parent="WebKitDOMBlob" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_file_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -1978,7 +2020,7 @@
       <property name="Name" cname="name" type="gchar*" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMBlob*"/>
     </object>
-    <object name="DOMFileList" cname="WebKitDOMFileList" parent="WebKitDOMObject">
+    <object name="DOMFileList" cname="WebKitDOMFileList" parent="WebKitDOMObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_file_list_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -1994,7 +2036,7 @@
       <property name="Length" cname="length" type="gulong" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMObject*"/>
     </object>
-    <object name="DOMGeolocation" cname="WebKitDOMGeolocation" parent="WebKitDOMObject">
+    <object name="DOMGeolocation" cname="WebKitDOMGeolocation" parent="WebKitDOMObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_geolocation_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -2006,7 +2048,7 @@
       </method>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMObject*"/>
     </object>
-    <object name="DOMHTMLAnchorElement" cname="WebKitDOMHTMLAnchorElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLAnchorElement" cname="WebKitDOMHTMLAnchorElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_anchor_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -2200,7 +2242,7 @@
       <property name="Type" cname="type" type="gchar*" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLAppletElement" cname="WebKitDOMHTMLAppletElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLAppletElement" cname="WebKitDOMHTMLAppletElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_applet_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -2316,7 +2358,7 @@
       <property name="Width" cname="width" type="gchar*" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLAreaElement" cname="WebKitDOMHTMLAreaElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLAreaElement" cname="WebKitDOMHTMLAreaElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_area_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -2420,13 +2462,13 @@
       <property name="Target" cname="target" type="gchar*" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLAudioElement" cname="WebKitDOMHTMLAudioElement" parent="WebKitDOMHTMLMediaElement">
+    <object name="DOMHTMLAudioElement" cname="WebKitDOMHTMLAudioElement" parent="WebKitDOMHTMLMediaElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_audio_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLMediaElement*"/>
     </object>
-    <object name="DOMHTMLBRElement" cname="WebKitDOMHTMLBRElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLBRElement" cname="WebKitDOMHTMLBRElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_htmlbr_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -2442,7 +2484,7 @@
       <property name="Clear" cname="clear" type="gchar*" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLBaseElement" cname="WebKitDOMHTMLBaseElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLBaseElement" cname="WebKitDOMHTMLBaseElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_base_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -2468,7 +2510,7 @@
       <property name="Target" cname="target" type="gchar*" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLBaseFontElement" cname="WebKitDOMHTMLBaseFontElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLBaseFontElement" cname="WebKitDOMHTMLBaseFontElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_base_font_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -2504,7 +2546,7 @@
       <property name="Size" cname="size" type="glong" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLBodyElement" cname="WebKitDOMHTMLBodyElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLBodyElement" cname="WebKitDOMHTMLBodyElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_body_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -2570,7 +2612,7 @@
       <property name="VLink" cname="v-link" type="gchar*" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLButtonElement" cname="WebKitDOMHTMLButtonElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLButtonElement" cname="WebKitDOMHTMLButtonElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_button_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -2696,7 +2738,7 @@
       <property name="WillValidate" cname="will-validate" type="gboolean" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLCanvasElement" cname="WebKitDOMHTMLCanvasElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLCanvasElement" cname="WebKitDOMHTMLCanvasElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_canvas_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -2722,7 +2764,7 @@
       <property name="Width" cname="width" type="glong" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLCollection" cname="WebKitDOMHTMLCollection" parent="WebKitDOMObject">
+    <object name="DOMHTMLCollection" cname="WebKitDOMHTMLCollection" parent="WebKitDOMObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_collection_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -2744,7 +2786,7 @@
       <property name="Length" cname="length" type="gulong" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMObject*"/>
     </object>
-    <object name="DOMHTMLDListElement" cname="WebKitDOMHTMLDListElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLDListElement" cname="WebKitDOMHTMLDListElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_htmld_list_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -2760,7 +2802,7 @@
       <property name="Compact" cname="compact" type="gboolean" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLDetailsElement" cname="WebKitDOMHTMLDetailsElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLDetailsElement" cname="WebKitDOMHTMLDetailsElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_details_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -2776,7 +2818,7 @@
       <property name="Open" cname="open" type="gboolean" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLDirectoryElement" cname="WebKitDOMHTMLDirectoryElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLDirectoryElement" cname="WebKitDOMHTMLDirectoryElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_directory_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -2792,7 +2834,7 @@
       <property name="Compact" cname="compact" type="gboolean" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLDivElement" cname="WebKitDOMHTMLDivElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLDivElement" cname="WebKitDOMHTMLDivElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_div_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -2808,7 +2850,7 @@
       <property name="Align" cname="align" type="gchar*" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLDocument" cname="WebKitDOMHTMLDocument" parent="WebKitDOMDocument">
+    <object name="DOMHTMLDocument" cname="WebKitDOMHTMLDocument" parent="WebKitDOMDocument" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_document_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -2930,7 +2972,7 @@
       <property name="Width" cname="width" type="glong" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMDocument*"/>
     </object>
-    <object name="DOMHTMLElement" cname="WebKitDOMHTMLElement" parent="WebKitDOMElement">
+    <object name="DOMHTMLElement" cname="WebKitDOMHTMLElement" parent="WebKitDOMElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -3169,7 +3211,7 @@
       <property name="Webkitdropzone" cname="webkitdropzone" type="gchar*" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMElement*"/>
     </object>
-    <object name="DOMHTMLEmbedElement" cname="WebKitDOMHTMLEmbedElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLEmbedElement" cname="WebKitDOMHTMLEmbedElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_embed_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -3226,7 +3268,7 @@
       <property name="Width" cname="width" type="glong" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLFieldSetElement" cname="WebKitDOMHTMLFieldSetElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLFieldSetElement" cname="WebKitDOMHTMLFieldSetElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_field_set_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -3257,7 +3299,7 @@
       <property name="WillValidate" cname="will-validate" type="gboolean" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLFontElement" cname="WebKitDOMHTMLFontElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLFontElement" cname="WebKitDOMHTMLFontElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_font_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -3293,7 +3335,7 @@
       <property name="Size" cname="size" type="gchar*" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLFormElement" cname="WebKitDOMHTMLFormElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLFormElement" cname="WebKitDOMHTMLFormElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_form_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -3412,7 +3454,7 @@
       <property name="Target" cname="target" type="gchar*" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLFrameElement" cname="WebKitDOMHTMLFrameElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLFrameElement" cname="WebKitDOMHTMLFrameElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_frame_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -3514,7 +3556,7 @@
       <property name="Width" cname="width" type="glong" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLFrameSetElement" cname="WebKitDOMHTMLFrameSetElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLFrameSetElement" cname="WebKitDOMHTMLFrameSetElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_frame_set_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -3540,7 +3582,7 @@
       <property name="Rows" cname="rows" type="gchar*" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLHRElement" cname="WebKitDOMHTMLHRElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLHRElement" cname="WebKitDOMHTMLHRElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_htmlhr_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -3586,7 +3628,7 @@
       <property name="Width" cname="width" type="gchar*" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLHeadElement" cname="WebKitDOMHTMLHeadElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLHeadElement" cname="WebKitDOMHTMLHeadElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_head_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -3602,7 +3644,7 @@
       <property name="Profile" cname="profile" type="gchar*" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLHeadingElement" cname="WebKitDOMHTMLHeadingElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLHeadingElement" cname="WebKitDOMHTMLHeadingElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_heading_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -3618,7 +3660,7 @@
       <property name="Align" cname="align" type="gchar*" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLHtmlElement" cname="WebKitDOMHTMLHtmlElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLHtmlElement" cname="WebKitDOMHTMLHtmlElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_html_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -3644,7 +3686,7 @@
       <property name="Version" cname="version" type="gchar*" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLIFrameElement" cname="WebKitDOMHTMLIFrameElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLIFrameElement" cname="WebKitDOMHTMLIFrameElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_iframe_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -3768,7 +3810,7 @@
       <property name="Width" cname="width" type="gchar*" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLImageElement" cname="WebKitDOMHTMLImageElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLImageElement" cname="WebKitDOMHTMLImageElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_image_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -3934,7 +3976,7 @@
       <property name="Y" cname="y" type="glong" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLInputElement" cname="WebKitDOMHTMLInputElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLInputElement" cname="WebKitDOMHTMLInputElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_input_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -4353,7 +4395,7 @@
       <property name="WillValidate" cname="will-validate" type="gboolean" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLKeygenElement" cname="WebKitDOMHTMLKeygenElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLKeygenElement" cname="WebKitDOMHTMLKeygenElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_keygen_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -4439,7 +4481,7 @@
       <property name="WillValidate" cname="will-validate" type="gboolean" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLLIElement" cname="WebKitDOMHTMLLIElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLLIElement" cname="WebKitDOMHTMLLIElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_htmlli_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -4456,7 +4498,7 @@
       <property name="Value" cname="value" type="glong" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLLabelElement" cname="WebKitDOMHTMLLabelElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLLabelElement" cname="WebKitDOMHTMLLabelElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_label_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -4480,7 +4522,7 @@
       <property name="HtmlFor" cname="html-for" type="gchar*" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLLegendElement" cname="WebKitDOMHTMLLegendElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLLegendElement" cname="WebKitDOMHTMLLegendElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_legend_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -4500,7 +4542,7 @@
       <property name="Form" cname="form" type="WebKitDOMHTMLFormElement*" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLLinkElement" cname="WebKitDOMHTMLLinkElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLLinkElement" cname="WebKitDOMHTMLLinkElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_link_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -4591,7 +4633,7 @@
       <property name="Type" cname="type" type="gchar*" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLMapElement" cname="WebKitDOMHTMLMapElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLMapElement" cname="WebKitDOMHTMLMapElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_map_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -4611,7 +4653,7 @@
       <property name="Name" cname="name" type="gchar*" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLMarqueeElement" cname="WebKitDOMHTMLMarqueeElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLMarqueeElement" cname="WebKitDOMHTMLMarqueeElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_marquee_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -4733,7 +4775,7 @@
       <property name="Width" cname="width" type="gchar*" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLMediaElement" cname="WebKitDOMHTMLMediaElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLMediaElement" cname="WebKitDOMHTMLMediaElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_media_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -4956,7 +4998,7 @@
       <property name="WebkitPreservesPitch" cname="webkit-preserves-pitch" type="gboolean" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLMenuElement" cname="WebKitDOMHTMLMenuElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLMenuElement" cname="WebKitDOMHTMLMenuElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_menu_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -4972,7 +5014,7 @@
       <property name="Compact" cname="compact" type="gboolean" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLMetaElement" cname="WebKitDOMHTMLMetaElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLMetaElement" cname="WebKitDOMHTMLMetaElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_meta_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -5018,7 +5060,7 @@
       <property name="Scheme" cname="scheme" type="gchar*" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLModElement" cname="WebKitDOMHTMLModElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLModElement" cname="WebKitDOMHTMLModElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_mod_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -5044,7 +5086,7 @@
       <property name="DateTime" cname="date-time" type="gchar*" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLOListElement" cname="WebKitDOMHTMLOListElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLOListElement" cname="WebKitDOMHTMLOListElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_htmlo_list_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -5081,7 +5123,7 @@
       <property name="Type" cname="type" type="gchar*" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLObjectElement" cname="WebKitDOMHTMLObjectElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLObjectElement" cname="WebKitDOMHTMLObjectElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_object_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -5267,7 +5309,7 @@
       <property name="WillValidate" cname="will-validate" type="gboolean" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLOptGroupElement" cname="WebKitDOMHTMLOptGroupElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLOptGroupElement" cname="WebKitDOMHTMLOptGroupElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_opt_group_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -5293,7 +5335,7 @@
       <property name="Label" cname="label" type="gchar*" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLOptionElement" cname="WebKitDOMHTMLOptionElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLOptionElement" cname="WebKitDOMHTMLOptionElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_option_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -5361,7 +5403,7 @@
       <property name="Value" cname="value" type="gchar*" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLOptionsCollection" cname="WebKitDOMHTMLOptionsCollection" parent="WebKitDOMHTMLCollection">
+    <object name="DOMHTMLOptionsCollection" cname="WebKitDOMHTMLOptionsCollection" parent="WebKitDOMHTMLCollection" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_options_collection_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -5377,7 +5419,7 @@
       <property name="SelectedIndex" cname="selected-index" type="glong" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLCollection*"/>
     </object>
-    <object name="DOMHTMLParagraphElement" cname="WebKitDOMHTMLParagraphElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLParagraphElement" cname="WebKitDOMHTMLParagraphElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_paragraph_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -5393,7 +5435,7 @@
       <property name="Align" cname="align" type="gchar*" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLParamElement" cname="WebKitDOMHTMLParamElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLParamElement" cname="WebKitDOMHTMLParamElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_param_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -5430,7 +5472,7 @@
       <property name="ValueType" cname="value-type" type="gchar*" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLPreElement" cname="WebKitDOMHTMLPreElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLPreElement" cname="WebKitDOMHTMLPreElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_pre_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -5456,7 +5498,7 @@
       <property name="Wrap" cname="wrap" type="gboolean" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLQuoteElement" cname="WebKitDOMHTMLQuoteElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLQuoteElement" cname="WebKitDOMHTMLQuoteElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_quote_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -5472,7 +5514,7 @@
       <property name="Cite" cname="cite" type="gchar*" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLScriptElement" cname="WebKitDOMHTMLScriptElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLScriptElement" cname="WebKitDOMHTMLScriptElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_script_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -5549,7 +5591,7 @@
       <property name="Type" cname="type" type="gchar*" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLSelectElement" cname="WebKitDOMHTMLSelectElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLSelectElement" cname="WebKitDOMHTMLSelectElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_select_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -5704,7 +5746,7 @@
       <property name="WillValidate" cname="will-validate" type="gboolean" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLStyleElement" cname="WebKitDOMHTMLStyleElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLStyleElement" cname="WebKitDOMHTMLStyleElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_style_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -5744,7 +5786,7 @@
       <property name="Type" cname="type" type="gchar*" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLTableCaptionElement" cname="WebKitDOMHTMLTableCaptionElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLTableCaptionElement" cname="WebKitDOMHTMLTableCaptionElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_table_caption_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -5760,7 +5802,7 @@
       <property name="Align" cname="align" type="gchar*" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLTableCellElement" cname="WebKitDOMHTMLTableCellElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLTableCellElement" cname="WebKitDOMHTMLTableCellElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_table_cell_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -5910,7 +5952,7 @@
       <property name="Width" cname="width" type="gchar*" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLTableColElement" cname="WebKitDOMHTMLTableColElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLTableColElement" cname="WebKitDOMHTMLTableColElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_table_col_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -5976,7 +6018,7 @@
       <property name="Width" cname="width" type="gchar*" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLTableElement" cname="WebKitDOMHTMLTableElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLTableElement" cname="WebKitDOMHTMLTableElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_table_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -6140,7 +6182,7 @@
       <property name="Width" cname="width" type="gchar*" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLTableRowElement" cname="WebKitDOMHTMLTableRowElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLTableRowElement" cname="WebKitDOMHTMLTableRowElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_table_row_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -6220,7 +6262,7 @@
       <property name="VAlign" cname="v-align" type="gchar*" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLTableSectionElement" cname="WebKitDOMHTMLTableSectionElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLTableSectionElement" cname="WebKitDOMHTMLTableSectionElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_table_section_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -6282,7 +6324,7 @@
       <property name="VAlign" cname="v-align" type="gchar*" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLTextAreaElement" cname="WebKitDOMHTMLTextAreaElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLTextAreaElement" cname="WebKitDOMHTMLTextAreaElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_text_area_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -6496,7 +6538,7 @@
       <property name="Wrap" cname="wrap" type="gchar*" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLTitleElement" cname="WebKitDOMHTMLTitleElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLTitleElement" cname="WebKitDOMHTMLTitleElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_title_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -6512,7 +6554,7 @@
       <property name="Text" cname="text" type="gchar*" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLUListElement" cname="WebKitDOMHTMLUListElement" parent="WebKitDOMHTMLElement">
+    <object name="DOMHTMLUListElement" cname="WebKitDOMHTMLUListElement" parent="WebKitDOMHTMLElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_htmlu_list_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -6529,7 +6571,7 @@
       <property name="Type" cname="type" type="gchar*" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLElement*"/>
     </object>
-    <object name="DOMHTMLVideoElement" cname="WebKitDOMHTMLVideoElement" parent="WebKitDOMHTMLMediaElement">
+    <object name="DOMHTMLVideoElement" cname="WebKitDOMHTMLVideoElement" parent="WebKitDOMHTMLMediaElement" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_html_video_element_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -6599,7 +6641,7 @@
       <property name="Width" cname="width" type="gulong" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMHTMLMediaElement*"/>
     </object>
-    <object name="DOMHistory" cname="WebKitDOMHistory" parent="WebKitDOMObject">
+    <object name="DOMHistory" cname="WebKitDOMHistory" parent="WebKitDOMObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_history_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -6621,7 +6663,7 @@
       <property name="Length" cname="length" type="gulong" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMObject*"/>
     </object>
-    <object name="DOMLocation" cname="WebKitDOMLocation" parent="WebKitDOMObject">
+    <object name="DOMLocation" cname="WebKitDOMLocation" parent="WebKitDOMObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_location_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -6631,7 +6673,7 @@
       <property name="Origin" cname="origin" type="gchar*" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMObject*"/>
     </object>
-    <object name="DOMMediaError" cname="WebKitDOMMediaError" parent="WebKitDOMObject">
+    <object name="DOMMediaError" cname="WebKitDOMMediaError" parent="WebKitDOMObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_media_error_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -6641,7 +6683,7 @@
       <property name="Code" cname="code" type="guint" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMObject*"/>
     </object>
-    <object name="DOMMediaList" cname="WebKitDOMMediaList" parent="WebKitDOMObject">
+    <object name="DOMMediaList" cname="WebKitDOMMediaList" parent="WebKitDOMObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_media_list_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -6679,7 +6721,7 @@
       <property name="MediaText" cname="media-text" type="gchar*" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMObject*"/>
     </object>
-    <object name="DOMMediaQueryList" cname="WebKitDOMMediaQueryList" parent="WebKitDOMObject">
+    <object name="DOMMediaQueryList" cname="WebKitDOMMediaQueryList" parent="WebKitDOMObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_media_query_list_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -6693,7 +6735,7 @@
       <property name="Media" cname="media" type="gchar*" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMObject*"/>
     </object>
-    <object name="DOMMemoryInfo" cname="WebKitDOMMemoryInfo" parent="WebKitDOMObject">
+    <object name="DOMMemoryInfo" cname="WebKitDOMMemoryInfo" parent="WebKitDOMObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_memory_info_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -6711,13 +6753,13 @@
       <property name="UsedJsHeapSize" cname="used-js-heap-size" type="gulong" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMObject*"/>
     </object>
-    <object name="DOMMessagePort" cname="WebKitDOMMessagePort" parent="WebKitDOMObject">
+    <object name="DOMMessagePort" cname="WebKitDOMMessagePort" parent="WebKitDOMObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_message_port_get_type" shared="true">
         <return-type type="GType"/>
       </method>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMObject*"/>
     </object>
-    <object name="DOMMouseEvent" cname="WebKitDOMMouseEvent" parent="WebKitDOMUIEvent">
+    <object name="DOMMouseEvent" cname="WebKitDOMMouseEvent" parent="WebKitDOMUIEvent" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_mouse_event_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -6813,7 +6855,7 @@
       <property name="Y" cname="y" type="glong" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMUIEvent*"/>
     </object>
-    <object name="DOMNamedNodeMap" cname="WebKitDOMNamedNodeMap" parent="WebKitDOMObject">
+    <object name="DOMNamedNodeMap" cname="WebKitDOMNamedNodeMap" parent="WebKitDOMObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_named_node_map_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -6867,7 +6909,7 @@
       <property name="Length" cname="length" type="gulong" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMObject*"/>
     </object>
-    <object name="DOMNavigator" cname="WebKitDOMNavigator" parent="WebKitDOMObject">
+    <object name="DOMNavigator" cname="WebKitDOMNavigator" parent="WebKitDOMObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_navigator_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -6939,7 +6981,7 @@
       <property name="VendorSub" cname="vendor-sub" type="gchar*" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMObject*"/>
     </object>
-    <object name="DOMNode" cname="WebKitDOMNode" parent="WebKitDOMObject">
+    <object name="DOMNode" cname="WebKitDOMNode" parent="WebKitDOMObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_node_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -7127,7 +7169,7 @@
       <property name="TextContent" cname="text-content" type="gchar*" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMObject*"/>
     </object>
-    <object name="DOMNodeFilter" cname="WebKitDOMNodeFilter" parent="WebKitDOMObject">
+    <object name="DOMNodeFilter" cname="WebKitDOMNodeFilter" parent="WebKitDOMObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_node_filter_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -7139,7 +7181,7 @@
       </method>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMObject*"/>
     </object>
-    <object name="DOMNodeIterator" cname="WebKitDOMNodeIterator" parent="WebKitDOMObject">
+    <object name="DOMNodeIterator" cname="WebKitDOMNodeIterator" parent="WebKitDOMObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_node_iterator_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -7178,7 +7220,7 @@
       <property name="WhatToShow" cname="what-to-show" type="gulong" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMObject*"/>
     </object>
-    <object name="DOMNodeList" cname="WebKitDOMNodeList" parent="WebKitDOMObject">
+    <object name="DOMNodeList" cname="WebKitDOMNodeList" parent="WebKitDOMObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_node_list_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -7194,7 +7236,7 @@
       <property name="Length" cname="length" type="gulong" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMObject*"/>
     </object>
-    <object name="DOMObject" cname="WebKitDOMObject" parent="GObject">
+    <object name="DOMObject" cname="WebKitDOMObject" parent="GObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_object_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -7202,7 +7244,7 @@
       <field cname="parentInstance" name="ParentInstance" type="GObject*"/>
       <field cname="coreObject" name="CoreObject" type="gpointer"/>
     </object>
-    <object name="DOMProcessingInstruction" cname="WebKitDOMProcessingInstruction" parent="WebKitDOMNode">
+    <object name="DOMProcessingInstruction" cname="WebKitDOMProcessingInstruction" parent="WebKitDOMNode" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_processing_instruction_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -7226,7 +7268,7 @@
       <property name="Target" cname="target" type="gchar*" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMNode*"/>
     </object>
-    <object name="DOMRange" cname="WebKitDOMRange" parent="WebKitDOMObject">
+    <object name="DOMRange" cname="WebKitDOMRange" parent="WebKitDOMObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_range_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -7391,7 +7433,7 @@
       <property name="Text" cname="text" type="gchar*" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMObject*"/>
     </object>
-    <object name="DOMScreen" cname="WebKitDOMScreen" parent="WebKitDOMObject">
+    <object name="DOMScreen" cname="WebKitDOMScreen" parent="WebKitDOMObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_screen_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -7429,7 +7471,7 @@
       <property name="Width" cname="width" type="gulong" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMObject*"/>
     </object>
-    <object name="DOMStorage" cname="WebKitDOMStorage" parent="WebKitDOMObject">
+    <object name="DOMStorage" cname="WebKitDOMStorage" parent="WebKitDOMObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_storage_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -7467,7 +7509,7 @@
       <property name="Length" cname="length" type="gulong" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMObject*"/>
     </object>
-    <object name="DOMStyleMedia" cname="WebKitDOMStyleMedia" parent="WebKitDOMObject">
+    <object name="DOMStyleMedia" cname="WebKitDOMStyleMedia" parent="WebKitDOMObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_style_media_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -7480,7 +7522,7 @@
       <property name="Type" cname="type" type="gchar*" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMObject*"/>
     </object>
-    <object name="DOMStyleSheet" cname="WebKitDOMStyleSheet" parent="WebKitDOMObject">
+    <object name="DOMStyleSheet" cname="WebKitDOMStyleSheet" parent="WebKitDOMObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_style_sheet_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -7517,7 +7559,7 @@
       <property name="Type" cname="type" type="gchar*" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMObject*"/>
     </object>
-    <object name="DOMStyleSheetList" cname="WebKitDOMStyleSheetList" parent="WebKitDOMObject">
+    <object name="DOMStyleSheetList" cname="WebKitDOMStyleSheetList" parent="WebKitDOMObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_style_sheet_list_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -7533,7 +7575,7 @@
       <property name="Length" cname="length" type="gulong" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMObject*"/>
     </object>
-    <object name="DOMText" cname="WebKitDOMText" parent="WebKitDOMCharacterData">
+    <object name="DOMText" cname="WebKitDOMText" parent="WebKitDOMCharacterData" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_text_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -7555,7 +7597,7 @@
       <property name="WholeText" cname="whole-text" type="gchar*" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMCharacterData*"/>
     </object>
-    <object name="DOMTimeRanges" cname="WebKitDOMTimeRanges" parent="WebKitDOMObject">
+    <object name="DOMTimeRanges" cname="WebKitDOMTimeRanges" parent="WebKitDOMObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_time_ranges_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -7577,7 +7619,7 @@
       <property name="Length" cname="length" type="gulong" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMObject*"/>
     </object>
-    <object name="DOMTreeWalker" cname="WebKitDOMTreeWalker" parent="WebKitDOMObject">
+    <object name="DOMTreeWalker" cname="WebKitDOMTreeWalker" parent="WebKitDOMObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_tree_walker_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -7630,7 +7672,7 @@
       <property name="WhatToShow" cname="what-to-show" type="gulong" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMObject*"/>
     </object>
-    <object name="DOMUIEvent" cname="WebKitDOMUIEvent" parent="WebKitDOMEvent">
+    <object name="DOMUIEvent" cname="WebKitDOMUIEvent" parent="WebKitDOMEvent" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_ui_event_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -7682,7 +7724,7 @@
       <property name="Which" cname="which" type="glong" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMEvent*"/>
     </object>
-    <object name="DOMValidityState" cname="WebKitDOMValidityState" parent="WebKitDOMObject">
+    <object name="DOMValidityState" cname="WebKitDOMValidityState" parent="WebKitDOMObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_validity_state_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -7724,7 +7766,7 @@
       <property name="ValueMissing" cname="value-missing" type="gboolean" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMObject*"/>
     </object>
-    <object name="DOMWebKitAnimation" cname="WebKitDOMWebKitAnimation" parent="WebKitDOMObject">
+    <object name="DOMWebKitAnimation" cname="WebKitDOMWebKitAnimation" parent="WebKitDOMObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_webkit_animation_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -7774,7 +7816,7 @@
       <property name="Paused" cname="paused" type="gboolean" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMObject*"/>
     </object>
-    <object name="DOMWebKitAnimationList" cname="WebKitDOMWebKitAnimationList" parent="WebKitDOMObject">
+    <object name="DOMWebKitAnimationList" cname="WebKitDOMWebKitAnimationList" parent="WebKitDOMObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_webkit_animation_list_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -7790,7 +7832,7 @@
       <property name="Length" cname="length" type="gulong" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMObject*"/>
     </object>
-    <object name="DOMWebKitNamedFlow" cname="WebKitDOMWebKitNamedFlow" parent="WebKitDOMObject">
+    <object name="DOMWebKitNamedFlow" cname="WebKitDOMWebKitNamedFlow" parent="WebKitDOMObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_webkit_named_flow_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -7800,7 +7842,7 @@
       <property name="Overflow" cname="overflow" type="gboolean" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMObject*"/>
     </object>
-    <object name="DOMWebKitPoint" cname="WebKitDOMWebKitPoint" parent="WebKitDOMObject">
+    <object name="DOMWebKitPoint" cname="WebKitDOMWebKitPoint" parent="WebKitDOMObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_webkit_point_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -7826,7 +7868,7 @@
       <property name="Y" cname="y" type="gfloat" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMObject*"/>
     </object>
-    <object name="DOMXPathExpression" cname="WebKitDOMXPathExpression" parent="WebKitDOMObject">
+    <object name="DOMXPathExpression" cname="WebKitDOMXPathExpression" parent="WebKitDOMObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_xpath_expression_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -7840,7 +7882,7 @@
       </method>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMObject*"/>
     </object>
-    <object name="DOMXPathNSResolver" cname="WebKitDOMXPathNSResolver" parent="WebKitDOMObject">
+    <object name="DOMXPathNSResolver" cname="WebKitDOMXPathNSResolver" parent="WebKitDOMObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_xpath_ns_resolver_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -7852,7 +7894,7 @@
       </method>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMObject*"/>
     </object>
-    <object name="DOMXPathResult" cname="WebKitDOMXPathResult" parent="WebKitDOMObject">
+    <object name="DOMXPathResult" cname="WebKitDOMXPathResult" parent="WebKitDOMObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_dom_xpath_result_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -7895,7 +7937,7 @@
       <property name="StringValue" cname="string-value" type="gchar*" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="WebKitDOMObject*"/>
     </object>
-    <object name="Download" cname="WebKitDownload" parent="GObject">
+    <object name="Download" cname="WebKitDownload" parent="GObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_download_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -7968,24 +8010,7 @@
         </parameters>
       </signal>
     </object>
-    <enum name="DownloadError" cname="WebKitDownloadError" gtype="webkit_download_error_get_type" type="enum">
-      <member cname="WEBKIT_DOWNLOAD_ERROR_CANCELLED_BY_USER" name="CancelledByUser"/>
-      <member cname="WEBKIT_DOWNLOAD_ERROR_DESTINATION" name="Destination"/>
-      <member cname="WEBKIT_DOWNLOAD_ERROR_NETWORK" name="Network"/>
-    </enum>
-    <enum name="DownloadStatus" cname="WebKitDownloadStatus" gtype="webkit_download_status_get_type" type="enum">
-      <member cname="WEBKIT_DOWNLOAD_STATUS_ERROR" name="Error"/>
-      <member cname="WEBKIT_DOWNLOAD_STATUS_CREATED" name="Created"/>
-      <member cname="WEBKIT_DOWNLOAD_STATUS_STARTED" name="Started"/>
-      <member cname="WEBKIT_DOWNLOAD_STATUS_CANCELLED" name="Cancelled"/>
-      <member cname="WEBKIT_DOWNLOAD_STATUS_FINISHED" name="Finished"/>
-    </enum>
-    <enum name="EditingBehavior" cname="WebKitEditingBehavior" gtype="webkit_editing_behavior_get_type" type="enum">
-      <member cname="WEBKIT_EDITING_BEHAVIOR_MAC" name="Mac"/>
-      <member cname="WEBKIT_EDITING_BEHAVIOR_WINDOWS" name="Windows"/>
-      <member cname="WEBKIT_EDITING_BEHAVIOR_UNIX" name="Unix"/>
-    </enum>
-    <object name="FaviconDatabase" cname="WebKitFaviconDatabase" parent="GObject">
+    <object name="FaviconDatabase" cname="WebKitFaviconDatabase" parent="GObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_favicon_database_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -8042,13 +8067,13 @@
         </parameters>
       </signal>
     </object>
-    <object name="GeolocationPolicyDecision" cname="WebKitGeolocationPolicyDecision" parent="GObject">
+    <object name="GeolocationPolicyDecision" cname="WebKitGeolocationPolicyDecision" parent="GObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_geolocation_policy_decision_get_type" shared="true">
         <return-type type="GType"/>
       </method>
       <field cname="parent_instance" name="ParentInstance" type="GObject*"/>
     </object>
-    <object name="HitTestResult" cname="WebKitHitTestResult" parent="GObject">
+    <object name="HitTestResult" cname="WebKitHitTestResult" parent="GObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_hit_test_result_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -8059,15 +8084,7 @@
       <property name="MediaUri" cname="media-uri" type="gchar*" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="GObject*"/>
     </object>
-    <enum name="HitTestResultContext" cname="WebKitHitTestResultContext" type="enum" gtype="webkit_hit_test_result_context_get_type">
-      <member cname="WEBKIT_HIT_TEST_RESULT_CONTEXT_MEDIA" name="Media"/>
-      <member cname="WEBKIT_HIT_TEST_RESULT_CONTEXT_DOCUMENT" name="Document"/>
-      <member cname="WEBKIT_HIT_TEST_RESULT_CONTEXT_SELECTION" name="Selection"/>
-      <member cname="WEBKIT_HIT_TEST_RESULT_CONTEXT_LINK" name="Link"/>
-      <member cname="WEBKIT_HIT_TEST_RESULT_CONTEXT_EDITABLE" name="Editable"/>
-      <member cname="WEBKIT_HIT_TEST_RESULT_CONTEXT_IMAGE" name="Image"/>
-    </enum>
-    <object name="IconDatabase" cname="WebKitIconDatabase" parent="GObject">
+    <object name="IconDatabase" cname="WebKitIconDatabase" parent="GObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_icon_database_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -8106,31 +8123,7 @@
         </parameters>
       </signal>
     </object>
-    <enum name="InsertAction" cname="WebKitInsertAction" gtype="webkit_insert_action_get_type" type="enum">
-      <member cname="WEBKIT_INSERT_ACTION_TYPED" name="Typed"/>
-      <member cname="WEBKIT_INSERT_ACTION_PASTED" name="Pasted"/>
-      <member cname="WEBKIT_INSERT_ACTION_DROPPED" name="Dropped"/>
-    </enum>
-    <enum name="LoadStatus" cname="WebKitLoadStatus" gtype="webkit_load_status_get_type" type="enum">
-      <member cname="WEBKIT_LOAD_PROVISIONAL" name="Provisional"/>
-      <member cname="WEBKIT_LOAD_COMMITTED" name="Committed"/>
-      <member cname="WEBKIT_LOAD_FINISHED" name="Finished"/>
-      <member cname="WEBKIT_LOAD_FIRST_VISUALLY_NON_EMPTY_LAYOUT" name="FirstVisuallyNonEmptyLayout"/>
-      <member cname="WEBKIT_LOAD_FAILED" name="Failed"/>
-    </enum>
-    <enum name="NavigationResponse" cname="WebKitNavigationResponse" gtype="webkit_navigation_response_get_type" type="enum">
-      <member cname="WEBKIT_NAVIGATION_RESPONSE_ACCEPT" name="Accept"/>
-      <member cname="WEBKIT_NAVIGATION_RESPONSE_IGNORE" name="Ignore"/>
-      <member cname="WEBKIT_NAVIGATION_RESPONSE_DOWNLOAD" name="Download"/>
-    </enum>
-    <enum name="NetworkError" cname="WebKitNetworkError" gtype="webkit_network_error_get_type" type="enum">
-      <member cname="WEBKIT_NETWORK_ERROR_TRANSPORT" name="Transport"/>
-      <member cname="WEBKIT_NETWORK_ERROR_UNKNOWN_PROTOCOL" name="UnknownProtocol"/>
-      <member cname="WEBKIT_NETWORK_ERROR_CANCELLED" name="Cancelled"/>
-      <member cname="WEBKIT_NETWORK_ERROR_FILE_DOES_NOT_EXIST" name="FileDoesNotExist"/>
-      <member cname="WEBKIT_NETWORK_ERROR_FAILED" name="Failed"/>
-    </enum>
-    <object name="NetworkRequest" cname="WebKitNetworkRequest" parent="GObject">
+    <object name="NetworkRequest" cname="WebKitNetworkRequest" parent="GObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_network_request_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -8155,7 +8148,7 @@
       <property name="Uri" cname="uri" type="gchar*" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="GObject*"/>
     </object>
-    <object name="NetworkResponse" cname="WebKitNetworkResponse" parent="GObject">
+    <object name="NetworkResponse" cname="WebKitNetworkResponse" parent="GObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_network_response_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -8180,22 +8173,7 @@
       <property name="Uri" cname="uri" type="gchar*" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="GObject*"/>
     </object>
-    <enum name="PluginError" cname="WebKitPluginError" gtype="webkit_plugin_error_get_type" type="enum">
-      <member cname="WEBKIT_PLUGIN_ERROR_CANNOT_FIND_PLUGIN" name="CannotFindPlugin"/>
-      <member cname="WEBKIT_PLUGIN_ERROR_CANNOT_LOAD_PLUGIN" name="CannotLoadPlugin"/>
-      <member cname="WEBKIT_PLUGIN_ERROR_JAVA_UNAVAILABLE" name="JavaUnavailable"/>
-      <member cname="WEBKIT_PLUGIN_ERROR_CONNECTION_CANCELLED" name="ConnectionCancelled"/>
-      <member cname="WEBKIT_PLUGIN_ERROR_WILL_HANDLE_LOAD" name="WillHandleLoad"/>
-      <member cname="WEBKIT_PLUGIN_ERROR_FAILED" name="Failed"/>
-    </enum>
-    <enum name="PolicyError" cname="WebKitPolicyError" gtype="webkit_policy_error_get_type" type="enum">
-      <member cname="WEBKIT_POLICY_ERROR_CANNOT_SHOW_MIME_TYPE" name="CannotShowMimeType"/>
-      <member cname="WEBKIT_POLICY_ERROR_CANNOT_SHOW_URL" name="CannotShowUrl"/>
-      <member cname="WEBKIT_POLICY_ERROR_FRAME_LOAD_INTERRUPTED_BY_POLICY_CHANGE" name="FrameLoadInterruptedByPolicyChange"/>
-      <member cname="WEBKIT_POLICY_ERROR_CANNOT_USE_RESTRICTED_PORT" name="CannotUseRestrictedPort"/>
-      <member cname="WEBKIT_POLICY_ERROR_FAILED" name="Failed"/>
-    </enum>
-    <object name="SecurityOrigin" cname="WebKitSecurityOrigin" parent="GObject">
+    <object name="SecurityOrigin" cname="WebKitSecurityOrigin" parent="GObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_security_origin_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -8232,103 +8210,20 @@
       <property name="WebDatabaseUsage" cname="web-database-usage" type="guint64" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="GObject*"/>
     </object>
-    <enum name="SelectionAffinity" cname="WebKitSelectionAffinity" gtype="webkit_selection_affinity_get_type" type="enum">
-      <member cname="WEBKIT_SELECTION_AFFINITY_UPSTREAM" name="Upstream"/>
-      <member cname="WEBKIT_SELECTION_AFFINITY_DOWNSTREAM" name="Downstream"/>
-    </enum>
-    <object name="SoupAuthDialog" cname="WebKitSoupAuthDialog" parent="GObject">
+    <object name="SoupAuthDialog" cname="WebKitSoupAuthDialog" parent="GObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_soup_auth_dialog_get_type" shared="true">
         <return-type type="GType"/>
       </method>
       <virtual_method name="CurrentToplevel" cname="current_toplevel">
         <return-type type="GtkWidget*"/>
         <parameters>
+          <parameter name="soup_auth_dialog" type="WebKitSoupAuthDialog*"/>
           <parameter name="message" type="SoupMessage*"/>
         </parameters>
       </virtual_method>
       <field cname="parent_instance" name="ParentInstance" type="GObject*"/>
     </object>
-    <interface name="SpellChecker" cname="WebKitSpellChecker">
-      <virtual_method name="CheckSpellingOfString" cname="check_spelling_of_string">
-        <return-type type="void"/>
-        <parameters>
-          <parameter name="word" type="const-gchar*"/>
-          <parameter name="misspelling_location" type="gint"/>
-          <parameter name="misspelling_length" type="gint"/>
-        </parameters>
-      </virtual_method>
-      <virtual_method name="GetAutocorrectSuggestionsForMisspelledWord" cname="get_autocorrect_suggestions_for_misspelled_word">
-        <return-type type="gchar*"/>
-        <parameters>
-          <parameter name="word" type="const-gchar*"/>
-        </parameters>
-      </virtual_method>
-      <virtual_method name="GetGuessesForWord" cname="get_guesses_for_word">
-        <return-type type="char**" array="true"/>
-        <parameters>
-          <parameter name="word" type="const-gchar*"/>
-          <parameter name="context" type="const-gchar*"/>
-        </parameters>
-      </virtual_method>
-      <virtual_method name="IgnoreWord" cname="ignore_word">
-        <return-type type="void"/>
-        <parameters>
-          <parameter name="word" type="const-gchar*"/>
-        </parameters>
-      </virtual_method>
-      <virtual_method name="LearnWord" cname="learn_word">
-        <return-type type="void"/>
-        <parameters>
-          <parameter name="word" type="const-gchar*"/>
-        </parameters>
-      </virtual_method>
-      <virtual_method name="UpdateSpellCheckingLanguages" cname="update_spell_checking_languages">
-        <return-type type="void"/>
-        <parameters>
-          <parameter name="languages" type="const-gchar*"/>
-        </parameters>
-      </virtual_method>
-      <method name="CheckSpellingOfString" cname="webkit_spell_checker_check_spelling_of_string">
-        <return-type type="void"/>
-        <parameters>
-          <parameter name="string" type="const-gchar*"/>
-          <parameter name="misspelling_location" type="gint"/>
-          <parameter name="misspelling_length" type="gint"/>
-        </parameters>
-      </method>
-      <method name="GetAutocorrectSuggestionsForMisspelledWord" cname="webkit_spell_checker_get_autocorrect_suggestions_for_misspelled_word">
-        <return-type type="gchar*"/>
-        <parameters>
-          <parameter name="word" type="const-gchar*"/>
-        </parameters>
-      </method>
-      <method name="GetGuessesForWord" cname="webkit_spell_checker_get_guesses_for_word">
-        <return-type type="char**" array="true"/>
-        <parameters>
-          <parameter name="word" type="const-gchar*"/>
-          <parameter name="context" type="const-gchar*"/>
-        </parameters>
-      </method>
-      <method name="IgnoreWord" cname="webkit_spell_checker_ignore_word">
-        <return-type type="void"/>
-        <parameters>
-          <parameter name="word" type="const-gchar*"/>
-        </parameters>
-      </method>
-      <method name="LearnWord" cname="webkit_spell_checker_learn_word">
-        <return-type type="void"/>
-        <parameters>
-          <parameter name="word" type="const-gchar*"/>
-        </parameters>
-      </method>
-      <method name="UpdateSpellCheckingLanguages" cname="webkit_spell_checker_update_spell_checking_languages">
-        <return-type type="void"/>
-        <parameters>
-          <parameter name="languages" type="const-gchar*"/>
-        </parameters>
-      </method>
-    </interface>
-    <object name="ViewportAttributes" cname="WebKitViewportAttributes" parent="GObject">
+    <object name="ViewportAttributes" cname="WebKitViewportAttributes" parent="GObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_viewport_attributes_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -8351,7 +8246,7 @@
       <property name="Width" cname="width" type="gint" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="GObject*"/>
     </object>
-    <object name="WebBackForwardList" cname="WebKitWebBackForwardList" parent="GObject">
+    <object name="WebBackForwardList" cname="WebKitWebBackForwardList" parent="GObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_web_back_forward_list_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -8435,7 +8330,7 @@
       </method>
       <field cname="parent_instance" name="ParentInstance" type="GObject*"/>
     </object>
-    <object name="WebDataSource" cname="WebKitWebDataSource" parent="GObject">
+    <object name="WebDataSource" cname="WebKitWebDataSource" parent="GObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_web_data_source_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -8478,7 +8373,7 @@
       </method>
       <field cname="parent_instance" name="ParentInstance" type="GObject*"/>
     </object>
-    <object name="WebDatabase" cname="WebKitWebDatabase" parent="GObject">
+    <object name="WebDatabase" cname="WebKitWebDatabase" parent="GObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_web_database_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -8511,7 +8406,7 @@
       <property name="Size" cname="size" type="guint64" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="GObject*"/>
     </object>
-    <object name="WebFrame" cname="WebKitWebFrame" parent="GObject">
+    <object name="WebFrame" cname="WebKitWebFrame" parent="GObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_web_frame_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -8707,7 +8602,7 @@
         </parameters>
       </signal>
     </object>
-    <object name="WebHistoryItem" cname="WebKitWebHistoryItem" parent="GObject">
+    <object name="WebHistoryItem" cname="WebKitWebHistoryItem" parent="GObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_web_history_item_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -8749,7 +8644,7 @@
       <property name="Uri" cname="uri" type="gchar*" readable="true" writable="false"/>
       <field cname="parent_instance" name="ParentInstance" type="GObject*"/>
     </object>
-    <object name="WebInspector" cname="WebKitWebInspector" parent="GObject">
+    <object name="WebInspector" cname="WebKitWebInspector" parent="GObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_web_inspector_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -8824,7 +8719,7 @@
         </parameters>
       </signal>
     </object>
-    <object name="WebNavigationAction" cname="WebKitWebNavigationAction" parent="GObject">
+    <object name="WebNavigationAction" cname="WebKitWebNavigationAction" parent="GObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_web_navigation_action_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -8862,15 +8757,7 @@
       <property name="TargetFrame" cname="target-frame" type="gchar*" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="GObject*"/>
     </object>
-    <enum name="WebNavigationReason" cname="WebKitWebNavigationReason" gtype="webkit_web_navigation_reason_get_type" type="enum">
-      <member cname="WEBKIT_WEB_NAVIGATION_REASON_LINK_CLICKED" name="LinkClicked"/>
-      <member cname="WEBKIT_WEB_NAVIGATION_REASON_FORM_SUBMITTED" name="FormSubmitted"/>
-      <member cname="WEBKIT_WEB_NAVIGATION_REASON_BACK_FORWARD" name="BackForward"/>
-      <member cname="WEBKIT_WEB_NAVIGATION_REASON_RELOAD" name="Reload"/>
-      <member cname="WEBKIT_WEB_NAVIGATION_REASON_FORM_RESUBMITTED" name="FormResubmitted"/>
-      <member cname="WEBKIT_WEB_NAVIGATION_REASON_OTHER" name="Other"/>
-    </enum>
-    <object name="WebPlugin" cname="WebKitWebPlugin" parent="GObject">
+    <object name="WebPlugin" cname="WebKitWebPlugin" parent="GObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_web_plugin_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -8903,7 +8790,7 @@
         <warning>missing glib:type-name</warning>
       </field>
     </object>
-    <object name="WebPluginDatabase" cname="WebKitWebPluginDatabase" parent="GObject">
+    <object name="WebPluginDatabase" cname="WebKitWebPluginDatabase" parent="GObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_web_plugin_database_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -8934,7 +8821,7 @@
         <warning>missing glib:type-name</warning>
       </field>
     </object>
-    <object name="WebPolicyDecision" cname="WebKitWebPolicyDecision" parent="GObject">
+    <object name="WebPolicyDecision" cname="WebKitWebPolicyDecision" parent="GObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_web_policy_decision_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -8949,7 +8836,7 @@
       </method>
       <field cname="parent_instance" name="ParentInstance" type="GObject*"/>
     </object>
-    <object name="WebResource" cname="WebKitWebResource" parent="GObject">
+    <object name="WebResource" cname="WebKitWebResource" parent="GObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_web_resource_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -9013,7 +8900,7 @@
         </parameters>
       </signal>
     </object>
-    <object name="WebSettings" cname="WebKitWebSettings" parent="GObject">
+    <object name="WebSettings" cname="WebKitWebSettings" parent="GObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_web_settings_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -9077,7 +8964,7 @@
       <property name="ZoomStep" cname="zoom-step" type="gfloat" readable="true" writable="true"/>
       <field cname="parent_instance" name="ParentInstance" type="GObject*"/>
     </object>
-    <object name="WebView" cname="WebKitWebView" parent="GtkContainer">
+    <object name="WebView" cname="WebKitWebView" parent="GtkContainer" abstract="" opaque="">
       <method name="GetType" cname="webkit_web_view_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -9085,6 +8972,7 @@
       <virtual_method name="ChooseFile" cname="choose_file">
         <return-type type="gchar*"/>
         <parameters>
+          <parameter name="web_view" type="WebKitWebView*"/>
           <parameter name="frame" type="WebKitWebFrame*"/>
           <parameter name="old_file" type="const-gchar*"/>
         </parameters>
@@ -9095,6 +8983,7 @@
       <virtual_method name="ConsoleMessage" cname="console_message">
         <return-type type="gboolean"/>
         <parameters>
+          <parameter name="web_view" type="WebKitWebView*"/>
           <parameter name="message" type="const-gchar*"/>
           <parameter name="line_number" type="guint"/>
           <parameter name="source_id" type="const-gchar*"/>
@@ -9106,6 +8995,7 @@
       <virtual_method name="CreateWebView" cname="create_web_view">
         <return-type type="WebKitWebView*"/>
         <parameters>
+          <parameter name="web_view" type="WebKitWebView*"/>
           <parameter name="web_frame" type="WebKitWebFrame*"/>
         </parameters>
       </virtual_method>
@@ -9115,6 +9005,7 @@
       <virtual_method name="MoveCursor" cname="move_cursor">
         <return-type type="gboolean"/>
         <parameters>
+          <parameter name="web_view" type="WebKitWebView*"/>
           <parameter name="step" type="GtkMovementStep"/>
           <parameter name="count" type="gint"/>
         </parameters>
@@ -9122,6 +9013,7 @@
       <virtual_method name="NavigationRequested" cname="navigation_requested">
         <return-type type="WebKitNavigationResponse"/>
         <parameters>
+          <parameter name="web_view" type="WebKitWebView*"/>
           <parameter name="frame" type="WebKitWebFrame*"/>
           <parameter name="request" type="WebKitNetworkRequest*"/>
         </parameters>
@@ -9135,6 +9027,7 @@
       <virtual_method name="ScriptAlert" cname="script_alert">
         <return-type type="gboolean"/>
         <parameters>
+          <parameter name="web_view" type="WebKitWebView*"/>
           <parameter name="frame" type="WebKitWebFrame*"/>
           <parameter name="alert_message" type="const-gchar*"/>
         </parameters>
@@ -9142,6 +9035,7 @@
       <virtual_method name="ScriptConfirm" cname="script_confirm">
         <return-type type="gboolean"/>
         <parameters>
+          <parameter name="web_view" type="WebKitWebView*"/>
           <parameter name="frame" type="WebKitWebFrame*"/>
           <parameter name="confirm_message" type="const-gchar*"/>
           <parameter name="did_confirm" type="gboolean"/>
@@ -9150,6 +9044,7 @@
       <virtual_method name="ScriptPrompt" cname="script_prompt">
         <return-type type="gboolean"/>
         <parameters>
+          <parameter name="web_view" type="WebKitWebView*"/>
           <parameter name="frame" type="WebKitWebFrame*"/>
           <parameter name="message" type="const-gchar*"/>
           <parameter name="default_value" type="const-gchar*"/>
@@ -9162,6 +9057,7 @@
       <virtual_method name="SetScrollAdjustments" cname="set_scroll_adjustments">
         <return-type type="void"/>
         <parameters>
+          <parameter name="web_view" type="WebKitWebView*"/>
           <parameter name="hadjustment" type="GtkAdjustment*"/>
           <parameter name="vadjustment" type="GtkAdjustment*"/>
         </parameters>
@@ -9178,6 +9074,7 @@
       <virtual_method name="WindowObjectCleared" cname="window_object_cleared">
         <return-type type="void"/>
         <parameters>
+          <parameter name="web_view" type="WebKitWebView*"/>
           <parameter name="frame" type="WebKitWebFrame*"/>
           <parameter name="context" type="JSGlobalContextRef"/>
           <parameter name="window_object" type="JSObjectRef"/>
@@ -9837,21 +9734,7 @@
         </parameters>
       </signal>
     </object>
-    <enum name="WebViewTargetInfo" cname="WebKitWebViewTargetInfo" gtype="webkit_web_view_target_info_get_type" type="enum">
-      <member cname="WEBKIT_WEB_VIEW_TARGET_INFO_HTML" name="Html"/>
-      <member cname="WEBKIT_WEB_VIEW_TARGET_INFO_TEXT" name="Text"/>
-      <member cname="WEBKIT_WEB_VIEW_TARGET_INFO_IMAGE" name="Image"/>
-      <member cname="WEBKIT_WEB_VIEW_TARGET_INFO_URI_LIST" name="UriList"/>
-      <member cname="WEBKIT_WEB_VIEW_TARGET_INFO_NETSCAPE_URL" name="NetscapeUrl"/>
-    </enum>
-    <enum name="WebViewViewMode" cname="WebKitWebViewViewMode" gtype="webkit_web_view_view_mode_get_type" type="enum">
-      <member cname="WEBKIT_WEB_VIEW_VIEW_MODE_WINDOWED" name="Windowed"/>
-      <member cname="WEBKIT_WEB_VIEW_VIEW_MODE_FLOATING" name="Floating"/>
-      <member cname="WEBKIT_WEB_VIEW_VIEW_MODE_FULLSCREEN" name="Fullscreen"/>
-      <member cname="WEBKIT_WEB_VIEW_VIEW_MODE_MAXIMIZED" name="Maximized"/>
-      <member cname="WEBKIT_WEB_VIEW_VIEW_MODE_MINIMIZED" name="Minimized"/>
-    </enum>
-    <object name="WebWindowFeatures" cname="WebKitWebWindowFeatures" parent="GObject">
+    <object name="WebWindowFeatures" cname="WebKitWebWindowFeatures" parent="GObject" abstract="" opaque="">
       <method name="GetType" cname="webkit_web_window_features_get_type" shared="true">
         <return-type type="GType"/>
       </method>
@@ -9879,107 +9762,6 @@
       <field cname="description" name="Description" type="gchar*"/>
       <field cname="extensions" name="Extensions" type="gchar*"/>
     </struct>
-    <method name="ApplicationCacheGetDatabaseDirectoryPath" cname="webkit_application_cache_get_database_directory_path" shared="true">
-      <return-type type="const-gchar*"/>
-    </method>
-    <method name="ApplicationCacheGetMaximumSize" cname="webkit_application_cache_get_maximum_size" shared="true">
-      <return-type type="unsigned long long"/>
-    </method>
-    <method name="ApplicationCacheSetMaximumSize" cname="webkit_application_cache_set_maximum_size" shared="true">
-      <return-type type="void"/>
-      <parameters>
-        <parameter name="size" type="unsigned long long"/>
-      </parameters>
-    </method>
-    <method name="CheckVersion" cname="webkit_check_version" shared="true">
-      <return-type type="gboolean"/>
-      <parameters>
-        <parameter name="major" type="guint"/>
-        <parameter name="minor" type="guint"/>
-        <parameter name="micro" type="guint"/>
-      </parameters>
-    </method>
-    <method name="GeolocationPolicyAllow" cname="webkit_geolocation_policy_allow" shared="true">
-      <return-type type="void"/>
-      <parameters>
-        <parameter name="decision" type="WebKitGeolocationPolicyDecision*"/>
-      </parameters>
-    </method>
-    <method name="GeolocationPolicyDeny" cname="webkit_geolocation_policy_deny" shared="true">
-      <return-type type="void"/>
-      <parameters>
-        <parameter name="decision" type="WebKitGeolocationPolicyDecision*"/>
-      </parameters>
-    </method>
-    <method name="GetCacheModel" cname="webkit_get_cache_model" shared="true">
-      <return-type type="WebKitCacheModel"/>
-    </method>
-    <method name="GetDefaultSession" cname="webkit_get_default_session" shared="true">
-      <return-type type="SoupSession*"/>
-    </method>
-    <method name="GetDefaultWebDatabaseQuota" cname="webkit_get_default_web_database_quota" shared="true">
-      <return-type type="guint64"/>
-    </method>
-    <method name="GetFaviconDatabase" cname="webkit_get_favicon_database" shared="true">
-      <return-type type="WebKitFaviconDatabase*"/>
-    </method>
-    <method name="GetIconDatabase" cname="webkit_get_icon_database" shared="true">
-      <return-type type="WebKitIconDatabase*"/>
-    </method>
-    <method name="GetTextChecker" cname="webkit_get_text_checker" shared="true">
-      <return-type type="GObject*"/>
-    </method>
-    <method name="GetWebDatabaseDirectoryPath" cname="webkit_get_web_database_directory_path" shared="true">
-      <return-type type="const-gchar*"/>
-    </method>
-    <method name="GetWebPluginDatabase" cname="webkit_get_web_plugin_database" shared="true">
-      <return-type type="WebKitWebPluginDatabase*"/>
-    </method>
-    <method name="MajorVersion" cname="webkit_major_version" shared="true">
-      <return-type type="guint"/>
-    </method>
-    <method name="MicroVersion" cname="webkit_micro_version" shared="true">
-      <return-type type="guint"/>
-    </method>
-    <method name="MinorVersion" cname="webkit_minor_version" shared="true">
-      <return-type type="guint"/>
-    </method>
-    <method name="NetworkErrorQuark" cname="webkit_network_error_quark" shared="true">
-      <return-type type="guint32"/>
-    </method>
-    <method name="PluginErrorQuark" cname="webkit_plugin_error_quark" shared="true">
-      <return-type type="guint32"/>
-    </method>
-    <method name="PolicyErrorQuark" cname="webkit_policy_error_quark" shared="true">
-      <return-type type="guint32"/>
-    </method>
-    <method name="RemoveAllWebDatabases" cname="webkit_remove_all_web_databases" shared="true">
-      <return-type type="void"/>
-    </method>
-    <method name="SetCacheModel" cname="webkit_set_cache_model" shared="true">
-      <return-type type="void"/>
-      <parameters>
-        <parameter name="cache_model" type="WebKitCacheModel"/>
-      </parameters>
-    </method>
-    <method name="SetDefaultWebDatabaseQuota" cname="webkit_set_default_web_database_quota" shared="true">
-      <return-type type="void"/>
-      <parameters>
-        <parameter name="defaultQuota" type="guint64"/>
-      </parameters>
-    </method>
-    <method name="SetTextChecker" cname="webkit_set_text_checker" shared="true">
-      <return-type type="void"/>
-      <parameters>
-        <parameter name="checker" type="GObject*"/>
-      </parameters>
-    </method>
-    <method name="SetWebDatabaseDirectoryPath" cname="webkit_set_web_database_directory_path" shared="true">
-      <return-type type="void"/>
-      <parameters>
-        <parameter name="path" type="const-gchar*"/>
-      </parameters>
-    </method>
     <callback name="DispatchEvent" cname="WebKitDispatchEventFunc">
       <return-type type="void"/>
       <parameters>

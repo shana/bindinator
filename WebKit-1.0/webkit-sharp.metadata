@@ -1,4 +1,6 @@
 <?xml version="1.0"?>
 <metadata>
+	<remove-node path="//*/*/implements" />
+	<remove-node path="/api/namespace/callback[@name='GetGuessesForWord']" />
 </metadata>
 

@@ -134,6 +134,9 @@ PKG_CHECK_MODULES(WEBKIT, webkit-1.0)
 webkit_prefix=/usr
 AC_SUBST(webkit_prefix)
 
+dnl extra m4 calls
+CHECK_MONOCAIRO
+CHECK_SOUPSHARP
 
 
 AC_CONFIG_FILES([
