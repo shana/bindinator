@@ -29,9 +29,11 @@ AC_CONFIG_FILES([
 AC_CONFIG_COMMANDS([default],[[ echo timestamp > stamp-h ]],[[]])
 AC_OUTPUT
 
-echo ""
-echo "Configuration summary"
-echo "---------------------"
-echo ""
-echo "   * Installation prefix: \$prefix"
-echo ""
+cat <<EOF
+
+Configuration summary
+---------------------
+
+   * Installation prefix: ${prefix}
+
+EOF
