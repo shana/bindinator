@@ -638,6 +638,9 @@ exclude-result-prefixes="xsl exsl gir c glib"
 					</xsl:call-template>
 					</parameter>
 				</xsl:for-each>
+				<xsl:if test="@throws">
+					<parameter name="error" type="GError**" />
+				</xsl:if>
 				</parameters>
 			</xsl:if>
 		</xsl:element>
