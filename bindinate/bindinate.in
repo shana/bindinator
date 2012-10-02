@@ -2,7 +2,7 @@
 usage()
 {
 cat <<EOF
-Usage: gir [package]
+Usage: bindinate gir [package]
 	gir: gir filename to process (without extension)
 	package: name of pc file (if the gir data with the package name is wrong)
 EOF
@@ -12,6 +12,11 @@ sh_append()
 {
         printf "%s=%s\n" "$1" "$2" >> $SH
 }
+
+if [ $# -lt 1 ]; then
+	usage
+	exit 1
+fi
 
 echo "Processing $1"
 
