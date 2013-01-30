@@ -57,7 +57,7 @@ UNAME=$(echo $NS|tr '[:lower:]' '[:upper:]')
 LIB=$PACKAGE
 SOLIB=
 
-DLLMAP=$PACKAGE.dll.config
+DLLMAP=$NAME-sharp.dll.config
 CONFIGURE=configure.ac
 
 for lib in $LIBS; do
