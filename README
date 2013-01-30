@@ -12,6 +12,12 @@ Example:
 
 bindinate WebKit-1.0 webkit-1.0
 
+===== Extra cs code =====
+
+If you want to extend/add code, you can add extra source files to the sources
+list in Makefile.am
+
+===== Extra package checks =====
 
 The bindinate tool creates a directory of the same name as the supplied
 gir file name and produces the needed files for compiling a binding.

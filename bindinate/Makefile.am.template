@@ -7,9 +7,7 @@ METADATA=$(ASSEMBLY_NAME).metadata
 
 sources = 
 
-build_sources = AssemblyInfo.cs $(sources)
-
-customs = 
+build_sources = AssemblyInfo.cs custom/*.cs $(sources)
 
 CLEANFILES = $(ASSEMBLY_NAME).dll generated-stamp generated/*.cs $(API)
 
@@ -17,7 +15,7 @@ DISTCLEANFILES= AssemblyInfo.cs $(ASSEMBLY_PC).pc $(ASSEMBLY_NAME).dll.config
 
 noinst_DATA = $(ASSEMBLY_NAME).dll
 
-EXTRA_DIST = $(RAW_API) $(sources) $(customs) $(METADATA) \
+EXTRA_DIST = $(RAW_API) $(sources) $(METADATA) \
 	AssemblyInfo.cs.in \
 	$(ASSEMBLY_NAME).snk \
 	$(ASSEMBLY_NAME).dll.config.in \
@@ -33,7 +31,7 @@ $(API): $(srcdir)/$(RAW_API) $(srcdir)/$(METADATA)
 
 generated-stamp: $(API)
 	 $(GAPI_CODEGEN) --generate $(srcdir)/$(API) $(GTK_SHARP_CFLAGS) \
-	 	--outdir=generated --customdir=$(srcdir) \
+		--outdir=generated \
 	 	--assembly-name=$(ASSEMBLY_NAME) && touch generated-stamp
 
 $(ASSEMBLY_NAME).dll: $(build_sources) generated-stamp
