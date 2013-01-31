@@ -1,5 +1,3 @@
-SUBDIRS=doc
-
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = $(ASSEMBLY_PC).pc
 
