@@ -157,6 +157,9 @@ EOF
 cat >>$OUTDIR/Makefile.am <<EOF
 SUBDIRS = sources doc
 
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = $NAME-sharp-$VERSION.pc
+
 EXTRA_DIST = $NAME-sharp-$VERSION.pc.in
 DISTCLEANFILES = $NAME-sharp-$VERSION.pc
 
