@@ -1,28 +1,28 @@
-pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = $(ASSEMBLY_PC).pc
+RAW_API = $(ASSEMBLY_NAME)-api.raw
+API = $(ASSEMBLY_NAME)-api.xml
+METADATA = $(ASSEMBLY_NAME).metadata
+DLL = $(top_srcdir)/out/$(ASSEMBLY_NAME).dll
+DLLMAP = $(top_srcdir)/out/$(ASSEMBLY_NAME).dll.config
 
-RAW_API=sources/$(ASSEMBLY_NAME)-api.raw
-API=sources/$(ASSEMBLY_NAME)-api.xml
-METADATA=sources/$(ASSEMBLY_NAME).metadata
-DLL=out/$(ASSEMBLY_NAME).dll
-DLLMAP=out/$(ASSEMBLY_NAME).dll.config
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = $(PCFILE)
 
 sources = 
 
-build_sources = sources/AssemblyInfo.cs $(sources)
+build_sources = AssemblyInfo.cs $(sources)
 
 CLEANFILES = $(DLL) generated-stamp generated/*.cs $(API)
 
-DISTCLEANFILES= sources/AssemblyInfo.cs $(ASSEMBLY_PC).pc $(DLLMAP)
+DISTCLEANFILES = AssemblyInfo.cs $(DLLMAP)
 
 noinst_DATA = $(DLL)
 
-EXTRA_DIST = $(RAW_API) $(sources) $(METADATA) \
-	sources/AssemblyInfo.cs.in \
-	sources/$(ASSEMBLY_NAME).dll.config.in \
-	sources/$(ASSEMBLY_NAME)-sources.xml \
-	sources/$(ASSEMBLY_NAME).snk \
-	$(ASSEMBLY_NAME).pc.in
+EXTRA_DIST = \
+	$(RAW_API) \
+	$(sources) \
+	$(METADATA) \
+	AssemblyInfo.cs.in \
+	$(ASSEMBLY_NAME).snk
 
 all: generated-stamp $(ASSEMBLY)
 

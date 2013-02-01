@@ -136,6 +136,7 @@ cat >>$OUTDIR/$CONFIGURE <<EOF
 
 AC_CONFIG_FILES([
 	Makefile
+	sources/Makefile
 	sources/AssemblyInfo.cs
 	$NAME-sharp-$VERSION.pc
 	doc/Makefile
@@ -153,7 +154,15 @@ echo "   * Documentation: $enable_monodoc (\$MONODOC)"
 echo ""
 EOF
 
-sed "s/#REFERENCES#/$REF/g" @prefix@/lib/bindinator/Makefile.am.template>$OUTDIR/Makefile.am 
+cat >>$OUTDIR/Makefile.am <<EOF
+SUBDIRS = sources doc
+
+EXTRA_DIST = $NAME-sharp-$VERSION.pc.in
+DISTCLEANFILES = $NAME-sharp-$VERSION.pc
+
+EOF
+
+sed "s/#REFERENCES#/$REF/g" @prefix@/lib/bindinator/Makefile.am.template>$OUTDIR/sources/Makefile.am
 #cp @prefix@/lib/bindinator/Makefile.am.template $OUTDIR/Makefile.am 
 cp @prefix@/lib/bindinator/AssemblyInfo.cs.in $OUTDIR/sources/.
 cp @prefix@/lib/bindinator/autogen.sh $OUTDIR/.
@@ -170,8 +179,8 @@ if [ ! -e "$OUTDIR/AUTHORS" ]; then touch $OUTDIR/AUTHORS; fi
 if [ ! -e "$OUTDIR/ChangeLog" ]; then touch $OUTDIR/ChangeLog; fi
 if [ ! -e "$OUTDIR/COPYING" ]; then touch $OUTDIR/COPYING; fi
 
-if [ ! -e $OUTDIR/NAME-sharp.snk ]; then
-	sn -k $OUTDIR/$NAME-sharp.snk
+if [ ! -e $OUTDIR/sources/NAME-sharp.snk ]; then
+	sn -k $OUTDIR/sources/$NAME-sharp.snk
 fi
 
 if [ ! -x $OUTDIR/$NAME-sharp-$VERSION.pc.in ]; then
