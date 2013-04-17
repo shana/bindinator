@@ -421,7 +421,7 @@ exclude-result-prefixes="xsl exsl gir c glib"
 		</xsl:variable>
 
 		<xsl:if test="not(../gir:method[@name = translate(current()/@name,'-','_')]) and not(../gir:virtual-method[@name = translate(current()/@name,'-','_')])">
-			<signal name="{$name}" cname="{@name}">
+			<signal name="{$name}" cname="{@name}" when="{@when}">
 
 				<!-- xsl:if test="gir:return-value/gir:type/@name != 'none'" -->
 					<xsl:for-each select="gir:return-value">
