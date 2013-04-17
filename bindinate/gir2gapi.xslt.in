@@ -229,7 +229,7 @@ exclude-result-prefixes="xsl exsl gir c glib"
 	</xsl:template>	
 
 
-	<xsl:template match="gir:record[not(@private)]">
+	<xsl:template match="gir:record">
 		<xsl:param name="external" />
 
 		<xsl:if test="not(@glib:is-gtype-struct-for)">
@@ -253,12 +253,12 @@ exclude-result-prefixes="xsl exsl gir c glib"
 
 			<xsl:variable name="hidden">
 				<xsl:choose>
-					<xsl:when test="@private='1'">true</xsl:when>
+					<xsl:when test="@private='1' or contains(@name, 'Private')">true</xsl:when>
 					<xsl:otherwise>false</xsl:otherwise>
 				</xsl:choose>
 			</xsl:variable>
 
-			<struct name="{$name}" cname="{exsl:node-set($type)/type/@gtype}">
+			<struct name="{$name}" cname="{exsl:node-set($type)/type/@gtype}" opaque="{$opaque}" hidden="{$hidden}">
 				<xsl:apply-templates>
 					<xsl:with-param name="external" select="$external" />
 				</xsl:apply-templates>
