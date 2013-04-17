@@ -362,6 +362,9 @@ exclude-result-prefixes="xsl exsl gir c glib"
 				<xsl:for-each select="gir:parameters/gir:parameter">
 
 					<parameter>
+						<xsl:if test="@scope">
+							<xsl:attribute name="scope"><xsl:value-of select="@scope"/></xsl:attribute>
+						</xsl:if>
 					<xsl:call-template name="output-type">
 						<xsl:with-param name="name" select="@name" />
 						<xsl:with-param name="typename" select="gir:type/@name" />
@@ -452,6 +455,9 @@ exclude-result-prefixes="xsl exsl gir c glib"
 
 					<xsl:for-each select="gir:parameters/gir:parameter">
 						<parameter>
+							<xsl:if test="@scope">
+								<xsl:attribute name="scope"><xsl:value-of select="@scope"/></xsl:attribute>
+							</xsl:if>
 						<xsl:call-template name="output-type">
 							<xsl:with-param name="name" select="@name" />
 							<xsl:with-param name="typename" select="gir:type/@name" />
@@ -654,6 +660,9 @@ exclude-result-prefixes="xsl exsl gir c glib"
 				</xsl:if>
 				<xsl:for-each select="gir:parameters/gir:parameter">
 					<parameter>
+						<xsl:if test="@scope">
+							<xsl:attribute name="scope"><xsl:value-of select="@scope"/></xsl:attribute>
+						</xsl:if>
 					<xsl:call-template name="output-type">
 						<xsl:with-param name="name" select="@name" />
 						<xsl:with-param name="typename" select="gir:type/@name" />
