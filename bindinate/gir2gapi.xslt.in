@@ -839,7 +839,7 @@ exclude-result-prefixes="xsl exsl gir c glib"
 					<xsl:with-param name="external" select="$external" />
 				</xsl:call-template>
 			</xsl:when>
-			<xsl:when test="$name='GLib.List' and gir:type/gir:type">
+			<xsl:when test="($name='GLib.List' or $name='GLib.SList') and gir:type/gir:type">
 				<xsl:call-template name="map-gtype">
 					<xsl:with-param name="type" select="gir:type/gir:type/@name" />
 					<xsl:with-param name="external" select="$external" />
