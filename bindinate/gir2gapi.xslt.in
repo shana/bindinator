@@ -638,6 +638,7 @@ exclude-result-prefixes="xsl exsl gir c glib"
 			<xsl:if test="$shared = 'true'"><xsl:attribute name="shared">true</xsl:attribute></xsl:if>
 			<xsl:if test="@private = '1'"><xsl:attribute name="hidden">true</xsl:attribute></xsl:if>
 			<xsl:if test="@disguised = '1'"><xsl:attribute name="opaque">true</xsl:attribute></xsl:if>
+			<xsl:if test="@deprecated"><xsl:attribute name="deprecated">true</xsl:attribute></xsl:if>
 
 
 			<!-- xsl:if test="gir:return-value/gir:type/@name != 'none'" -->
