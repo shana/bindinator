@@ -553,6 +553,9 @@ exclude-result-prefixes="xsl exsl gir c glib"
 			<xsl:variable name="name"><xsl:call-template name="capitalize"><xsl:with-param name="string" select="@name"/></xsl:call-template></xsl:variable>
 
 			<field cname="{@name}">
+				<xsl:if test="@bits">
+					<xsl:attribute name="bits"><xsl:value-of select="@bits"/></xsl:attribute>
+				</xsl:if>
 				<xsl:call-template name="output-type">
 					<xsl:with-param name="name" select="$name" />
 					<xsl:with-param name="typename" select="gir:type/@name" />
