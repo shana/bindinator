@@ -584,6 +584,13 @@ exclude-result-prefixes="xsl exsl gir c glib"
 				</xsl:otherwise>
 				</xsl:choose>
 			</xsl:variable>
+			
+			<xsl:variable name="construct-only">
+				<xsl:choose>
+					<xsl:when test="@construct-only and @construct-only=1">true</xsl:when>
+					<xsl:otherwise>false</xsl:otherwise>
+				</xsl:choose>
+			</xsl:variable>
 
 			<xsl:variable name="writable">
 				<xsl:choose><xsl:when test="@writable and @writable=1">
@@ -594,7 +601,7 @@ exclude-result-prefixes="xsl exsl gir c glib"
 			</xsl:variable>
 
 			<xsl:if test="$type!=''">
-				<property name="{$name}" cname="{@name}" type="{$type}" readable="true" writable="{$writable}"/>
+				<property name="{$name}" cname="{@name}" type="{$type}" readable="true" writable="{$writable}" construct-only="{$construct-only}"/>
 			</xsl:if>
 		</xsl:if>
 	</xsl:template>	
