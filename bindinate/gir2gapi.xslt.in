@@ -216,8 +216,21 @@ exclude-result-prefixes="xsl exsl gir c glib"
 				<xsl:otherwise>false</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
+		
+		<xsl:variable name="abstract">
+			<xsl:choose>
+				<xsl:when test="@abstract='1'">true</xsl:when>
+				<xsl:otherwise>false</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
 
-		<object name="{$name}" cname="{exsl:node-set($type)/type/@gtype}" parent="{$parent}" abstract="{@abstract}" opaque="{$opaque}" hidden="{$hidden}">
+		<object name="{$name}" cname="{exsl:node-set($type)/type/@gtype}" abstract="{$abstract}" opaque="{$opaque}" hidden="{$hidden}">
+			<xsl:if test="@parent">
+				<xsl:attribute name="parent">
+					<xsl:value-of select="$parent"/>
+				</xsl:attribute>
+			</xsl:if>
+			
 		      <method name="GetType" cname="{@glib:get-type}" shared="true">
 		        <return-type type="GType" />
 		      </method>
@@ -248,7 +261,10 @@ exclude-result-prefixes="xsl exsl gir c glib"
 			</xsl:variable>
 
 			<xsl:variable name="opaque">
-				<xsl:if test="contains(gir:doc/text(), 'opaque') or @disguised='1'">true</xsl:if>
+				<xsl:choose>
+					<xsl:when test="contains(gir:doc/text(), 'opaque') or @disguised='1'">true</xsl:when>
+					<xsl:otherwise>false</xsl:otherwise>
+				</xsl:choose>
 			</xsl:variable>
 
 			<xsl:variable name="hidden">
