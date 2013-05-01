@@ -173,7 +173,7 @@ exclude-result-prefixes="xsl exsl gir c glib"
 	</xsl:template>	
 
 
-	<xsl:template match="gir:class">
+	<xsl:template match="gir:class[not(@glib:fundamental='1')]">
 		<xsl:param name="external" />
 
 		<xsl:variable name="ptype">
