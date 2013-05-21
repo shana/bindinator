@@ -395,7 +395,7 @@ exclude-result-prefixes="xsl exsl gir c glib"
 		</callback>
 	</xsl:template>	
 
-	<xsl:template match="gir:constructor[not(@private) and not(@disguised)]">
+	<xsl:template match="gir:constructor">
 		<xsl:param name="external" />
 
 		<xsl:variable name="t" select="gir:parameters/gir:parameter/gir:type/@name" />
@@ -429,7 +429,7 @@ exclude-result-prefixes="xsl exsl gir c glib"
 		</constructor>
 	</xsl:template>	
 
-	<xsl:template match="glib:signal[not(@private) and not(@disguised)]">
+	<xsl:template match="glib:signal">
 		<xsl:param name="external" />
 
 		<xsl:variable name="name">
@@ -488,7 +488,7 @@ exclude-result-prefixes="xsl exsl gir c glib"
 		</xsl:if>
 	</xsl:template>	
 
-	<xsl:template match="gir:enumeration[not(@private) and not(@disguised)]">
+	<xsl:template match="gir:enumeration">
 		<xsl:param name="external" />
 
 		<xsl:variable name="name">
@@ -523,7 +523,7 @@ exclude-result-prefixes="xsl exsl gir c glib"
 		</enum>
 	</xsl:template>	
 
-	<xsl:template match="gir:bitfield[not(@private) and not(@disguised)]">
+	<xsl:template match="gir:bitfield">
 		<xsl:param name="external" />
 
 		<xsl:variable name="name">
@@ -558,7 +558,7 @@ exclude-result-prefixes="xsl exsl gir c glib"
 		</enum>
 	</xsl:template>	
 
-	<xsl:template match="gir:field[not(@private) and not(@disguised)]">
+	<xsl:template match="gir:field[not(@private)]">
 		<xsl:param name="external" />
 
 		<xsl:if test="not(../gir:property[@name = translate(current()/@name,'_','-')]) and not(../gir:method[@name = current()/@name])">
@@ -585,7 +585,7 @@ exclude-result-prefixes="xsl exsl gir c glib"
 		</xsl:if>
 	</xsl:template>	
 
-	<xsl:template match="gir:property[not(@private) and not(@disguised)]">
+	<xsl:template match="gir:property[not(@private)]">
 		<xsl:param name="external" />
 
 		<xsl:if test="not(../gir:method[@name = translate(current()/@name,'-','_')]) and not(../gir:virtual-method[@name = translate(current()/@name,'-','_')])">
