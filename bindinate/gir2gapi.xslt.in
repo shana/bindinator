@@ -110,7 +110,7 @@ exclude-result-prefixes="xsl exsl gir c glib"
 			</xsl:call-template>
 		</bleh>
 -->
-		<api>
+		<api parser_version="3">
 			<xsl:apply-templates select="gir:namespace">
 				<xsl:with-param name="external" select="$external" />
 			</xsl:apply-templates>
@@ -697,9 +697,23 @@ exclude-result-prefixes="xsl exsl gir c glib"
 				</xsl:if>
 				<xsl:for-each select="gir:parameters/*">
 					<parameter>
+						
+						<xsl:if test="@closure">
+							<xsl:attribute name="closure">
+								<xsl:value-of select="@closure + count(../gir:instance-parameter)"/>
+							</xsl:attribute>
+						</xsl:if>
+						
+						<xsl:if test="@destroy">
+							<xsl:attribute name="destroy">
+								<xsl:value-of select="@destroy + count(../gir:instance-parameter)"/>
+							</xsl:attribute>
+						</xsl:if>
+						
 						<xsl:if test="@scope">
 							<xsl:attribute name="scope"><xsl:value-of select="@scope"/></xsl:attribute>
 						</xsl:if>
+						
 					<xsl:call-template name="output-type">
 						<xsl:with-param name="name" select="@name" />
 						<xsl:with-param name="typename" select="gir:type/@name" />
