@@ -365,7 +365,6 @@ exclude-result-prefixes="xsl exsl gir c glib"
 			<!-- /xsl:if -->
 
 			<xsl:if test="gir:parameters">
-
 				<!-- For some wtf reason, some callbacks inside fields in the gir file include
 					the pointer to the #$$@#$ parent type, which is something that gets added
 					automatically. Remove the first such parameter if it's stupid -->
@@ -381,6 +380,19 @@ exclude-result-prefixes="xsl exsl gir c glib"
 						<xsl:if test="@scope">
 							<xsl:attribute name="scope"><xsl:value-of select="@scope"/></xsl:attribute>
 						</xsl:if>
+						
+						<xsl:if test="@direction">
+							<xsl:choose>
+								<!-- it seems that we can just convert inout to ref -->
+								<xsl:when test="@direction='inout'">
+									<xsl:attribute name="pass_as">ref</xsl:attribute>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:attribute name="pass_as"><xsl:value-of select="@direction"/></xsl:attribute>
+								</xsl:otherwise>								
+							</xsl:choose>
+						</xsl:if>
+						
 					<xsl:call-template name="output-type">
 						<xsl:with-param name="name" select="@name" />
 						<xsl:with-param name="typename" select="gir:type/@name" />
