@@ -535,9 +535,6 @@ exclude-result-prefixes="xsl exsl gir c glib"
 						<xsl:attribute name="value"><xsl:value-of select="@value"/></xsl:attribute>
 					</xsl:if>
 				</member>
-				<xsl:if test="@value">
-					
-				</xsl:if>
 			</xsl:for-each>
 		</enum>
 	</xsl:template>	
@@ -573,9 +570,9 @@ exclude-result-prefixes="xsl exsl gir c glib"
 				</xsl:variable>
 				<xsl:variable name="mname"><xsl:call-template name="map-name"><xsl:with-param name="name" select="$ename"/></xsl:call-template></xsl:variable>
 				<member cname="{@c:identifier}" name="{$mname}">
-				<xsl:if test="@value">
-					<xsl:attribute name="value"><xsl:value-of select="@value"/></xsl:attribute>
-				</xsl:if>
+					<xsl:if test="@value">
+						<xsl:attribute name="value"><xsl:value-of select="@value"/></xsl:attribute>
+					</xsl:if>
 				</member>
 			</xsl:for-each>
 		</enum>
