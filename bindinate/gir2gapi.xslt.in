@@ -375,7 +375,7 @@ exclude-result-prefixes="xsl exsl gir c glib"
 					</xsl:call-template></xsl:variable>
 				<parameters>
 				<!-- xsl:for-each select="gir:parameters/gir:parameter[position()&gt;1 or gir:type/@name!=$parent]" -->
-				<xsl:for-each select="gir:parameters/*">
+				<xsl:for-each select="gir:parameters/gir:parameter">
 
 					<parameter>
 						<xsl:if test="@scope">
@@ -411,7 +411,7 @@ exclude-result-prefixes="xsl exsl gir c glib"
 
 			<xsl:if test="gir:parameters">
 				<xsl:element name="parameters">
-				<xsl:for-each select="gir:parameters/*">
+				<xsl:for-each select="gir:parameters/gir:parameter">
 
 					<xsl:element name="parameter">
 					<xsl:call-template name="output-type">
@@ -469,7 +469,7 @@ exclude-result-prefixes="xsl exsl gir c glib"
 						name="{translate(../@name,'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')}"
 						type="{exsl:node-set($prtypemap)/type/@ctype}*" />
 
-					<xsl:for-each select="gir:parameters/*">
+					<xsl:for-each select="gir:parameters/gir:parameter">
 						<parameter>
 							<xsl:if test="@scope">
 								<xsl:attribute name="scope"><xsl:value-of select="@scope"/></xsl:attribute>
@@ -689,24 +689,21 @@ exclude-result-prefixes="xsl exsl gir c glib"
 
 			<xsl:if test="gir:parameters">
 				<parameters>
-				<!-- Most gir files have instance-parameter tags which make that workaround redundant
-					 For compabibility reasons we fall back to the old workaround if there are no 
-					 instance-parameter tags (for me e.g WebKit-3.0 which might be outdated)-->
-				<xsl:if test="$nodename='virtual_method' and not(gir:parameters/gir:instance-parameter)">
-					<parameter name="{../@c:symbol-prefix}" type="{../@c:type}*" />
-				</xsl:if>
-				<xsl:for-each select="gir:parameters/*">
+					<xsl:if test="@throws">
+						<xsl:attribute name="throws"><xsl:value-of select="@throws"/></xsl:attribute>
+					</xsl:if>
+				<xsl:for-each select="gir:parameters/gir:parameter">
 					<parameter>
 						
 						<xsl:if test="@closure">
 							<xsl:attribute name="closure">
-								<xsl:value-of select="@closure + count(../gir:instance-parameter)"/>
+								<xsl:value-of select="@closure"/>
 							</xsl:attribute>
 						</xsl:if>
 						
 						<xsl:if test="@destroy">
 							<xsl:attribute name="destroy">
-								<xsl:value-of select="@destroy + count(../gir:instance-parameter)"/>
+								<xsl:value-of select="@destroy"/>
 							</xsl:attribute>
 						</xsl:if>
 						
