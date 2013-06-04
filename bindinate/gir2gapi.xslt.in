@@ -814,15 +814,15 @@ exclude-result-prefixes="xsl exsl gir c glib"
 		</xsl:if>
 
 		<xsl:if test="gir:array">
+			<xsl:attribute name="array">true</xsl:attribute>
 			<xsl:choose>
 			<xsl:when test="gir:array/@length">
-				<xsl:attribute name="array_len"><xsl:value-of select="gir:array/@length"/></xsl:attribute>
+				<xsl:attribute name="array_length_param_index"><xsl:value-of select="gir:array/@length"/></xsl:attribute>
 			</xsl:when>
 			<xsl:when test="gir:array/@fixed-size">
 				<xsl:attribute name="array_len"><xsl:value-of select="gir:array/@fixed-size"/></xsl:attribute>
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:attribute name="array">true</xsl:attribute>
 				<xsl:if test="not(gir:array/@zero-terminated) or gir:array/@zero-terminated='1'">
 					<xsl:attribute name="null_term_array">true</xsl:attribute>
 				</xsl:if>
