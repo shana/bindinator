@@ -169,6 +169,23 @@ exclude-result-prefixes="xsl exsl gir c glib"
 					</xsl:call-template>
 				</xsl:for-each>
 			</object>
+			
+			<object name="Constants" cname="{@name}Constants" opaque="true">
+				<xsl:for-each select="gir:constant">
+					<constant value='{@value}'>
+						<xsl:call-template name="map-gtype">
+							<xsl:with-param name="type" select="gir:type/@c:type" />
+							<xsl:with-param name="nopointer">1</xsl:with-param>
+							<xsl:with-param name="external" select="$external" />
+						</xsl:call-template>
+						<xsl:attribute name="name">
+							<xsl:call-template name="map-name">
+								<xsl:with-param name="name" select="@name" />
+							</xsl:call-template>
+						</xsl:attribute>
+					</constant>
+				</xsl:for-each>
+			</object>
 		</namespace>
 	</xsl:template>	
 
