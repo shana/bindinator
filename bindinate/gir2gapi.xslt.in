@@ -610,17 +610,34 @@ exclude-result-prefixes="xsl exsl gir c glib"
 		</enum>
 	</xsl:template>	
 
-	<xsl:template match="gir:field[not(@private)]">
+	<xsl:template match="gir:field">
 		<xsl:param name="external" />
 
 		<xsl:if test="not(../gir:property[@name = translate(current()/@name,'_','-')]) and not(../gir:method[@name = current()/@name])">
 
 			<!-- Let's skip fields whose types are callbacks, for now -->
 			<xsl:if test="not(gir:callback)">
+				
+			<xsl:variable name="writable">
+				<xsl:choose><xsl:when test="@writable=0">
+					<xsl:text>false</xsl:text>
+				</xsl:when><xsl:otherwise>
+					<xsl:text>true</xsl:text>
+				</xsl:otherwise></xsl:choose>
+			</xsl:variable>
+				
+			<xsl:variable name="readable">
+				<xsl:choose><xsl:when test="@readable=0">
+					<xsl:text>false</xsl:text>
+				</xsl:when><xsl:otherwise>
+					<xsl:text>true</xsl:text>
+				</xsl:otherwise></xsl:choose>
+			</xsl:variable>
 
 			<xsl:variable name="name"><xsl:call-template name="capitalize"><xsl:with-param name="string" select="@name"/></xsl:call-template></xsl:variable>
+			<xsl:variable name="access"><xsl:choose><xsl:when test="@private">private</xsl:when><xsl:otherwise>public</xsl:otherwise></xsl:choose></xsl:variable>
 
-			<field cname="{@name}">
+			<field cname="{@name}" access="{$access}" writeable="{$writable}" readable="{$readable}">
 				<xsl:if test="@bits">
 					<xsl:attribute name="bits"><xsl:value-of select="@bits"/></xsl:attribute>
 				</xsl:if>
@@ -671,15 +688,23 @@ exclude-result-prefixes="xsl exsl gir c glib"
 			</xsl:variable>
 
 			<xsl:variable name="writable">
-				<xsl:choose><xsl:when test="@writable and @writable=1">
-					<xsl:text>true</xsl:text>
-				</xsl:when><xsl:otherwise>
+				<xsl:choose><xsl:when test="@writable=0">
 					<xsl:text>false</xsl:text>
+				</xsl:when><xsl:otherwise>
+					<xsl:text>true</xsl:text>
+				</xsl:otherwise></xsl:choose>
+			</xsl:variable>
+			
+			<xsl:variable name="readable">
+				<xsl:choose><xsl:when test="@readable=0">
+					<xsl:text>false</xsl:text>
+				</xsl:when><xsl:otherwise>
+					<xsl:text>true</xsl:text>
 				</xsl:otherwise></xsl:choose>
 			</xsl:variable>
 
 			<xsl:if test="$type!=''">
-				<property name="{$name}" cname="{@name}" type="{$type}" readable="true" writable="{$writable}" construct="{$construct}" construct-only="{$construct-only}"/>
+				<property name="{$name}" cname="{@name}" type="{$type}" readable="{$readable}" writeable="{$writable}" construct="{$construct}" construct-only="{$construct-only}"/>
 			</xsl:if>
 		</xsl:if>
 	</xsl:template>	
