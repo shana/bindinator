@@ -405,6 +405,9 @@ exclude-result-prefixes="xsl exsl gir c glib"
 						<xsl:with-param name="external" select="$external" />
 					</xsl:call-template></xsl:variable>
 				<parameters>
+					<xsl:if test="@throws">
+						<xsl:attribute name="throws"><xsl:value-of select="@throws"/></xsl:attribute>
+					</xsl:if>
 				<!-- xsl:for-each select="gir:parameters/gir:parameter[position()&gt;1 or gir:type/@name!=$parent]" -->
 				<xsl:for-each select="gir:parameters/gir:parameter">
 
@@ -434,6 +437,9 @@ exclude-result-prefixes="xsl exsl gir c glib"
 					</xsl:call-template>
 					</parameter>
 				</xsl:for-each>
+					<xsl:if test="@throws">
+						<parameter name="error" type="GError**" />
+					</xsl:if>
 				</parameters>
 			</xsl:if>
 		</callback>
