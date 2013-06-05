@@ -290,12 +290,27 @@ exclude-result-prefixes="xsl exsl gir c glib"
 					<xsl:otherwise>false</xsl:otherwise>
 				</xsl:choose>
 			</xsl:variable>
-
-			<struct name="{$name}" cname="{exsl:node-set($type)/type/@gtype}" opaque="{$opaque}" hidden="{$hidden}">
+			
+			<xsl:variable name="nodename">
+				<xsl:choose>
+					<xsl:when test="gir:method[@name='copy'] and gir:method[@name='free'] and @glib:get-type">boxed</xsl:when>
+					<xsl:otherwise>struct</xsl:otherwise>
+				</xsl:choose>	
+			</xsl:variable>
+			<xsl:element name="{$nodename}">
+				<xsl:attribute name="name"><xsl:value-of select="$name"/></xsl:attribute>
+				<xsl:attribute name="cname"><xsl:value-of select="exsl:node-set($type)/type/@gtype"/></xsl:attribute>
+				<xsl:attribute name="opaque"><xsl:value-of select="$opaque"/></xsl:attribute>
+				<xsl:attribute name="hidden"><xsl:value-of select="$hidden"/></xsl:attribute>
+				<xsl:if test="$nodename='boxed'">
+					<method name="GetType" cname="{@glib:get-type}" shared="true">
+						<return-type type="GType" />
+					</method>
+				</xsl:if>
 				<xsl:apply-templates>
 					<xsl:with-param name="external" select="$external" />
 				</xsl:apply-templates>
-			</struct>
+			</xsl:element>
 		</xsl:if>
 	</xsl:template>	
 
