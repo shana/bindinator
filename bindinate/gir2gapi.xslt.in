@@ -145,7 +145,7 @@ exclude-result-prefixes="xsl exsl gir c glib"
 			<xsl:apply-templates select="gir:interface">
 				<xsl:with-param name="external" select="$external" />
 			</xsl:apply-templates>
-			<xsl:apply-templates select="gir:record">
+			<xsl:apply-templates select="gir:record[not(@glib:is-gtype-struct-for)]">
 				<xsl:with-param name="external" select="$external" />
 			</xsl:apply-templates>
 			<xsl:apply-templates select="gir:callback">
@@ -260,6 +260,13 @@ exclude-result-prefixes="xsl exsl gir c glib"
 				</xsl:attribute>
 			</xsl:if>
 			
+			<xsl:variable name="type-struct" select="@glib:type-struct" />
+			<xsl:if test="@glib:type-struct">
+				<xsl:apply-templates select="//gir:record[@name=$type-struct]">
+					<xsl:with-param name="external" select="$external" />
+					<xsl:with-param name="class-struct-for" select="current()" />
+				</xsl:apply-templates>
+			</xsl:if>
 		      <method name="GetType" cname="{@glib:get-type}" shared="true">
 		        <return-type type="GType" />
 		      </method>
@@ -273,57 +280,79 @@ exclude-result-prefixes="xsl exsl gir c glib"
 
 	<xsl:template match="gir:record">
 		<xsl:param name="external" />
-
-		<xsl:if test="not(@glib:is-gtype-struct-for)">
-			<xsl:variable name="type">
-				<xsl:call-template name="map-type">
-					<xsl:with-param name="type" select="@c:type"/>
-					<xsl:with-param name="name" select="@name"/>
-					<xsl:with-param name="external" select="$external" />
-				</xsl:call-template>
-			</xsl:variable>
-
-			<xsl:variable name="name">
-				<xsl:call-template name="sanitize">
-					<xsl:with-param name="name" select="@name" />
-				</xsl:call-template>
-			</xsl:variable>
-
-			<xsl:variable name="opaque">
-				<xsl:choose>
-					<xsl:when test="contains(gir:doc/text(), 'opaque') or @disguised='1'">true</xsl:when>
-					<xsl:otherwise>false</xsl:otherwise>
-				</xsl:choose>
-			</xsl:variable>
-
-			<xsl:variable name="hidden">
-				<xsl:choose>
-					<xsl:when test="@private='1' or contains(@name, 'Private')">true</xsl:when>
-					<xsl:otherwise>false</xsl:otherwise>
-				</xsl:choose>
-			</xsl:variable>
-			
-			<xsl:variable name="nodename">
-				<xsl:choose>
-					<xsl:when test="gir:method[@name='copy'] and gir:method[@name='free'] and @glib:get-type">boxed</xsl:when>
-					<xsl:otherwise>struct</xsl:otherwise>
-				</xsl:choose>	
-			</xsl:variable>
-			<xsl:element name="{$nodename}">
-				<xsl:attribute name="name"><xsl:value-of select="$name"/></xsl:attribute>
-				<xsl:attribute name="cname"><xsl:value-of select="exsl:node-set($type)/type/@gtype"/></xsl:attribute>
-				<xsl:attribute name="opaque"><xsl:value-of select="$opaque"/></xsl:attribute>
-				<xsl:attribute name="hidden"><xsl:value-of select="$hidden"/></xsl:attribute>
-				<xsl:if test="$nodename='boxed'">
-					<method name="GetType" cname="{@glib:get-type}" shared="true">
-						<return-type type="GType" />
-					</method>
-				</xsl:if>
-				<xsl:apply-templates>
-					<xsl:with-param name="external" select="$external" />
-				</xsl:apply-templates>
-			</xsl:element>
-		</xsl:if>
+		<xsl:param name="class-struct-for" />
+		<xsl:choose>
+			<xsl:when test="not(@glib:is-gtype-struct-for)">
+				<xsl:variable name="type">
+					<xsl:call-template name="map-type">
+						<xsl:with-param name="type" select="@c:type"/>
+						<xsl:with-param name="name" select="@name"/>
+						<xsl:with-param name="external" select="$external" />
+					</xsl:call-template>
+				</xsl:variable>
+	
+				<xsl:variable name="name">
+					<xsl:call-template name="sanitize">
+						<xsl:with-param name="name" select="@name" />
+					</xsl:call-template>
+				</xsl:variable>
+	
+				<xsl:variable name="opaque">
+					<xsl:choose>
+						<xsl:when test="contains(gir:doc/text(), 'opaque') or @disguised='1'">true</xsl:when>
+						<xsl:otherwise>false</xsl:otherwise>
+					</xsl:choose>
+				</xsl:variable>
+	
+				<xsl:variable name="hidden">
+					<xsl:choose>
+						<xsl:when test="@private='1' or contains(@name, 'Private')">true</xsl:when>
+						<xsl:otherwise>false</xsl:otherwise>
+					</xsl:choose>
+				</xsl:variable>
+				
+				<xsl:variable name="nodename">
+					<xsl:choose>
+						<xsl:when test="gir:method[@name='copy'] and gir:method[@name='free'] and @glib:get-type">boxed</xsl:when>
+						<xsl:otherwise>struct</xsl:otherwise>
+					</xsl:choose>	
+				</xsl:variable>
+				<xsl:element name="{$nodename}">
+					<xsl:attribute name="name"><xsl:value-of select="$name"/></xsl:attribute>
+					<xsl:attribute name="cname"><xsl:value-of select="exsl:node-set($type)/type/@gtype"/></xsl:attribute>
+					<xsl:attribute name="opaque"><xsl:value-of select="$opaque"/></xsl:attribute>
+					<xsl:attribute name="hidden"><xsl:value-of select="$hidden"/></xsl:attribute>
+					<xsl:if test="$nodename='boxed'">
+						<method name="GetType" cname="{@glib:get-type}" shared="true">
+							<return-type type="GType" />
+						</method>
+					</xsl:if>
+					<xsl:apply-templates>
+						<xsl:with-param name="external" select="$external" />
+					</xsl:apply-templates>
+				</xsl:element>
+			</xsl:when>
+			<xsl:otherwise>
+				<class_struct>
+					<xsl:attribute name="cname"><xsl:value-of select="@c:type"/></xsl:attribute>
+					<xsl:apply-templates select="gir:field">
+						<xsl:with-param name="external" select="$external"></xsl:with-param>
+					</xsl:apply-templates>
+					<xsl:for-each select="gir:field/gir:callback">
+						<method>
+							<xsl:choose>
+								<xsl:when test="$class-struct-for/glib:signal[current()/@name = translate(@name, '-', '_')]">
+									<xsl:attribute name="signal_vm"><xsl:value-of select="@name"/></xsl:attribute>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:attribute name="vm"><xsl:value-of select="@name"/></xsl:attribute>
+								</xsl:otherwise>
+							</xsl:choose>
+						</method>
+					</xsl:for-each>
+				</class_struct>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>	
 
 	<xsl:template match="gir:namespace/gir:method" />
