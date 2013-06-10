@@ -351,6 +351,19 @@ exclude-result-prefixes="xsl exsl gir c glib"
 						</method>
 					</xsl:for-each>
 				</class_struct>
+				
+				<!-- We have to convert all field/callback when there is no method in the original class to virtual_methods -->
+				<xsl:for-each select="gir:field/gir:callback">
+					<xsl:if test="not($class-struct-for/gir:virtual-method[@name=current()/@name])">
+						<xsl:apply-templates select="current()">
+							<xsl:with-param name="nodename">virtual_method</xsl:with-param>
+							<xsl:with-param name="shared">true</xsl:with-param>
+							<xsl:with-param name="doname">0</xsl:with-param>
+							<xsl:with-param name="external" select="$external" />
+						</xsl:apply-templates>
+					</xsl:if>
+				</xsl:for-each>
+				
 				<xsl:for-each select="gir:method">
 					<xsl:call-template name="output-method">
 						<xsl:with-param name="shared">true</xsl:with-param>
@@ -396,12 +409,17 @@ exclude-result-prefixes="xsl exsl gir c glib"
 	</xsl:template>	
 
 	<xsl:template match="gir:callback">
+		<xsl:param name="shared">false</xsl:param>
+		<xsl:param name="nodename">callback</xsl:param>
+		<xsl:param name="doname">1</xsl:param>
 		<xsl:param name="external" />
 
 		<xsl:variable name="name"><xsl:call-template name="capitalize"><xsl:with-param name="string" select="@name" /></xsl:call-template></xsl:variable>
 		<xsl:variable name="type"><xsl:choose><xsl:when test="@c:type"><xsl:value-of select="@c:type" /></xsl:when><xsl:otherwise><xsl:value-of select="//gir:repository/gir:namespace/@name"/><xsl:value-of select="$name"/>Func</xsl:otherwise></xsl:choose></xsl:variable>
-
-		<callback name="{$name}" cname="{$type}">
+		<xsl:element name="{$nodename}">
+			<xsl:attribute name="name"><xsl:value-of select="$name"/></xsl:attribute>
+			<xsl:attribute name="cname"><xsl:choose><xsl:when test="$doname='0'"><xsl:value-of select="@name"/></xsl:when><xsl:otherwise><xsl:value-of select="$type"/></xsl:otherwise></xsl:choose></xsl:attribute>
+			<xsl:if test="$shared = 'true'"><xsl:attribute name="shared">true</xsl:attribute></xsl:if>
 
 			<!-- xsl:if test="gir:return-value/gir:type/@name != 'none'" -->
 			<xsl:for-each select="gir:return-value">
@@ -465,7 +483,7 @@ exclude-result-prefixes="xsl exsl gir c glib"
 					</xsl:if>
 				</parameters>
 			</xsl:if>
-		</callback>
+		</xsl:element>
 	</xsl:template>	
 
 	<xsl:template match="gir:constructor">
