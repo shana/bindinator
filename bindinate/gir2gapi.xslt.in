@@ -645,10 +645,10 @@ exclude-result-prefixes="xsl exsl gir c glib"
 			<xsl:if test="not(gir:callback)">
 				
 			<xsl:variable name="writable">
-				<xsl:choose><xsl:when test="@writable=0">
-					<xsl:text>false</xsl:text>
-				</xsl:when><xsl:otherwise>
+				<xsl:choose><xsl:when test="@writable=1">
 					<xsl:text>true</xsl:text>
+				</xsl:when><xsl:otherwise>
+					<xsl:text>false</xsl:text>
 				</xsl:otherwise></xsl:choose>
 			</xsl:variable>
 				
@@ -714,10 +714,10 @@ exclude-result-prefixes="xsl exsl gir c glib"
 			</xsl:variable>
 
 			<xsl:variable name="writable">
-				<xsl:choose><xsl:when test="@writable=0">
-					<xsl:text>false</xsl:text>
-				</xsl:when><xsl:otherwise>
+				<xsl:choose><xsl:when test="@writable=1">
 					<xsl:text>true</xsl:text>
+				</xsl:when><xsl:otherwise>
+					<xsl:text>false</xsl:text>
 				</xsl:otherwise></xsl:choose>
 			</xsl:variable>
 			
