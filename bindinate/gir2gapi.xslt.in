@@ -559,10 +559,6 @@ exclude-result-prefixes="xsl exsl gir c glib"
 					</xsl:call-template>
 				</xsl:variable>
 
-				<parameter
-					name="{translate(../@name,'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')}"
-					type="{exsl:node-set($prtypemap)/type/@ctype}*" />
-
 				<xsl:for-each select="gir:parameters/gir:parameter">
 					<parameter>
 						<xsl:if test="@scope">
