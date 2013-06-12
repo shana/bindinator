@@ -313,7 +313,7 @@ exclude-result-prefixes="xsl exsl gir c glib"
 				
 				<xsl:variable name="nodename">
 					<xsl:choose>
-						<xsl:when test="gir:method[@name='copy'] and gir:method[@name='free'] and @glib:get-type">boxed</xsl:when>
+						<xsl:when test="@glib:get-type">boxed</xsl:when>
 						<xsl:otherwise>struct</xsl:otherwise>
 					</xsl:choose>	
 				</xsl:variable>
