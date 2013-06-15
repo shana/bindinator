@@ -364,7 +364,7 @@ exclude-result-prefixes="xsl exsl gir c glib"
 					</xsl:if>
 				</xsl:for-each>
 				
-				<xsl:for-each select="gir:method">
+				<xsl:for-each select="gir:method[not(@introspectable=0)]">
 					<xsl:call-template name="output-method">
 						<xsl:with-param name="shared">true</xsl:with-param>
 						<xsl:with-param name="external" select="$external" />
@@ -374,9 +374,9 @@ exclude-result-prefixes="xsl exsl gir c glib"
 		</xsl:choose>
 	</xsl:template>	
 
-	<xsl:template match="gir:namespace/gir:method" />
+	<xsl:template match="gir:namespace/gir:method[not(@introspectable=0)]" />
 
-	<xsl:template match="gir:method">
+	<xsl:template match="gir:method[not(@introspectable=0)]">
 		<xsl:param name="external" />
 		<xsl:if test="not(../glib:signal[@name = translate(current()/@name,'_','-')])">
 			<xsl:call-template name="output-method">
@@ -385,7 +385,7 @@ exclude-result-prefixes="xsl exsl gir c glib"
 		</xsl:if>
 	</xsl:template>	
 
-	<xsl:template match="gir:virtual-method">
+	<xsl:template match="gir:virtual-method[not(@introspectable=0)]">
 		<xsl:param name="external" />
 		
 		<xsl:if test="not(../glib:signal[@name = translate(current()/@name,'_','-')])">
@@ -397,9 +397,9 @@ exclude-result-prefixes="xsl exsl gir c glib"
 		</xsl:if>
 	</xsl:template>	
 
-	<xsl:template match="gir:namespace/gir:function" />
+	<xsl:template match="gir:namespace/gir:function[not(@introspectable=0)]" />
 
-	<xsl:template match="gir:function">
+	<xsl:template match="gir:function[not(@introspectable=0)]">
 		<xsl:param name="external" />
 
 		<xsl:call-template name="output-method">
@@ -408,7 +408,7 @@ exclude-result-prefixes="xsl exsl gir c glib"
 		</xsl:call-template>
 	</xsl:template>	
 
-	<xsl:template match="gir:callback">
+	<xsl:template match="gir:callback[not(@introspectable=0)]">
 		<xsl:param name="shared">false</xsl:param>
 		<xsl:param name="nodename">callback</xsl:param>
 		<xsl:param name="doname">1</xsl:param>
@@ -486,7 +486,7 @@ exclude-result-prefixes="xsl exsl gir c glib"
 		</xsl:element>
 	</xsl:template>	
 
-	<xsl:template match="gir:constructor">
+	<xsl:template match="gir:constructor[not(@introspectable=0)]">
 		<xsl:param name="external" />
 
 		<xsl:variable name="t" select="gir:parameters/gir:parameter/gir:type/@name" />
