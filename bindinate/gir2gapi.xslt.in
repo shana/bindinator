@@ -355,12 +355,21 @@ exclude-result-prefixes="xsl exsl gir c glib"
 				<!-- We have to convert all field/callback when there is no method in the original class to virtual_methods -->
 				<xsl:for-each select="gir:field/gir:callback">
 					<xsl:if test="not($class-struct-for/gir:virtual-method[@name=current()/@name])">
-						<xsl:apply-templates select="current()">
-							<xsl:with-param name="nodename">virtual_method</xsl:with-param>
-							<xsl:with-param name="shared">true</xsl:with-param>
-							<xsl:with-param name="doname">0</xsl:with-param>
-							<xsl:with-param name="external" select="$external" />
-						</xsl:apply-templates>
+						<xsl:variable name="introspectable">
+							<xsl:choose>
+								<xsl:when test="../@introspectable">0</xsl:when>
+								<xsl:otherwise>1</xsl:otherwise>
+							</xsl:choose>
+						</xsl:variable>
+						<xsl:if test="not(../glib:signal[@name = translate(current()/@name,'_','-')])">
+							<xsl:call-template name="output-method">
+								<xsl:with-param name="cname" select="@name" />
+								<xsl:with-param name="nodename">virtual_method</xsl:with-param>
+								<xsl:with-param name="shared">true</xsl:with-param>
+								<xsl:with-param name="introspectable" select="$introspectable" />
+								<xsl:with-param name="external" select="$external" />
+							</xsl:call-template>
+						</xsl:if>
 					</xsl:if>
 				</xsl:for-each>
 				
