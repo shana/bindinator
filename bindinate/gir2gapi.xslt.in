@@ -139,10 +139,10 @@ exclude-result-prefixes="xsl exsl gir c glib"
 			<xsl:apply-templates select="gir:bitfield">
 				<xsl:with-param name="external" select="$external" />
 			</xsl:apply-templates>
-			<xsl:apply-templates select="gir:class">
+			<xsl:apply-templates select="gir:interface">
 				<xsl:with-param name="external" select="$external" />
 			</xsl:apply-templates>
-			<xsl:apply-templates select="gir:interface">
+			<xsl:apply-templates select="gir:class">
 				<xsl:with-param name="external" select="$external" />
 			</xsl:apply-templates>
 			<xsl:apply-templates select="gir:record[not(@glib:is-gtype-struct-for)]">
@@ -258,6 +258,20 @@ exclude-result-prefixes="xsl exsl gir c glib"
 				<xsl:attribute name="parent">
 					<xsl:value-of select="$parent"/>
 				</xsl:attribute>
+			</xsl:if>
+			
+			<xsl:if test="gir:implements">
+				<implements>
+					<xsl:for-each select="gir:implements">
+						<xsl:variable name="interfacetype">
+							<xsl:call-template name="map-type">
+								<xsl:with-param name="name" select="@name"/>
+								<xsl:with-param name="external" select="$external" />
+							</xsl:call-template>
+						</xsl:variable>
+						<interface cname="{exsl:node-set($interfacetype)/type/@gtype}" />						
+					</xsl:for-each>
+				</implements>
 			</xsl:if>
 			
 			<xsl:variable name="type-struct" select="@glib:type-struct" />
@@ -770,17 +784,7 @@ exclude-result-prefixes="xsl exsl gir c glib"
 			</xsl:if>
 		</xsl:if>
 	</xsl:template>	
-
-	<!-- Let's avoid implements for now 
-	<xsl:template match="gir:implements">
-		<xsl:param name="external" />
-
-		<implements>
-			<interface name="{@name}" />
-		</implements>
-	</xsl:template>
-	-->
-
+ 
 	<xsl:template match="gir:*" />
 
 	<xsl:template match="text()" mode="#all" />
