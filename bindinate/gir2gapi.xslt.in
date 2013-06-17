@@ -617,18 +617,12 @@ exclude-result-prefixes="xsl exsl gir c glib"
 			</xsl:call-template>
 		</xsl:variable>
 
-		<enum name="{$name}" cname="{@c:type}">
-			<xsl:choose>
-			<xsl:when test="@glib:get-type">
+		<enum name="{$name}" cname="{@c:type}" type="enum">
+			<xsl:if test="@glib:get-type">
 				<xsl:attribute name="gtype"><xsl:value-of select="@glib:get-type" /></xsl:attribute>
-				<xsl:attribute name="type">enum</xsl:attribute>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:attribute name="type">enum</xsl:attribute>
-			</xsl:otherwise>
-			</xsl:choose>
+			</xsl:if>
 			<xsl:for-each select="gir:member">
-				<xsl:sort select="@value" />
+				<xsl:sort select="@value" data-type="number" />
 
 				<xsl:variable name="ename">
 					<xsl:choose><xsl:when test="@name = @value">
@@ -657,17 +651,11 @@ exclude-result-prefixes="xsl exsl gir c glib"
 		</xsl:variable>
 
 		<enum name="{$name}" cname="{@c:type}" type="flags">
-			<xsl:choose>
-			<xsl:when test="@glib:get-type">
+			<xsl:if test="@glib:get-type">
 				<xsl:attribute name="gtype"><xsl:value-of select="@glib:get-type" /></xsl:attribute>
-				<xsl:attribute name="type">enum</xsl:attribute>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:attribute name="type">enum</xsl:attribute>
-			</xsl:otherwise>
-			</xsl:choose>
+			</xsl:if>
 			<xsl:for-each select="gir:member">
-				<xsl:sort select="@value" />
+				<xsl:sort select="@value" data-type="number" />
 
 				<xsl:variable name="ename">
 					<xsl:choose><xsl:when test="@name = @value">
