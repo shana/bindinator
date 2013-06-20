@@ -349,20 +349,22 @@ exclude-result-prefixes="xsl exsl gir c glib"
 			<xsl:otherwise>
 				<class_struct>
 					<xsl:attribute name="cname"><xsl:value-of select="@c:type"/></xsl:attribute>
-					<xsl:apply-templates select="gir:field">
-						<xsl:with-param name="external" select="$external"></xsl:with-param>
-					</xsl:apply-templates>
-					<xsl:for-each select="gir:field/gir:callback">
-						<method>
-							<xsl:choose>
-								<xsl:when test="$class-struct-for/glib:signal[current()/@name = translate(@name, '-', '_')]">
-									<xsl:attribute name="signal_vm"><xsl:value-of select="@name"/></xsl:attribute>
-								</xsl:when>
-								<xsl:otherwise>
-									<xsl:attribute name="vm"><xsl:value-of select="@name"/></xsl:attribute>
-								</xsl:otherwise>
-							</xsl:choose>
-						</method>
+					<xsl:for-each select="gir:field">
+						<xsl:apply-templates select="current()">
+							<xsl:with-param name="external" select="$external"></xsl:with-param>
+						</xsl:apply-templates>
+						<xsl:if test="gir:callback">
+							<method>
+								<xsl:choose>
+									<xsl:when test="$class-struct-for/glib:signal[current()/@name = translate(@name, '-', '_')]">
+										<xsl:attribute name="signal_vm"><xsl:value-of select="@name"/></xsl:attribute>
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:attribute name="vm"><xsl:value-of select="@name"/></xsl:attribute>
+									</xsl:otherwise>
+								</xsl:choose>
+							</method>
+						</xsl:if>
 					</xsl:for-each>
 				</class_struct>
 				
