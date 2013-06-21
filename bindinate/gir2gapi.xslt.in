@@ -145,6 +145,9 @@ exclude-result-prefixes="xsl exsl gir c glib"
 			<xsl:apply-templates select="gir:class">
 				<xsl:with-param name="external" select="$external" />
 			</xsl:apply-templates>
+			<xsl:apply-templates select="gir:union">
+				<xsl:with-param name="external" select="$external" />
+			</xsl:apply-templates>
 			<xsl:apply-templates select="gir:record[not(@glib:is-gtype-struct-for)]">
 				<xsl:with-param name="external" select="$external" />
 			</xsl:apply-templates>
@@ -290,7 +293,30 @@ exclude-result-prefixes="xsl exsl gir c glib"
 			</xsl:apply-templates>
 		</xsl:element>
 	</xsl:template>	
-
+	
+	<xsl:template match="gir:union">
+		<xsl:param name="external" />
+		
+		<xsl:variable name="type">
+			<xsl:call-template name="map-type">
+				<xsl:with-param name="type" select="@c:type"/>
+				<xsl:with-param name="name" select="@name"/>
+				<xsl:with-param name="external" select="$external" />
+			</xsl:call-template>
+		</xsl:variable>
+		
+		<xsl:variable name="name">
+			<xsl:call-template name="sanitize">
+				<xsl:with-param name="name" select="@name" />
+			</xsl:call-template>
+		</xsl:variable>
+		
+		<union name="{$name}" cname="{exsl:node-set($type)/type/@gtype}">
+			<xsl:apply-templates>
+				<xsl:with-param name="external" select="$external" />
+			</xsl:apply-templates>
+		</union>
+	</xsl:template>
 
 	<xsl:template match="gir:record">
 		<xsl:param name="external" />
