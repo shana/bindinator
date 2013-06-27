@@ -1222,6 +1222,7 @@ exclude-result-prefixes="xsl exsl gir c glib"
 			<xsl:otherwise>
 				<xsl:choose>
 					<xsl:when test="$transfer-ownership='full'">
+						<xsl:attribute name="owned">true</xsl:attribute>
 						<xsl:attribute name="ctype"><xsl:value-of select="$type" />*</xsl:attribute>
 						<xsl:attribute name="gtype"><xsl:value-of select="$type" /></xsl:attribute>
 					</xsl:when>
