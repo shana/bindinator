@@ -466,7 +466,7 @@ exclude-result-prefixes="xsl exsl gir c glib"
 		</xsl:call-template>
 	</xsl:template>	
 
-	<xsl:template match="gir:callback[not(@introspectable=0)]">
+	<xsl:template match="gir:callback">
 		<xsl:param name="shared">false</xsl:param>
 		<xsl:param name="nodename">callback</xsl:param>
 		<xsl:param name="doname">1</xsl:param>
@@ -475,6 +475,7 @@ exclude-result-prefixes="xsl exsl gir c glib"
 		<xsl:variable name="name"><xsl:call-template name="capitalize"><xsl:with-param name="string" select="@name" /></xsl:call-template></xsl:variable>
 		<xsl:variable name="type"><xsl:choose><xsl:when test="@c:type"><xsl:value-of select="@c:type" /></xsl:when><xsl:otherwise><xsl:value-of select="//gir:repository/gir:namespace/@name"/><xsl:value-of select="$name"/>Func</xsl:otherwise></xsl:choose></xsl:variable>
 		<xsl:element name="{$nodename}">
+			<xsl:if test="@introspectable"><xsl:attribute name="hidden"><xsl:value-of select="@introspectable"/></xsl:attribute></xsl:if>
 			<xsl:attribute name="name"><xsl:value-of select="$name"/></xsl:attribute>
 			<xsl:attribute name="cname"><xsl:choose><xsl:when test="$doname='0'"><xsl:value-of select="@name"/></xsl:when><xsl:otherwise><xsl:value-of select="$type"/></xsl:otherwise></xsl:choose></xsl:attribute>
 			<xsl:if test="$shared = 'true'"><xsl:attribute name="shared">true</xsl:attribute></xsl:if>
@@ -694,7 +695,6 @@ exclude-result-prefixes="xsl exsl gir c glib"
 		<xsl:param name="external" />
 
 		<xsl:if test="not(../gir:property[@name = translate(current()/@name,'_','-')]) and not(../gir:method[@name = current()/@name])">
-
 			<!-- Let's skip fields whose types are callbacks, for now -->
 			<xsl:if test="not(gir:callback)">
 				
