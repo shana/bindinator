@@ -34,6 +34,9 @@ fi
 if [ ! -d $OUTDIR/sources ]; then
 	mkdir -p $OUTDIR/sources
 fi
+if [ ! -d $OUTDIR/sources/glue ]; then
+	mkdir -p $OUTDIR/sources/glue
+fi
 if [ ! -d $OUTDIR/out ]; then
 	mkdir -p $OUTDIR/out
 fi
@@ -46,6 +49,7 @@ ORIGINAL=$PACKAGE
 LIBS=`@XSLTPROC@ --stringparam type libs @prefix@/lib/bindinator/preprocess.xslt @GIRDIR@/$1.gir|sed 's/,/ /'`
 NS=`@XSLTPROC@ --stringparam type namespace @prefix@/lib/bindinator/preprocess.xslt @GIRDIR@/$1.gir`
 VERSION=`@XSLTPROC@ --stringparam type version @prefix@/lib/bindinator/preprocess.xslt @GIRDIR@/$1.gir`
+INCLUDES=`@XSLTPROC@ --stringparam type include @prefix@/lib/bindinator/preprocess.xslt @GIRDIR@/$1.gir`
 GAPI=`@XSLTPROC@ --stringparam type gapi @prefix@/lib/bindinator/preprocess.xslt @GIRDIR@/$1.gir`
 
 echo "PACKAGE: $PACKAGE"
@@ -63,11 +67,14 @@ fi
 MODVERSION=$(@PKG_CONFIG@ --modversion $PACKAGE)
 NAME=$(echo $NS|tr '[:upper:]' '[:lower:]')
 UNAME=$(echo $NS|tr '[:lower:]' '[:upper:]')
+GLUEVERSION=$(echo $MODVERSION|tr '.' '_')
 LIB=$PACKAGE
 SOLIB=
 
 DLLMAP=$NAME-sharp.dll.config
 CONFIGURE=configure.ac
+GLUELIB="lib"$NAME"sharpglue-"$MODVERSION".so"
+GLUENAME="lib"$NAME"sharpglue"
 
 for lib in $LIBS; do
 	case "$lib" in
@@ -82,6 +89,7 @@ done
 
 echo "LIB: $LIB"
 echo "SOLIB: $SOLIB"
+echo "GLUELIB: $GLUELIB"
 
 cat >$OUTDIR/out/$DLLMAP <<EOF
 <configuration>
@@ -96,6 +104,7 @@ AC_CANONICAL_TARGET
 AM_INIT_AUTOMAKE
 AM_MAINTAINER_MODE
 AC_PROG_INSTALL
+LT_INIT
 
 dnl Package settings
 ASSEMBLY_COMPANY=""
@@ -112,12 +121,16 @@ EOF
 sed "s/#GAPI#/$GAPI/g" @prefix@/lib/bindinator/configure.ac.template >>$OUTDIR/$CONFIGURE
 
 PR=$NAME"_prefix"
+PLIBS=$UNAME"_LIBS"
+PCFLAGS=$UNAME"_CFLAGS"
 
 cat >>$OUTDIR/$CONFIGURE <<EOF
 dnl Check for $NS
 PKG_CHECK_MODULES($UNAME, $PACKAGE)
 $PR=`pkg-config --variable=prefix $PACKAGE`
 AC_SUBST($PR)
+AC_SUBST($PLIBS)
+AC_SUBST($PCFLAGS)
 
 EOF
 
@@ -137,6 +150,7 @@ cat >>$OUTDIR/$CONFIGURE <<EOF
 AC_CONFIG_FILES([
 	Makefile
 	sources/Makefile
+	sources/glue/Makefile
 	sources/AssemblyInfo.cs
 	$NAME-sharp-$VERSION.pc
 	doc/Makefile
@@ -165,8 +179,12 @@ DISTCLEANFILES = $NAME-sharp-$VERSION.pc
 
 EOF
 
-sed "s/#REFERENCES#/$REF/g" @prefix@/lib/bindinator/Makefile.am.template>$OUTDIR/sources/Makefile.am
-#cp @prefix@/lib/bindinator/Makefile.am.template $OUTDIR/Makefile.am 
+sed "s,#REFERENCES#,$REF,g" @prefix@/lib/bindinator/Makefile.am.template|sed "s,#GLUELIBNAME#,$GLUELIB,g"| \
+sed "s,#GLUEINCLUDES#,$INCLUDES,g">$OUTDIR/sources/Makefile.am
+
+sed "s,#GLUENAME#,$GLUENAME,g" @prefix@/lib/bindinator/Makefile-glue.am.template|sed "s,#GLUELIBNAME#,$GLUELIB,g"| \
+sed "s,#VERSION#,$GLUEVERSION,g"|sed "s,#LTVERSION#,$MODVERSION,g"|sed "s,#PREFIX#,$UNAME,g">$OUTDIR/sources/glue/Makefile.am
+
 cp @prefix@/lib/bindinator/AssemblyInfo.cs.in $OUTDIR/sources/.
 cp @prefix@/lib/bindinator/autogen.sh $OUTDIR/.
 chmod +x $OUTDIR/autogen.sh
@@ -175,7 +193,7 @@ mkdir -p $OUTDIR/m4
 if [ ! -e $OUTDIR/sources/$NAME-sharp.metadata ]; then
 	cp @prefix@/lib/bindinator/metadata.template $OUTDIR/sources/$NAME-sharp.metadata 
 fi
-
+#LT
 if [ ! -e "$OUTDIR/NEWS" ]; then touch $OUTDIR/NEWS; fi
 if [ ! -e "$OUTDIR/README" ]; then touch $OUTDIR/README; fi
 if [ ! -e "$OUTDIR/AUTHORS" ]; then touch $OUTDIR/AUTHORS; fi

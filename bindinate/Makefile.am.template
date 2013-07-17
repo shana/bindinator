@@ -3,6 +3,7 @@ API = $(ASSEMBLY_NAME)-api.xml
 METADATA = $(ASSEMBLY_NAME).metadata
 DLL = $(top_srcdir)/out/$(ASSEMBLY_NAME).dll
 DLLMAP = $(top_srcdir)/out/$(ASSEMBLY_NAME).dll.config
+GLUEDIR = $(srcdir)/glue
 
 sources = 
 
@@ -31,6 +32,8 @@ $(API): $(srcdir)/$(RAW_API) $(srcdir)/$(METADATA)
 generated-stamp: $(API)
 	 $(GAPI_CODEGEN) --generate $(srcdir)/$(API) $(GTK_SHARP_CFLAGS) \
 		--outdir=generated \
+		--glue-filename=$(GLUEDIR)/generated.c --gluelib-name=#GLUELIBNAME# \
+		--glue-includes=#GLUEINCLUDES# \
 	 	--assembly-name=$(ASSEMBLY_NAME) && touch generated-stamp
 
 $(DLL): $(build_sources) generated-stamp

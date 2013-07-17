@@ -61,6 +61,9 @@ exclude-result-prefixes="xsl exsl gir c glib"
 			<xsl:when test="$type='version'">
 				<xsl:value-of select="gir:repository/gir:namespace/@version" />
 			</xsl:when>
+			<xsl:when test="$type='include'">
+				<xsl:value-of select="gir:repository/c:include/@name" />
+			</xsl:when>
 			<xsl:when test="$type='gapi'">
 				<xsl:choose>
 					<xsl:when test="gir:repository/gir:include[@name='Gdk']/@version='2.0'">2</xsl:when>

@@ -1,0 +1,18 @@
+lib_LTLIBRARIES = #GLUENAME#-#MODVERSION#.la
+
+#GLUENAME#_#VERSION#_la_SOURCES =
+
+nodist_#GLUENAME#_#VERSION#_la_SOURCES = generated.c
+
+#GLUENAME#_#VERSION#_la_LDFLAGS = -module -avoid-version -no-undefined
+
+#GLUENAME#_#VERSION#_la_LIBADD = $(#PREFIX#_LIBS)
+
+INCLUDES = $(#PREFIX#_CFLAGS) -I$(top_srcdir)
+
+#GLUENAME#.dll: $(#GLUENAME#_#VERSION#_la_OBJECTS) #GLUENAME#.rc #GLUENAME#.def
+	./build-dll #GLUENAME# $(VERSION)
+
+CLEANFILES = lib*.a lib*.dll
+
+EXTRA_DIST =
