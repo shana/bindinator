@@ -183,7 +183,7 @@ sed "s,#REFERENCES#,$REF,g" @prefix@/lib/bindinator/Makefile.am.template|sed "s,
 sed "s,#GLUEINCLUDES#,$INCLUDES,g">$OUTDIR/sources/Makefile.am
 
 sed "s,#GLUENAME#,$GLUENAME,g" @prefix@/lib/bindinator/Makefile-glue.am.template|sed "s,#GLUELIBNAME#,$GLUELIB,g"| \
-sed "s,#VERSION#,$GLUEVERSION,g"|sed "s,#LTVERSION#,$MODVERSION,g"|sed "s,#PREFIX#,$UNAME,g">$OUTDIR/sources/glue/Makefile.am
+sed "s,#VERSION#,$GLUEVERSION,g"|sed "s,#MODVERSION#,$MODVERSION,g"|sed "s,#PREFIX#,$UNAME,g">$OUTDIR/sources/glue/Makefile.am
 
 cp @prefix@/lib/bindinator/AssemblyInfo.cs.in $OUTDIR/sources/.
 cp @prefix@/lib/bindinator/autogen.sh $OUTDIR/.
