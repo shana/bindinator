@@ -9,6 +9,8 @@ sources =
 
 build_sources = AssemblyInfo.cs $(sources)
 
+SUBDIRS = glue
+
 CLEANFILES = $(DLL) generated-stamp generated/*.cs $(API)
 
 DISTCLEANFILES = AssemblyInfo.cs $(DLLMAP)
