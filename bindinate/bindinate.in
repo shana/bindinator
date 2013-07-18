@@ -37,6 +37,9 @@ fi
 if [ ! -d $OUTDIR/sources/glue ]; then
 	mkdir -p $OUTDIR/sources/glue
 fi
+if [ ! -d $OUTDIR/sources/custom ]; then
+	mkdir -p $OUTDIR/sources/custom
+fi
 if [ ! -d $OUTDIR/out ]; then
 	mkdir -p $OUTDIR/out
 fi
