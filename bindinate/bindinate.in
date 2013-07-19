@@ -2,31 +2,47 @@
 usage()
 {
 cat <<EOF
-Usage: bindinate gir [package]
+Usage: bindinate gir
 	gir: gir filename to process (without extension)
-	package: name of pc file (if the gir data with the package name is wrong)
+	--package=PACKAGE		name of pc file (if the gir data with the package name is wrong)
+	--name=NAME			Name for the assembly
+					If this argument is not given, it will be generated automatically from the namespace set in the gir file
+	--out				Directory to place the generated bindings. default: $(pwd)/[Name of gir file]
 EOF
 }
 
-sh_append()
-{
-        printf "%s=%s\n" "$1" "$2" >> $SH
-}
+for arg; do
+  case "$arg" in
+    --help | -h)
+            usage
+            exit 1
+      ;;
+    --package=* )
+      PACKAGE=$(echo $arg|sed -e 's,.*=,,')
+      ;;
+    --name=* )
+      NAME=$(echo $arg|sed -e 's,.*=,,')
+      ;;
+    --out=* )
+      OUTDIR=$(echo $arg|sed -e 's,.*=,,')
+      ;;
+    *) 
+      GIRFILE=$arg
+      ;;
+  esac
+done
 
-if [ $# -lt 1 ]; then
-	usage
+echo "Processing $GIRFILE"
+
+
+if [ ! -e @GIRDIR@/$GIRFILE.gir ]; then
+	echo "@GIRDIR@/$GIRFILE.gir not found, exiting"
 	exit 1
 fi
 
-echo "Processing $1"
-
-
-if [ ! -e @GIRDIR@/$1.gir ]; then
-	echo "@GIRDIR@/$1.gir not found, exiting"
-	exit 1
+if [ -z "$OUTDIR" ]; then
+	OUTDIR=$GIRFILE/
 fi
-
-OUTDIR=$1/
 
 if [ ! -d $OUTDIR ]; then
 	mkdir -p $OUTDIR
@@ -47,7 +63,9 @@ if [ ! -d $OUTDIR/doc ]; then
 	mkdir -p $OUTDIR/doc
 fi
 
-PACKAGE=`@XSLTPROC@ --stringparam type package @prefix@/lib/bindinator/preprocess.xslt @GIRDIR@/$1.gir`
+if [ -z "$PACKAGE" ]; then
+	PACKAGE=`@XSLTPROC@ --stringparam type package @prefix@/lib/bindinator/preprocess.xslt @GIRDIR@/$1.gir`
+fi
 ORIGINAL=$PACKAGE
 LIBS=`@XSLTPROC@ --stringparam type libs @prefix@/lib/bindinator/preprocess.xslt @GIRDIR@/$1.gir|sed 's/,/ /'`
 NS=`@XSLTPROC@ --stringparam type namespace @prefix@/lib/bindinator/preprocess.xslt @GIRDIR@/$1.gir`
@@ -59,16 +77,14 @@ echo "PACKAGE: $PACKAGE"
 echo "LIBS: $LIBS"
 
 if ! $(@PKG_CONFIG@ --exists $PACKAGE); then
-	if [ -z $2 ]; then
-		echo "$PACKAGE not found and no package name given on the command line"
-		exit 1
-	else
-		PACKAGE="$2"
-	fi
+	echo "Package $PACKAGE not found, exiting"
+	exit 1
 fi
 
 MODVERSION=$(@PKG_CONFIG@ --modversion $PACKAGE)
-NAME=$(echo $NS|tr '[:upper:]' '[:lower:]')
+if [ -z "$NAME" ]; then
+	NAME=$(echo $NS|tr '[:upper:]' '[:lower:]')
+fi
 UNAME=$(echo $NS|tr '[:lower:]' '[:upper:]')
 GLUEVERSION=$(echo $MODVERSION|tr '.' '_')
 LIB=$PACKAGE
