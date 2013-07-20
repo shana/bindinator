@@ -5,7 +5,8 @@ DLL = $(top_srcdir)/out/$(ASSEMBLY_NAME).dll
 DLLMAP = $(top_srcdir)/out/$(ASSEMBLY_NAME).dll.config
 GLUEDIR = $(srcdir)/glue
 
-sources = custom/*.cs
+# Add any extra source files you need here
+sources =
 
 build_sources = AssemblyInfo.cs $(sources)
 
