@@ -2,12 +2,12 @@
 usage()
 {
 cat <<EOF
-Usage: bindinate gir
-	gir: gir filename to process (without extension)
+Usage: bindinate [--package=PACKAGE --name=NAME --out=PATH] --gir=GIRFILE
+	--gir=GIRFILE			gir filename to process (without path or extension. It will be picked up from /usr/share/gir-1.0)
 	--package=PACKAGE		name of pc file (if the gir data with the package name is wrong)
-	--name=NAME			Name for the assembly
-					If this argument is not given, it will be generated automatically from the namespace set in the gir file
-	--out				Directory to place the generated bindings. default: $(pwd)/[Name of gir file]
+	--name=NAME				Name for the assembly
+							If this argument is not given, it will be generated automatically from the namespace set in the gir file
+	--out=PATH				Directory to place the generated bindings. default: $(pwd)/[Name of gir file]
 EOF
 }
 
@@ -64,14 +64,14 @@ if [ ! -d $OUTDIR/doc ]; then
 fi
 
 if [ -z "$PACKAGE" ]; then
-	PACKAGE=`@XSLTPROC@ --stringparam type package @prefix@/lib/bindinator/preprocess.xslt @GIRDIR@/$1.gir`
+	PACKAGE=`@XSLTPROC@ --stringparam type package @prefix@/lib/bindinator/preprocess.xslt @GIRDIR@/$GIRFILE.gir`
 fi
 ORIGINAL=$PACKAGE
-LIBS=`@XSLTPROC@ --stringparam type libs @prefix@/lib/bindinator/preprocess.xslt @GIRDIR@/$1.gir|sed 's/,/ /'`
-NS=`@XSLTPROC@ --stringparam type namespace @prefix@/lib/bindinator/preprocess.xslt @GIRDIR@/$1.gir`
-VERSION=`@XSLTPROC@ --stringparam type version @prefix@/lib/bindinator/preprocess.xslt @GIRDIR@/$1.gir`
-INCLUDES=`@XSLTPROC@ --stringparam type include @prefix@/lib/bindinator/preprocess.xslt @GIRDIR@/$1.gir|tr ' ' ','`
-GAPI=`@XSLTPROC@ --stringparam type gapi @prefix@/lib/bindinator/preprocess.xslt @GIRDIR@/$1.gir`
+LIBS=`@XSLTPROC@ --stringparam type libs @prefix@/lib/bindinator/preprocess.xslt @GIRDIR@/$GIRFILE.gir|sed 's/,/ /'`
+NS=`@XSLTPROC@ --stringparam type namespace @prefix@/lib/bindinator/preprocess.xslt @GIRDIR@/$GIRFILE.gir`
+VERSION=`@XSLTPROC@ --stringparam type version @prefix@/lib/bindinator/preprocess.xslt @GIRDIR@/$GIRFILE.gir`
+INCLUDES=`@XSLTPROC@ --stringparam type include @prefix@/lib/bindinator/preprocess.xslt @GIRDIR@/$GIRFILE.gir|tr ' ' ','`
+GAPI=`@XSLTPROC@ --stringparam type gapi @prefix@/lib/bindinator/preprocess.xslt @GIRDIR@/$GIRFILE.gir`
 
 echo "PACKAGE: $PACKAGE"
 echo "LIBS: $LIBS"
@@ -84,6 +84,9 @@ fi
 MODVERSION=$(@PKG_CONFIG@ --modversion $PACKAGE)
 if [ -z "$NAME" ]; then
 	NAME=$(echo $NS|tr '[:upper:]' '[:lower:]')
+fi
+if [ -z "$PCFILE" ]; then
+	PCFILE="$NAME"
 fi
 UNAME=$(echo $NS|tr '[:lower:]' '[:upper:]')
 GLUEVERSION=$(echo $MODVERSION|tr '.' '_')
@@ -128,10 +131,10 @@ LT_INIT
 dnl Package settings
 ASSEMBLY_COMPANY=""
 ASSEMBLY_COPYRIGHT="2012 Andreia Gaita"
-ASSEMBLY_DESCRIPTION="$1 bindings for Mono"
+ASSEMBLY_DESCRIPTION="$NAME bindings for Mono"
 ASSEMBLY_NAME="$NAME-sharp"
 ASSEMBLY_NAMESPACE="$NS"
-ASSEMBLY_PC="$NAME-sharp-$VERSION"
+ASSEMBLY_PC="$PCFILE-sharp-$VERSION"
 ASSEMBLY_SHORTNAME="$NAME"
 ASSEMBLY_TITLE="$NS#"
 ASSEMBLY_VERSION="$MODVERSION"
@@ -232,6 +235,6 @@ if [ ! -x $OUTDIR/doc/Makefile.am ]; then
 fi
 
 if [ ! -e $OUTDIR/sources/$NAME-sharp-api.raw ]; then
-	echo "Processing @GIRDIR@/$1.gir and outputting $OUTDIR/sources/$NAME-sharp-api.raw"
-	@XSLTPROC@ -o $OUTDIR/sources/$NAME-sharp-api.raw @prefix@/lib/bindinator/gir2gapi.xslt @GIRDIR@/$1.gir
+	echo "Processing @GIRDIR@/$GIRFILE.gir and outputting $OUTDIR/sources/$NAME-sharp-api.raw"
+	@XSLTPROC@ -o $OUTDIR/sources/$NAME-sharp-api.raw @prefix@/lib/bindinator/gir2gapi.xslt @GIRDIR@/$GIRFILE.gir
 fi
