@@ -70,7 +70,7 @@ ORIGINAL=$PACKAGE
 LIBS=`@XSLTPROC@ --stringparam type libs @prefix@/lib/bindinator/preprocess.xslt @GIRDIR@/$1.gir|sed 's/,/ /'`
 NS=`@XSLTPROC@ --stringparam type namespace @prefix@/lib/bindinator/preprocess.xslt @GIRDIR@/$1.gir`
 VERSION=`@XSLTPROC@ --stringparam type version @prefix@/lib/bindinator/preprocess.xslt @GIRDIR@/$1.gir`
-INCLUDES=`@XSLTPROC@ --stringparam type include @prefix@/lib/bindinator/preprocess.xslt @GIRDIR@/$1.gir`
+INCLUDES=`@XSLTPROC@ --stringparam type include @prefix@/lib/bindinator/preprocess.xslt @GIRDIR@/$1.gir|tr ' ' ','`
 GAPI=`@XSLTPROC@ --stringparam type gapi @prefix@/lib/bindinator/preprocess.xslt @GIRDIR@/$1.gir`
 
 echo "PACKAGE: $PACKAGE"
@@ -199,7 +199,7 @@ DISTCLEANFILES = $NAME-sharp-$VERSION.pc
 EOF
 
 sed "s,#REFERENCES#,$REF,g" @prefix@/lib/bindinator/Makefile.am.template|sed "s,#GLUELIBNAME#,$GLUELIB,g"| \
-sed "s,#GLUEINCLUDES#,$INCLUDES,g">$OUTDIR/sources/Makefile.am
+sed "s;#GLUEINCLUDES#;$INCLUDES;g">$OUTDIR/sources/Makefile.am
 
 sed "s,#GLUENAME#,$GLUENAME,g" @prefix@/lib/bindinator/Makefile-glue.am.template|sed "s,#GLUELIBNAME#,$GLUELIB,g"| \
 sed "s,#VERSION#,$GLUEVERSION,g"|sed "s,#MODVERSION#,$MODVERSION,g"|sed "s,#PREFIX#,$UNAME,g">$OUTDIR/sources/glue/Makefile.am

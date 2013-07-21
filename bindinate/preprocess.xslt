@@ -62,7 +62,9 @@ exclude-result-prefixes="xsl exsl gir c glib"
 				<xsl:value-of select="gir:repository/gir:namespace/@version" />
 			</xsl:when>
 			<xsl:when test="$type='include'">
-				<xsl:value-of select="gir:repository/c:include/@name" />
+				<xsl:for-each select="gir:repository/c:include">
+					<xsl:value-of select="@name" /><xsl:text> </xsl:text>
+				</xsl:for-each>
 			</xsl:when>
 			<xsl:when test="$type='gapi'">
 				<xsl:choose>
