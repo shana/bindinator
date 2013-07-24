@@ -8,6 +8,7 @@ Usage: bindinate gir
 	--name=NAME			Name for the assembly
 					If this argument is not given, it will be generated automatically from the namespace set in the gir file
 	--out				Directory to place the generated bindings. default: $(pwd)/[Name of gir file]
+	--windowslibraryname		Windows library file name, this is helpful when generating bindings targeting windows
 EOF
 }
 
@@ -22,6 +23,9 @@ for arg; do
       ;;
     --name=* )
       NAME=$(echo $arg|sed -e 's,.*=,,')
+      ;;
+    --windowslibraryname=* )
+      LIBRARYNAME=$(echo $arg|sed -e 's,.*=,,')
       ;;
     --out=* )
       OUTDIR=$(echo $arg|sed -e 's,.*=,,')
@@ -110,9 +114,14 @@ echo "LIB: $LIB"
 echo "SOLIB: $SOLIB"
 echo "GLUELIB: $GLUELIB"
 
+
+if [ -z "$LIBRARYNAME" ]; then
+	LIBNAME=$PACKAGE
+fi
+
 cat >$OUTDIR/out/$DLLMAP <<EOF
 <configuration>
-  <dllmap dll="$PACKAGE" target="$SOLIB"/>
+  <dllmap dll="$LIBNAME" target="$SOLIB"/>
 </configuration>
 EOF
 
@@ -210,7 +219,20 @@ chmod +x $OUTDIR/autogen.sh
 mkdir -p $OUTDIR/m4
 
 if [ ! -e $OUTDIR/sources/$NAME-sharp.metadata ]; then
-	cp @prefix@/lib/bindinator/metadata.template $OUTDIR/sources/$NAME-sharp.metadata 
+	if [ -z "$LIBRARYNAME" ]; then	
+cat >$OUTDIR/sources/$NAME-sharp.metadata <<EOF
+<?xml version="1.0"?>
+<metadata>
+</metadata>
+EOF
+	else
+cat >$OUTDIR/sources/$NAME-sharp.metadata <<EOF
+<?xml version="1.0"?>
+<metadata>
+	<attr path="/api/namespace" name="library">$LIBRARYNAME</attr>
+</metadata>
+EOF
+	fi
 fi
 #LT
 if [ ! -e "$OUTDIR/NEWS" ]; then touch $OUTDIR/NEWS; fi
