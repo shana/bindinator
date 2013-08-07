@@ -2,12 +2,13 @@
 usage()
 {
 cat <<EOF
-Usage: bindinate [--package=PACKAGE --name=NAME --out=PATH] --gir=GIRFILE
-	--gir=GIRFILE			gir filename to process (without path or extension. It will be picked up from /usr/share/gir-1.0)
-	--package=PACKAGE		name of pc file (if the gir data with the package name is wrong)
-	--name=NAME				Name for the assembly
-							If this argument is not given, it will be generated automatically from the namespace set in the gir file
-	--out=PATH				Directory to place the generated bindings. default: $(pwd)/[Name of gir file]
+Usage: bindinate [--package=PACKAGE --name=NAME --out=PATH --windowslibraryname=NAME] --gir=GIRFILE
+    --gir=GIRFILE              Gir filename to process (without path or extension. It will be picked up from /usr/share/gir-1.0)
+    --package=PACKAGE          name of pc file (if the gir data with the package name is wrong)
+    --name=NAME                Name for the assembly
+                               If this argument is not given, it will be generated automatically from the namespace set in the gir file
+    --out=PATH                 Directory to place the generated bindings. default: $(pwd)/[Name of gir file]
+    --windowslibraryname=NAME  Windows library file name, this is helpful when generating bindings targeting windows
 EOF
 }
 
@@ -23,22 +24,25 @@ for arg; do
     --name=* )
       NAME=$(echo $arg|sed -e 's,.*=,,')
       ;;
+    --windowslibraryname=* )
+      LIBRARYNAME=$(echo $arg|sed -e 's,.*=,,')
+      ;;
     --out=* )
       OUTDIR=$(echo $arg|sed -e 's,.*=,,')
       ;;
-    *) 
-      GIRFILE=$arg
+    --gir=*) 
+      GIRFILE=$(echo $arg|sed -e 's,.*=,,')
       ;;
   esac
 done
 
-echo "Processing $GIRFILE"
-
-
 if [ ! -e @GIRDIR@/$GIRFILE.gir ]; then
-	echo "@GIRDIR@/$GIRFILE.gir not found, exiting"
+	echo "@GIRDIR@/$GIRFILE.gir not found, exiting\n"
+   	usage
 	exit 1
 fi
+
+echo "Processing $GIRFILE"
 
 if [ -z "$OUTDIR" ]; then
 	OUTDIR=$GIRFILE/
@@ -113,9 +117,14 @@ echo "LIB: $LIB"
 echo "SOLIB: $SOLIB"
 echo "GLUELIB: $GLUELIB"
 
+
+if [ -z "$LIBRARYNAME" ]; then
+	LIBNAME=$PACKAGE
+fi
+
 cat >$OUTDIR/out/$DLLMAP <<EOF
 <configuration>
-  <dllmap dll="$PACKAGE" target="$SOLIB"/>
+  <dllmap dll="$LIBNAME" target="$SOLIB"/>
 </configuration>
 EOF
 
@@ -213,7 +222,20 @@ chmod +x $OUTDIR/autogen.sh
 mkdir -p $OUTDIR/m4
 
 if [ ! -e $OUTDIR/sources/$NAME-sharp.metadata ]; then
-	cp @prefix@/lib/bindinator/metadata.template $OUTDIR/sources/$NAME-sharp.metadata 
+	if [ -z "$LIBRARYNAME" ]; then	
+cat >$OUTDIR/sources/$NAME-sharp.metadata <<EOF
+<?xml version="1.0"?>
+<metadata>
+</metadata>
+EOF
+	else
+cat >$OUTDIR/sources/$NAME-sharp.metadata <<EOF
+<?xml version="1.0"?>
+<metadata>
+	<attr path="/api/namespace" name="library">$LIBRARYNAME</attr>
+</metadata>
+EOF
+	fi
 fi
 #LT
 if [ ! -e "$OUTDIR/NEWS" ]; then touch $OUTDIR/NEWS; fi

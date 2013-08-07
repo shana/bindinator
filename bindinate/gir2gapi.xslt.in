@@ -311,7 +311,7 @@ exclude-result-prefixes="xsl exsl gir c glib"
 			</xsl:call-template>
 		</xsl:variable>
 		
-		<union name="{$name}" cname="{exsl:node-set($type)/type/@gtype}">
+		<union name="{$name}" cname="{exsl:node-set($type)/type/@ctype}">
 			<xsl:apply-templates>
 				<xsl:with-param name="external" select="$external" />
 			</xsl:apply-templates>
