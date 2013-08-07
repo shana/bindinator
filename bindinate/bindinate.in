@@ -2,13 +2,14 @@
 usage()
 {
 cat <<EOF
-Usage: bindinate [--package=PACKAGE --name=NAME --out=PATH --windowslibraryname=NAME] --gir=GIRFILE
+Usage: bindinate [--package=PACKAGE --name=NAME --out=PATH --windowslibraryname=NAME --dependencies=DEP1,DEP2] --gir=GIRFILE
     --gir=GIRFILE              Gir filename to process (without path or extension. It will be picked up from /usr/share/gir-1.0)
     --package=PACKAGE          name of pc file (if the gir data with the package name is wrong)
     --name=NAME                Name for the assembly
                                If this argument is not given, it will be generated automatically from the namespace set in the gir file
     --out=PATH                 Directory to place the generated bindings. default: $(pwd)/[Name of gir file]
     --windowslibraryname=NAME  Windows library file name, this is helpful when generating bindings targeting windows
+    --dependencies	       Add dependencies seperated by a ',' like MONOCAIRO,SOUPSHARP
 EOF
 }
 
@@ -29,6 +30,9 @@ for arg; do
       ;;
     --out=* )
       OUTDIR=$(echo $arg|sed -e 's,.*=,,')
+      ;;
+    --dependencies=* )
+      DEPENDENCIES=$(echo $arg|sed -e 's,.*=,,')
       ;;
     --gir=*) 
       GIRFILE=$(echo $arg|sed -e 's,.*=,,')
@@ -164,6 +168,10 @@ AC_SUBST($PLIBS)
 AC_SUBST($PCFLAGS)
 
 EOF
+
+if [ -n "$DEPENDENCIES" ]; then
+	echo $DEPENDENCIES | sed 's/,/\n/g' >> $OUTDIR/m4.custom
+fi
 
 if [ -e $OUTDIR/m4.custom ]; then
 	cat >>$OUTDIR/$CONFIGURE <<EOF
