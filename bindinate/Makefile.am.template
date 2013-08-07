@@ -5,6 +5,9 @@ DLL = $(top_srcdir)/out/$(ASSEMBLY_NAME).dll
 DLLMAP = $(top_srcdir)/out/$(ASSEMBLY_NAME).dll.config
 GLUEDIR = $(srcdir)/glue
 
+gapidir = $(datadir)/gapi-3.0
+gapi_DATA = $(API)
+
 # Add any extra source files you need here
 sources =
 
