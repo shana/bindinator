@@ -59,7 +59,9 @@ PKG_CHECK_MODULES(GTK_SHARP, gtk-sharp-#GAPI#.0)
 AC_SUBST(GTK_SHARP_CFLAGS)
 AC_SUBST(GTK_SHARP_LIBS)
 gtksharp_prefix=`pkg-config --variable=prefix gtk-sharp-#GAPI#.0`
+GAPIXMLDIR=`pkg-config --variable=gapidir gtk-sharp-#GAPI#.0`
 AC_SUBST(gtksharp_prefix)
+AC_SUBST(GAPIXMLDIR)
 
 dnl Check for gapi
 AC_PATH_PROG(GAPI_PARSER, gapi#GAPI#-parser, no)

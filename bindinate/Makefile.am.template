@@ -5,7 +5,7 @@ DLL = $(top_srcdir)/out/$(ASSEMBLY_NAME).dll
 DLLMAP = $(top_srcdir)/out/$(ASSEMBLY_NAME).dll.config
 GLUEDIR = $(srcdir)/glue
 
-gapidir = $(datadir)/gapi-3.0
+gapidir = $(GAPIXMLDIR)
 gapi_DATA = $(API)
 
 # Add any extra source files you need here
@@ -37,7 +37,7 @@ generated-stamp: $(API)
 	 $(GAPI_CODEGEN) --generate $(srcdir)/$(API) $(GTK_SHARP_CFLAGS) \
 		--outdir=generated \
 		--glue-filename=$(GLUEDIR)/generated.c --gluelib-name=#GLUELIBNAME# \
-		--glue-includes=#GLUEINCLUDES# \
+		--glue-includes=#GLUEINCLUDES# --gapidir=$(gapidir) \
 	 	--assembly-name=$(ASSEMBLY_NAME) && touch generated-stamp
 
 $(DLL): $(build_sources) generated-stamp
