@@ -139,6 +139,9 @@ exclude-result-prefixes="xsl exsl gir c glib"
 			<xsl:apply-templates select="gir:bitfield">
 				<xsl:with-param name="external" select="$external" />
 			</xsl:apply-templates>
+			<xsl:apply-templates select="gir:callback">
+				<xsl:with-param name="external" select="$external" />
+			</xsl:apply-templates>
 			<xsl:apply-templates select="gir:interface">
 				<xsl:with-param name="external" select="$external" />
 			</xsl:apply-templates>
@@ -151,12 +154,7 @@ exclude-result-prefixes="xsl exsl gir c glib"
 			<xsl:apply-templates select="gir:record[not(@glib:is-gtype-struct-for)]">
 				<xsl:with-param name="external" select="$external" />
 			</xsl:apply-templates>
-			<xsl:apply-templates select="gir:callback">
-				<xsl:with-param name="external" select="$external" />
-			</xsl:apply-templates>
-			<xsl:apply-templates select="*/gir:field/gir:callback">
-				<xsl:with-param name="external" select="$external" />
-			</xsl:apply-templates>
+
 
 			<object name="Global" cname="{@name}Global" opaque="true">
 				<xsl:for-each select="gir:function">
