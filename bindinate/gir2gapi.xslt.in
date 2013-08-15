@@ -78,6 +78,7 @@ exclude-result-prefixes="xsl exsl gir c glib"
 			<mapping from="none" to="void" />
 			<mapping from="any*" to="gpointer*"/>
 			<mapping from="GPtrArray*" to="GPtrArray"/>
+			<mapping from="filename" to="gfilename*" />
 		</mappings>
 	</xsl:variable>
 	<!-- START HERE -->
