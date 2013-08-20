@@ -10,6 +10,7 @@ Usage: bindinate [--package=PACKAGE --name=NAME --out=PATH --windowslibraryname=
     --out=PATH                 Directory to place the generated bindings. default: $(pwd)/[Name of gir file]
     --windowslibraryname=NAME  Windows library file name, this is helpful when generating bindings targeting windows
     --dependencies	       Add dependencies seperated by a ',' like MONOCAIRO,SOUPSHARP
+    --merge-with	       A comma seperated list of gir files to merge in
 EOF
 }
 
@@ -33,6 +34,9 @@ for arg; do
       ;;
     --dependencies=* )
       DEPENDENCIES=$(echo $arg|sed -e 's,.*=,,')
+      ;;
+    --merge-with=* )
+      MERGEWITH=$(echo $arg|sed -e 's,.*=,,')
       ;;
     --gir=*) 
       GIRFILE=$(echo $arg|sed -e 's,.*=,,')
@@ -71,15 +75,22 @@ if [ ! -d $OUTDIR/doc ]; then
 	mkdir -p $OUTDIR/doc
 fi
 
+FULLGIRFILE=@GIRDIR@/$GIRFILE.gir
+
+if [ -n "$MERGEWITH" ]; then
+	`@XSLTPROC@ --stringparam files $MERGEWITH --stringparam girdir @GIRDIR@ -o $OUTDIR/sources/$GIRFILE-merged.gir @prefix@/lib/bindinator/merge.xslt $FULLGIRFILE`
+	FULLGIRFILE=$OUTDIR/sources/$GIRFILE-merged.gir
+fi
+
 if [ -z "$PACKAGE" ]; then
 	PACKAGE=`@XSLTPROC@ --stringparam type package @prefix@/lib/bindinator/preprocess.xslt @GIRDIR@/$GIRFILE.gir`
 fi
 ORIGINAL=$PACKAGE
-LIBS=`@XSLTPROC@ --stringparam type libs @prefix@/lib/bindinator/preprocess.xslt @GIRDIR@/$GIRFILE.gir|sed 's/,/ /'`
-NS=`@XSLTPROC@ --stringparam type namespace @prefix@/lib/bindinator/preprocess.xslt @GIRDIR@/$GIRFILE.gir`
-VERSION=`@XSLTPROC@ --stringparam type version @prefix@/lib/bindinator/preprocess.xslt @GIRDIR@/$GIRFILE.gir`
-INCLUDES=`@XSLTPROC@ --stringparam type include @prefix@/lib/bindinator/preprocess.xslt @GIRDIR@/$GIRFILE.gir|tr ' ' ','`
-GAPI=`@XSLTPROC@ --stringparam type gapi @prefix@/lib/bindinator/preprocess.xslt @GIRDIR@/$GIRFILE.gir`
+LIBS=`@XSLTPROC@ --stringparam type libs @prefix@/lib/bindinator/preprocess.xslt $FULLGIRFILE|sed 's/,/ /'`
+NS=`@XSLTPROC@ --stringparam type namespace @prefix@/lib/bindinator/preprocess.xslt $FULLGIRFILE`
+VERSION=`@XSLTPROC@ --stringparam type version @prefix@/lib/bindinator/preprocess.xslt $FULLGIRFILE`
+INCLUDES=`@XSLTPROC@ --stringparam type include @prefix@/lib/bindinator/preprocess.xslt $FULLGIRFILE|tr ' ' ','`
+GAPI=`@XSLTPROC@ --stringparam type gapi @prefix@/lib/bindinator/preprocess.xslt $FULLGIRFILE`
 
 echo "PACKAGE: $PACKAGE"
 echo "LIBS: $LIBS"
@@ -265,6 +276,6 @@ if [ ! -x $OUTDIR/doc/Makefile.am ]; then
 fi
 
 if [ ! -e $OUTDIR/sources/$NAME-sharp-api.raw ]; then
-	echo "Processing @GIRDIR@/$GIRFILE.gir and outputting $OUTDIR/sources/$NAME-sharp-api.raw"
-	@XSLTPROC@ -o $OUTDIR/sources/$NAME-sharp-api.raw @prefix@/lib/bindinator/gir2gapi.xslt @GIRDIR@/$GIRFILE.gir
+	echo "Processing $FULLGIRFILE and outputting $OUTDIR/sources/$NAME-sharp-api.raw"
+	@XSLTPROC@ -o $OUTDIR/sources/$NAME-sharp-api.raw @prefix@/lib/bindinator/gir2gapi.xslt $FULLGIRFILE
 fi
