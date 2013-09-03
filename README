@@ -1,3 +1,8 @@
+The master branch is currently tracking the work being done as part of
+Google Summer of Code at https://github.com/mono-soc-2013/bindinator
+
+You'll also need the gtk-sharp at htts://github.com/mono-soc-2013/gtk-sharp
+
 The bindinator installs a tool called bindinate, which can be called
 with the name of a gir file to generate a binding project.
 
