@@ -258,7 +258,7 @@ exclude-result-prefixes="xsl exsl gir c glib"
 			<xsl:attribute name="hidden"><xsl:value-of select="$hidden"/></xsl:attribute>
 			
 			<xsl:if test="not(@glib:type-struct) and $nodename='interface'">
-				<xsl:attribute name="consume-only">true</xsl:attribute>
+				<xsl:attribute name="consume_only">true</xsl:attribute>
 			</xsl:if>
 			
 			<xsl:if test="@parent">
