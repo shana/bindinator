@@ -524,6 +524,18 @@ exclude-result-prefixes="xsl exsl gir c glib"
 							<xsl:attribute name="allow-none"><xsl:value-of select="@allow-none" /></xsl:attribute>
 						</xsl:if>
 						
+						<xsl:if test="@closure">
+							<xsl:attribute name="closure">
+								<xsl:value-of select="@closure"/>
+							</xsl:attribute>
+						</xsl:if>
+						
+						<xsl:if test="@destroy">
+							<xsl:attribute name="destroy">
+								<xsl:value-of select="@destroy"/>
+							</xsl:attribute>
+						</xsl:if>
+						
 					<xsl:call-template name="output-type">
 						<xsl:with-param name="name" select="@name" />
 						<xsl:with-param name="typename" select="gir:type/@name" />
