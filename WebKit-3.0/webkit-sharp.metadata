@@ -1,6 +1,0 @@
-<?xml version="1.0"?>
-<metadata>
-<attr path="//implements/interface[@cname='AtkImplementorIface']" name="cname">AtkImplementor</attr>
-<attr path="//implements/interface[@cname='GtkBuildable']" name="hidden">true</attr>
-</metadata>
-

@@ -1,5 +1,0 @@
-AC_DEFUN([CHECK_GIOSHARP],
-[
-        PKG_CHECK_MODULES(GIOSHARP, gio-sharp-2.0)
-        AC_SUBST(GIOSHARP_LIBS)
-])
