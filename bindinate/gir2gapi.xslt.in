@@ -256,6 +256,11 @@ exclude-result-prefixes="xsl exsl gir c glib"
 			<xsl:attribute name="abstract"><xsl:value-of select="$abstract"/></xsl:attribute>
 			<xsl:attribute name="opaque"><xsl:value-of select="$opaque"/></xsl:attribute>
 			<xsl:attribute name="hidden"><xsl:value-of select="$hidden"/></xsl:attribute>
+			
+			<xsl:if test="not(@glib:type-struct) and $nodename='interface'">
+				<xsl:attribute name="consume_only">true</xsl:attribute>
+			</xsl:if>
+			
 			<xsl:if test="@parent">
 				<xsl:attribute name="parent">
 					<xsl:value-of select="$parent"/>
@@ -517,6 +522,18 @@ exclude-result-prefixes="xsl exsl gir c glib"
 						
 						<xsl:if test="@allow-none">
 							<xsl:attribute name="allow-none"><xsl:value-of select="@allow-none" /></xsl:attribute>
+						</xsl:if>
+						
+						<xsl:if test="@closure">
+							<xsl:attribute name="closure">
+								<xsl:value-of select="@closure"/>
+							</xsl:attribute>
+						</xsl:if>
+						
+						<xsl:if test="@destroy">
+							<xsl:attribute name="destroy">
+								<xsl:value-of select="@destroy"/>
+							</xsl:attribute>
 						</xsl:if>
 						
 					<xsl:call-template name="output-type">
