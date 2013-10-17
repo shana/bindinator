@@ -931,13 +931,8 @@ exclude-result-prefixes="xsl exsl gir c glib"
 			</xsl:call-template>
 		</xsl:variable>
 
-		<!-- hack to replace enums with int because gapi is silly and doesn't register their types -->
 		<xsl:variable name="ptype">
 			<xsl:choose>
-
-			<xsl:when test="//*/gir:namespace/gir:enumeration[@name=$typename] and not(//*/gir:namespace/gir:enumeration[@name=$typename]/@glib:get-type) ">
-				<xsl:text>int</xsl:text>
-			</xsl:when>
 			<xsl:when test="$transfer-ownership='none' and exsl:node-set($consttypes)/types/type[@name=exsl:node-set($ptypemap)/type/@ctype]">
 				<xsl:text>const-</xsl:text><xsl:value-of select="exsl:node-set($ptypemap)/type/@ctype"/>
 			</xsl:when>
