@@ -11,6 +11,7 @@ Usage: bindinate [--package=PACKAGE --name=NAME --out=PATH --windowslibraryname=
     --windowslibraryname=NAME  Windows library file name, this is helpful when generating bindings targeting windows
     --dependencies	       Add dependencies seperated by a ',' like MONOCAIRO,SOUPSHARP
     --merge-with	       A comma seperated list of gir files to merge in
+    --regenerate	       Only regenerate the API xml, must be called from inside of the bindings directory
 EOF
 }
 
@@ -37,6 +38,10 @@ for arg; do
       ;;
     --merge-with=* )
       MERGEWITH=$(echo $arg|sed -e 's,.*=,,')
+      ;;
+    --regenerate=* )
+      REGENERATE=$(echo $arg|sed -e 's,.*=,,')
+      OUTDIR=.
       ;;
     --gir=*) 
       GIRFILE=$(echo $arg|sed -e 's,.*=,,')
@@ -135,6 +140,12 @@ echo "GLUELIB: $GLUELIB"
 
 if [ -z "$LIBRARYNAME" ]; then
 	LIBNAME=$PACKAGE
+fi
+
+if [ -n "$REGENERATE" ]; then
+	echo "Processing $FULLGIRFILE and outputting sources/$NAME-sharp-api.raw"
+	@XSLTPROC@ -o sources/$NAME-sharp-api.raw @prefix@/lib/bindinator/gir2gapi.xslt $FULLGIRFILE
+	exit 0
 fi
 
 cat >$OUTDIR/out/$DLLMAP <<EOF
