@@ -159,13 +159,13 @@ exclude-result-prefixes="xsl exsl gir c glib"
 
 
 			<object name="Global" cname="{@name}Global" opaque="true">
-				<xsl:for-each select="gir:function">
+				<xsl:for-each select="gir:function[not(@introspectable=0)]">
 					<xsl:call-template name="output-method">
 						<xsl:with-param name="shared">true</xsl:with-param>
 						<xsl:with-param name="external" select="$external" />
 					</xsl:call-template>
 				</xsl:for-each>
-				<xsl:for-each select="gir:method">
+				<xsl:for-each select="gir:method[not(@introspectable=0)]">
 					<xsl:call-template name="output-method">
 						<xsl:with-param name="shared">true</xsl:with-param>
 						<xsl:with-param name="external" select="$external" />
