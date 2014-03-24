@@ -237,14 +237,7 @@
 				<xsl:otherwise>false</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
-
-		<xsl:variable name="abstract">
-			<xsl:choose>
-				<xsl:when test="@abstract='1'">true</xsl:when>
-				<xsl:otherwise>false</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-
+		
 		<xsl:variable name="nodename">
 			<xsl:choose>
 				<xsl:when test="name()='interface'">interface</xsl:when>
@@ -259,9 +252,9 @@
 			<xsl:attribute name="cname">
 				<xsl:value-of select="exsl:node-set($type)/type/@gtype"/>
 			</xsl:attribute>
-			<xsl:attribute name="abstract">
-				<xsl:value-of select="$abstract"/>
-			</xsl:attribute>
+			<xsl:if test="@abstract=1">
+				<xsl:attribute name="defaultconstructoraccess">protected</xsl:attribute>
+			</xsl:if>
 			<xsl:attribute name="opaque">
 				<xsl:value-of select="$opaque"/>
 			</xsl:attribute>
