@@ -193,7 +193,7 @@
 	</xsl:template>
 
 
-	<xsl:template match="gir:class[not(@glib:fundamental='1')] | gir:interface">
+	<xsl:template match="gir:class | gir:interface">
 		<xsl:param name="external"/>
 
 		<xsl:variable name="ptype">
@@ -225,7 +225,8 @@
 
 		<xsl:variable name="opaque">
 			<xsl:choose>
-				<xsl:when test="contains(gir:doc/text(), 'opaque') or @disguised='1'"
+				<xsl:when
+					test="contains(gir:doc/text(), 'opaque') or @disguised='1' or @glib:fundamental='1'"
 					>true</xsl:when>
 				<xsl:otherwise>false</xsl:otherwise>
 			</xsl:choose>
@@ -241,6 +242,7 @@
 		<xsl:variable name="nodename">
 			<xsl:choose>
 				<xsl:when test="name()='interface'">interface</xsl:when>
+				<xsl:when test="@glib:fundamental='1'">struct</xsl:when>
 				<xsl:otherwise>object</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
@@ -296,6 +298,20 @@
 			<method name="GetType" cname="{@glib:get-type}" shared="true">
 				<return-type type="GType"/>
 			</method>
+
+			<xsl:if test="@glib:ref-func">
+				<method name="Ref" cname="{@glib:ref-func}">
+					<return-type type="void"/>
+					<parameters/>
+				</method>
+			</xsl:if>
+
+			<xsl:if test="@glib:unref-func">
+				<method name="Unref" cname="{@glib:unref-func}">
+					<return-type type="void"/>
+					<parameters/>
+				</method>
+			</xsl:if>
 
 			<xsl:apply-templates>
 				<xsl:with-param name="external" select="$external"/>
