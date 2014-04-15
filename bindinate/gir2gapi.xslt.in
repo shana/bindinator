@@ -1518,8 +1518,12 @@
 			<xsl:when test="$l/gir:interface[@name=$t]">
 				<xsl:attribute name="ctype">
 					<xsl:choose>
-						<xsl:when test="$l/gir:interface[@name=$t]/@c:type"><xsl:value-of select="$l/gir:interface[@name=$t]/@c:type"/></xsl:when>
-						<xsl:otherwise><xsl:value-of select="$l/gir:interface[@name=$t]/@glib:type-name"/></xsl:otherwise>
+						<xsl:when test="$l/gir:interface[@name=$t]/@c:type">
+							<xsl:value-of select="$l/gir:interface[@name=$t]/@c:type"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:value-of select="$l/gir:interface[@name=$t]/@glib:type-name"/>
+						</xsl:otherwise>
 					</xsl:choose>
 					<xsl:if test="$nopointer!=1">*</xsl:if>
 				</xsl:attribute>
