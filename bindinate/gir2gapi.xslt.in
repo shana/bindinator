@@ -182,8 +182,12 @@
 							<xsl:with-param name="external" select="$external"/>
 						</xsl:call-template>
 						<xsl:attribute name="name">
-							<xsl:call-template name="map-name">
-								<xsl:with-param name="name" select="@name"/>
+							<xsl:call-template name="sanitize">
+								<xsl:with-param name="name">
+									<xsl:call-template name="map-name">
+										<xsl:with-param name="name" select="@name"/>
+									</xsl:call-template>
+								</xsl:with-param>
 							</xsl:call-template>
 						</xsl:attribute>
 					</constant>
@@ -238,7 +242,7 @@
 				<xsl:otherwise>false</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
-		
+
 		<xsl:variable name="nodename">
 			<xsl:choose>
 				<xsl:when test="name()='interface'">interface</xsl:when>
