@@ -1412,7 +1412,7 @@
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:variable name="t" select="$type"/>
-				<xsl:variable name="l" select="//gir:repository/gir:namespace"/>
+				<xsl:variable name="l" select="ancestor::gir:namespace"/>
 
 				<xsl:call-template name="map-gtype-inner">
 					<xsl:with-param name="type" select="$type"/>
