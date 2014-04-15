@@ -299,6 +299,24 @@
 				<return-type type="GType"/>
 			</method>
 
+			<xsl:if test="@glib:get-value-func">
+				<constructor cname="{@glib:get-value-func}">
+					<parameters>
+						<parameter name="value" type="GValue*"/>
+					</parameters>
+				</constructor>
+			</xsl:if>
+
+			<xsl:if test="@glib:set-value-func">
+				<method name="SetGValue" cname="{@glib:set-value-func}" shared="true">
+					<return-type type="void"/>
+					<parameters>
+						<parameter name="value" type="GValue*" pass_as="ref"/>
+						<parameter name="obj" type="{exsl:node-set($type)/type/@gtype}*"/>
+					</parameters>
+				</method>
+			</xsl:if>
+
 			<xsl:if test="@glib:ref-func">
 				<method name="Ref" cname="{@glib:ref-func}">
 					<return-type type="void"/>
