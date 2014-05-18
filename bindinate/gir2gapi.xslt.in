@@ -922,13 +922,18 @@
 
 	<xsl:template match="gir:property[not(@private)]">
 		<xsl:param name="external"/>
-
-		<xsl:if
-			test="not(../gir:method[@name = translate(current()/@name,'-','_')]) and not(../gir:virtual-method[@name = translate(current()/@name,'-','_')])">
-
 			<xsl:variable name="name">
 				<xsl:call-template name="capitalize">
-					<xsl:with-param name="string" select="@name"/>
+					<xsl:with-param name="string">
+						<xsl:choose>
+							<xsl:when test="../gir:method[@name = translate(current()/@name,'-','_')] or ../gir:virtual-method[@name = translate(current()/@name,'-','_')]">
+								<xsl:value-of select="@name"/>Prop
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:value-of select="@name"/>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:with-param>
 					<xsl:with-param name="sep">-</xsl:with-param>
 				</xsl:call-template>
 			</xsl:variable>
@@ -992,7 +997,7 @@
 					writeable="{$writable}" construct="{$construct}"
 					construct-only="{$construct-only}"/>
 			</xsl:if>
-		</xsl:if>
+		
 	</xsl:template>
 
 	<xsl:template match="gir:*"/>
