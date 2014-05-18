@@ -1231,6 +1231,16 @@
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:if>
+		
+		<xsl:variable name="pos" select="position()"></xsl:variable>
+		
+		<xsl:variable name="arrayIndex">
+			<xsl:value-of select="count(..//gir:parameter[$pos = (gir:array/@length+1)]/preceding-sibling::gir:parameter)"/>
+		</xsl:variable>
+		
+		<xsl:if test="$arrayIndex != 0">
+			<xsl:attribute name="array_index"><xsl:value-of select="$arrayIndex"/></xsl:attribute>
+		</xsl:if>
 
 		<xsl:if test="gir:array">
 			<xsl:attribute name="array">true</xsl:attribute>
