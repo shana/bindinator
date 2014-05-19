@@ -144,6 +144,9 @@ fi
 
 if [ -n "$REGENERATE" ]; then
 	echo "Processing $FULLGIRFILE and outputting sources/$NAME-sharp-api.raw"
+	if [ -f $OUTDIR/sources/$GIRFILE-merged.metadata ]; then
+		@GAPIFIXUP@ --api=$FULLGIRFILE --metadata=$OUTDIR/sources/$GIRFILE-merged.metadata
+	fi
 	@XSLTPROC@ -o sources/$NAME-sharp-api.raw @prefix@/lib/bindinator/gir2gapi.xslt $FULLGIRFILE
 	exit 0
 fi

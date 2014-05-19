@@ -19,6 +19,18 @@ fi
 GIRDIR=`pkg-config --variable=girdir gobject-introspection-1.0`/
 AC_SUBST(GIRDIR)
 
+AC_PATH_PROG(GAPIFIXUP, gapi3-fixup, no)
+if test "x$GAPIFIXUP" = "xno"; then
+	AC_MSG_CHECKING(for gapi3-fixup.exe)
+	GAPIFIXUP=`which gapi3-fixup.exe 2> /dev/null`
+	if test "x$GAPIFIXUP" = "xno" ; then
+		AC_MSG_ERROR(['gapi3_fixup'/'gapi3-fixup.exe' not found.])
+	fi
+	AC_MSG_RESULT($GAPIFIXUP)
+	GAPIFIXUP="$MONO $GAPI_FIXUP"
+fi
+AC_SUBST(GAPIFIXUP)
+
 
 AC_CONFIG_FILES([
 	Makefile
