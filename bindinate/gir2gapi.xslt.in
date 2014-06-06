@@ -323,7 +323,7 @@
 
 			<xsl:if test="@glib:ref-func">
 				<method name="Ref" cname="{@glib:ref-func}">
-					<return-type type="void"/>
+					<return-type type="{exsl:node-set($type)/type/@gtype}*" owned="true"/>
 					<parameters/>
 				</method>
 			</xsl:if>
