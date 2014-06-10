@@ -323,7 +323,7 @@
 
 			<xsl:if test="@glib:ref-func">
 				<method name="Ref" cname="{@glib:ref-func}">
-					<return-type type="void"/>
+					<return-type type="{exsl:node-set($type)/type/@gtype}*" owned="true"/>
 					<parameters/>
 				</method>
 			</xsl:if>
@@ -466,16 +466,15 @@
 								<xsl:otherwise>1</xsl:otherwise>
 							</xsl:choose>
 						</xsl:variable>
-						<xsl:if
-							test="not(../glib:signal[@name = translate(current()/@name,'_','-')])">
-							<xsl:call-template name="output-method">
-								<xsl:with-param name="cname" select="@name"/>
-								<xsl:with-param name="nodename">virtual_method</xsl:with-param>
-								<xsl:with-param name="shared">true</xsl:with-param>
-								<xsl:with-param name="introspectable" select="$introspectable"/>
-								<xsl:with-param name="external" select="$external"/>
-							</xsl:call-template>
-						</xsl:if>
+
+						<xsl:call-template name="output-method">
+							<xsl:with-param name="cname" select="@name"/>
+							<xsl:with-param name="nodename">virtual_method</xsl:with-param>
+							<xsl:with-param name="shared">true</xsl:with-param>
+							<xsl:with-param name="introspectable" select="$introspectable"/>
+							<xsl:with-param name="external" select="$external"/>
+						</xsl:call-template>
+						
 					</xsl:if>
 				</xsl:for-each>
 
@@ -493,11 +492,11 @@
 
 	<xsl:template match="gir:method[not(@introspectable=0)]">
 		<xsl:param name="external"/>
-		<xsl:if test="not(../glib:signal[@name = translate(current()/@name,'_','-')])">
-			<xsl:call-template name="output-method">
-				<xsl:with-param name="external" select="$external"/>
-			</xsl:call-template>
-		</xsl:if>
+
+		<xsl:call-template name="output-method">
+			<xsl:with-param name="external" select="$external"/>
+		</xsl:call-template>
+		
 	</xsl:template>
 
 	<xsl:template match="gir:virtual-method">
@@ -509,14 +508,14 @@
 				<xsl:otherwise>1</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
-		<xsl:if test="not(../glib:signal[@name = translate(current()/@name,'_','-')])">
-			<xsl:call-template name="output-method">
-				<xsl:with-param name="nodename">virtual_method</xsl:with-param>
-				<xsl:with-param name="cname" select="@name"/>
-				<xsl:with-param name="introspectable" select="$introspectable"/>
-				<xsl:with-param name="external" select="$external"/>
-			</xsl:call-template>
-		</xsl:if>
+
+		<xsl:call-template name="output-method">
+			<xsl:with-param name="nodename">virtual_method</xsl:with-param>
+			<xsl:with-param name="cname" select="@name"/>
+			<xsl:with-param name="introspectable" select="$introspectable"/>
+			<xsl:with-param name="external" select="$external"/>
+		</xsl:call-template>
+		
 	</xsl:template>
 
 	<xsl:template match="gir:namespace/gir:function[not(@introspectable=0)]"/>
@@ -690,17 +689,18 @@
 	<xsl:template match="glib:signal">
 		<xsl:param name="external"/>
 
-		<xsl:variable name="name">
+		<xsl:variable name="name" >
 			<xsl:call-template name="capitalize">
 				<xsl:with-param name="string" select="@name"/>
 				<xsl:with-param name="sep">
 					<xsl:text>-</xsl:text>
 				</xsl:with-param>
 			</xsl:call-template>
+			<xsl:if test="../gir:method[@name = translate(current()/@name,'-','_')] or ../gir:virtual-method[@name = translate(current()/@name,'-','_')]">Event</xsl:if>
 		</xsl:variable>
 
 		<signal name="{$name}" cname="{@name}" when="{@when}">
-
+			
 			<xsl:if test="../gir:virtual-method[@name = translate(current()/@name,'-','_')]">
 				<xsl:attribute name="field_name">
 					<xsl:value-of select="translate(current()/@name,'-','_')"/>
@@ -754,6 +754,9 @@
 					</parameter>
 				</xsl:for-each>
 			</parameters>
+			<xsl:if test="../gir:method[@name = translate(current()/@name,'-','_')] or ../gir:virtual-method[@name = translate(current()/@name,'-','_')]">
+				<warning>Signal renamed because of existing method with same name</warning>
+			</xsl:if>
 		</signal>
 
 	</xsl:template>
