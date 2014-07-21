@@ -781,18 +781,23 @@
 				<xsl:sort select="@value" data-type="number"/>
 
 				<xsl:variable name="ename">
-					<xsl:choose>
-						<xsl:when test="@name = @value">
-							<xsl:call-template name="capitalize">
-								<xsl:with-param name="string" select="@c:identifier"/>
-							</xsl:call-template>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:call-template name="capitalize">
-								<xsl:with-param name="string" select="@name"/>
-							</xsl:call-template>
-						</xsl:otherwise>
-					</xsl:choose>
+					<xsl:variable name="mname">
+						<xsl:choose>
+							<xsl:when test="@name = @value">
+								<xsl:call-template name="sanitize">
+									<xsl:with-param name="name" select="@c:identifier"/>
+								</xsl:call-template>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:call-template name="sanitize">
+									<xsl:with-param name="name" select="@name"/>
+								</xsl:call-template>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:variable>
+					<xsl:call-template name="capitalize">
+						<xsl:with-param name="string" select="$mname"/>
+					</xsl:call-template>
 				</xsl:variable>
 				<xsl:variable name="mname">
 					<xsl:call-template name="map-name">
@@ -829,18 +834,23 @@
 				<xsl:sort select="@value" data-type="number"/>
 
 				<xsl:variable name="ename">
-					<xsl:choose>
-						<xsl:when test="@name = @value">
-							<xsl:call-template name="capitalize">
-								<xsl:with-param name="string" select="@c:identifier"/>
-							</xsl:call-template>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:call-template name="capitalize">
-								<xsl:with-param name="string" select="@name"/>
-							</xsl:call-template>
-						</xsl:otherwise>
-					</xsl:choose>
+					<xsl:variable name="mname">
+						<xsl:choose>
+							<xsl:when test="@name = @value">
+								<xsl:call-template name="sanitize">
+									<xsl:with-param name="name" select="@c:identifier"/>
+								</xsl:call-template>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:call-template name="sanitize">
+									<xsl:with-param name="name" select="@name"/>
+								</xsl:call-template>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:variable>
+					<xsl:call-template name="capitalize">
+						<xsl:with-param name="string" select="$mname"/>
+					</xsl:call-template>
 				</xsl:variable>
 				<xsl:variable name="mname">
 					<xsl:call-template name="map-name">
