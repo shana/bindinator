@@ -15,9 +15,11 @@ UPDATE_ASSEMBLIES = $(addprefix -assembly:, $(ASSEMBLIES))
 all: $(TARGETS)
 
 update:
+	mkdir -p $(srcdir)/en
 	$(MONODOCER) $(UPDATE_ASSEMBLIES) -path:en
 
 $(srcdir)/en/*/*.xml $(srcdir)/en/*.xml:
+	mkdir -p $(srcdir)/en
 	$(MONODOCER) $(UPDATE_ASSEMBLIES) -path:en
 
 $(ASSEMBLY_NAME)-docs.source:
