@@ -28,7 +28,7 @@ for arg; do
       NAME=$(echo $arg|sed -e 's,.*=,,')
       ;;
     --windowslibraryname=* )
-      LIBRARYNAME=$(echo $arg|sed -e 's,.*=,,')
+      WINLIBRARYNAME=$(echo $arg|sed -e 's,.*=,,')
       ;;
     --out=* )
       OUTDIR=$(echo $arg|sed -e 's,.*=,,')
@@ -137,9 +137,9 @@ echo "LIB: $LIB"
 echo "SOLIB: $SOLIB"
 echo "GLUELIB: $GLUELIB"
 
-
+LIBRARYNAME=$WINLIBRARYNAME
 if [ -z "$LIBRARYNAME" ]; then
-	LIBNAME=$PACKAGE
+	LIBRARYNAME=$PACKAGE
 fi
 
 if [ -n "$REGENERATE" ]; then
@@ -153,7 +153,7 @@ fi
 
 cat >$OUTDIR/out/$DLLMAP <<EOF
 <configuration>
-  <dllmap dll="$LIBNAME" target="$SOLIB"/>
+  <dllmap dll="$LIBRARYNAME" target="$SOLIB"/>
 </configuration>
 EOF
 
@@ -255,7 +255,7 @@ chmod +x $OUTDIR/autogen.sh
 mkdir -p $OUTDIR/m4
 
 if [ ! -e $OUTDIR/sources/$NAME-sharp.metadata ]; then
-	if [ -z "$LIBRARYNAME" ]; then	
+	if [ -z "$WINLIBRARYNAME" ]; then
 cat >$OUTDIR/sources/$NAME-sharp.metadata <<EOF
 <?xml version="1.0"?>
 <metadata>
@@ -265,7 +265,7 @@ EOF
 cat >$OUTDIR/sources/$NAME-sharp.metadata <<EOF
 <?xml version="1.0"?>
 <metadata>
-	<attr path="/api/namespace" name="library">$LIBRARYNAME</attr>
+	<attr path="/api/namespace" name="library">$WINLIBRARYNAME</attr>
 </metadata>
 EOF
 	fi
