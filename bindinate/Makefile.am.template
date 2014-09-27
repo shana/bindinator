@@ -13,7 +13,7 @@ sources =
 
 build_sources = AssemblyInfo.cs $(sources)
 
-CLEANFILES = $(DLL) generated/*.cs $(API)
+CLEANFILES = $(DLL) $(API)
 
 DISTCLEANFILES = AssemblyInfo.cs $(DLLMAP)
 
@@ -42,8 +42,8 @@ generated.sources: $(API)
 	find generated/ -type f -name "*.cs" > generated.sources
 
 $(DLL): $(build_sources) generated.sources
-	$(CSC) -nowarn:169 -unsafe -target:library $(GTK_SHARP_LIBS) \
-		$(build_sources) #REFERENCES# generated/*.cs -out:$(DLL)
+	xargs $(CSC) -nowarn:169 -unsafe -target:library -out:$(DLL) \
+		$(GTK_SHARP_LIBS) #REFERENCES# $(build_sources) < generated.sources
 
 clean-local:
 	test -e generated.sources && xargs rm -f < generated.sources || true
