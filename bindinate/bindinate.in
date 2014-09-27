@@ -303,3 +303,11 @@ if [ ! -e "${OUTDIR}/${NAME}-sharp.sln" ]; then
 		> "${OUTDIR}/${NAME}-sharp.sln"
 fi
 
+if [ ! -e "${OUTDIR}/sources/${NAME}-sharp.csproj" ]; then
+	cat @prefix@/lib/bindinator/Bindings.csproj.template | \
+		sed "s,#NAME#,${NAME}-sharp,g" | \
+		sed "s,#PROJECT_GUID#,${PROJ_GUID},g" | \
+		sed "s,#NAMESPACE#,${NS},g" \
+		> "${OUTDIR}/sources/${NAME}-sharp.csproj"
+fi
+
