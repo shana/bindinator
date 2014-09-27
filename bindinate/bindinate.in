@@ -232,7 +232,7 @@ echo "   * Documentation: $enable_monodoc (\$MONODOC)"
 echo ""
 EOF
 
-cat >>$OUTDIR/Makefile.am <<EOF
+cat >$OUTDIR/Makefile.am <<EOF
 SUBDIRS = sources sources/glue doc
 
 pkgconfigdir = \$(libdir)/pkgconfig
