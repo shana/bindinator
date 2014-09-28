@@ -293,3 +293,13 @@ if [ ! -e $OUTDIR/sources/$NAME-sharp-api.raw ]; then
 	echo "Processing $FULLGIRFILE and outputting $OUTDIR/sources/$NAME-sharp-api.raw"
 	@XSLTPROC@ -o $OUTDIR/sources/$NAME-sharp-api.raw @prefix@/lib/bindinator/gir2gapi.xslt $FULLGIRFILE
 fi
+
+# Create xbuild files (sln and csproj)
+PROJ_GUID="$(@UUIDGEN@ | tr [:lower:] [:upper:])"
+if [ ! -e "${OUTDIR}/${NAME}-sharp.sln" ]; then
+	cat @prefix@/lib/bindinator/Bindings.sln.template | \
+		sed "s,#NAME#,${NAME}-sharp,g" | \
+		sed "s,#PROJECT_GUID#,${PROJ_GUID},g" \
+		> "${OUTDIR}/${NAME}-sharp.sln"
+fi
+

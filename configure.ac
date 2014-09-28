@@ -31,6 +31,12 @@ if test "x$GAPIFIXUP" = "xno"; then
 fi
 AC_SUBST(GAPIFIXUP)
 
+AC_PATH_PROG(UUIDGEN, uuidgen, no)
+if test "x$UUIDGEN" = "xno" ; then
+	AC_MSG_ERROR([uuidgen not found])
+fi
+AC_SUBST(UUIDGEN)
+
 
 AC_CONFIG_FILES([
 	Makefile
