@@ -232,7 +232,7 @@ echo "   * Documentation: $enable_monodoc (\$MONODOC)"
 echo ""
 EOF
 
-cat >>$OUTDIR/Makefile.am <<EOF
+cat >$OUTDIR/Makefile.am <<EOF
 SUBDIRS = sources sources/glue doc
 
 pkgconfigdir = \$(libdir)/pkgconfig
@@ -277,7 +277,7 @@ if [ ! -e "$OUTDIR/AUTHORS" ]; then touch $OUTDIR/AUTHORS; fi
 if [ ! -e "$OUTDIR/ChangeLog" ]; then touch $OUTDIR/ChangeLog; fi
 if [ ! -e "$OUTDIR/COPYING" ]; then touch $OUTDIR/COPYING; fi
 
-if [ ! -e $OUTDIR/sources/NAME-sharp.snk ]; then
+if [ ! -e $OUTDIR/sources/$NAME-sharp.snk ]; then
 	sn -k $OUTDIR/sources/$NAME-sharp.snk
 fi
 
