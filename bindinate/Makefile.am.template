@@ -13,7 +13,7 @@ sources =
 
 build_sources = AssemblyInfo.cs $(sources)
 
-CLEANFILES = $(DLL) generated-stamp generated/*.cs $(API)
+CLEANFILES = $(DLL) $(API)
 
 DISTCLEANFILES = AssemblyInfo.cs $(DLLMAP)
 
@@ -26,23 +26,28 @@ EXTRA_DIST = \
 	AssemblyInfo.cs.in \
 	$(ASSEMBLY_NAME).snk
 
-all: generated-stamp $(ASSEMBLY)
+all: generated.sources $(ASSEMBLY)
 
 $(API): $(srcdir)/$(RAW_API) $(srcdir)/$(METADATA)
 	cp $(srcdir)/$(RAW_API) $(API)
 	chmod u+w $(API)
 	$(GAPI_FIXUP) --api=$(srcdir)/$(API) --metadata=$(srcdir)/$(METADATA)
 
-generated-stamp: $(API)
+generated.sources: $(API)
 	 $(GAPI_CODEGEN) --generate $(srcdir)/$(API) $(GTK_SHARP_CFLAGS) \
 		--outdir=generated \
 		--glue-filename=$(GLUEDIR)/generated.c --gluelib-name=#GLUELIBNAME# \
 		--glue-includes=#GLUEINCLUDES# --gapidir=$(gapidir) \
-	 	--assembly-name=$(ASSEMBLY_NAME) && touch generated-stamp
+	 	--assembly-name=$(ASSEMBLY_NAME) && \
+	find generated/ -type f -name "*.cs" > generated.sources
 
-$(DLL): $(build_sources) generated-stamp
-	$(CSC) -nowarn:169 -unsafe -target:library $(GTK_SHARP_LIBS) \
-		$(build_sources) #REFERENCES# generated/*.cs -out:$(DLL)
+$(DLL): $(build_sources) generated.sources
+	xargs $(CSC) -nowarn:169 -unsafe -target:library -out:$(DLL) \
+		$(GTK_SHARP_LIBS) #REFERENCES# $(build_sources) < generated.sources
+
+clean-local:
+	test -e generated.sources && xargs rm -f < generated.sources || true
+	rm -f generated.sources
 
 install-data-local:
 	echo "$(GACUTIL) /i $(DLL) /f $(GACUTIL_FLAGS)";  \
