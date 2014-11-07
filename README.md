@@ -1,51 +1,52 @@
-The master branch is currently tracking the work being done as part of
-Google Summer of Code at https://github.com/mono-soc-2013/bindinator
-
-You'll also need the gtk-sharp at https://github.com/mono-soc-2013/gtk-sharp
+# Bindinator
 
 The bindinator installs a tool called bindinate, which can be called
 with the name of a gir file to generate a binding project.
 
 Example:
 
-bindinate WebKit-3.0
+> `bindinate --gir=WebKit-3.0`
 
 If the package name in the gir file does not match the system package
 (i.e., the .pc file), it can be supplied to bindinate.
 
 Example:
 
-bindinate WebKit-1.0 webkit-1.0
+> `bindinate --gir=GnomeKeyring-1.0 --package=gnome-keyring-1`
 
-===== Extra cs code =====
+## Dependencies
+
+You'll need a fairly recent gtk-sharp from https://github.com/mono/gtk-sharp.
+
+## Extra cs code
 
 If you want to extend/add code, you can add extra source files to the sources
 list in Makefile.am
 
-===== Extra package checks =====
+## Extra package checks
 
 The bindinate tool creates a directory of the same name as the supplied
 gir file name and produces the needed files for compiling a binding.
 Customization of the gapi output can be done via the usual metadata file.
 
 If the build requires checking for extra packages and getting assembly
-references, rules can be added by creating an m4 directory inside the
-output directory and placing there all the needed checks. To include them
-in the build, you need to create an m4.custom file which lists the
-base name of every check.
+references, call bindinate with the `--dependencies` option. E.g.:
 
-Example:
+> `bindinate --gir=DBusGLib-1.0 --dependencies=GLIBSHARP,DBUSSHARP`
 
-m4.custom:
-MONOCAIRO
+Additionally, you'll need to create an m4 file for each dependency you
+have. If you had a dependency `MONOCAIRO`, you'd create a file `m4/cairo.m4`
+like this:
 
-m4/cairo.m4:
+>
+```
 AC_DEFUN([CHECK_MONOCAIRO],
 [
 	PKG_CHECK_MODULES(MONOCAIRO, mono-cairo)
 	AC_SUBST(MONOCAIRO_LIBS)
 ])
+```
 
-
-The bindinate tool will add a CHECK_MONOCAIRO call to configure.ac and
-$(MONOCAIRO_LIBS) will be added to the assembly build line automatically.
+The bindinate tool would create an `m4.custom` file with `MONOCAIRO`, add a
+`CHECK_MONOCAIRO` call to `configure.ac` and `$(MONOCAIRO_LIBS)` will be added
+to the assembly build line automatically.
