@@ -69,7 +69,7 @@ exclude-result-prefixes="xsl exsl gir c glib"
 			<xsl:when test="$type='gapi'">
 				<xsl:choose>
 					<xsl:when test="gir:repository/gir:include[@name='Gdk']/@version='2.0'">2</xsl:when>
-					<xsl:otherwise>3</xsl:otherwise>ss
+					<xsl:otherwise>3</xsl:otherwise>
 				</xsl:choose>
 			</xsl:when>
 		</xsl:choose>
