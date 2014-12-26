@@ -1059,8 +1059,18 @@
 			<xsl:if test="@disguised = '1'">
 				<xsl:attribute name="opaque">true</xsl:attribute>
 			</xsl:if>
+			<xsl:if test="@version">
+				<xsl:attribute name="version">
+					<xsl:value-of select="@version" />
+				</xsl:attribute>
+			</xsl:if>
 			<xsl:if test="@deprecated">
 				<xsl:attribute name="deprecated">true</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="@deprecated-version">
+				<xsl:attribute name="deprecated-version">
+					<xsl:value-of select="@deprecated-version" />
+				</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="$introspectable=0">
 				<xsl:attribute name="hidden">true</xsl:attribute>
