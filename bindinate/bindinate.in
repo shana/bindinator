@@ -16,6 +16,7 @@ Usage: bindinate [--package=PACKAGE --name=NAME --out=PATH --windowslibraryname=
 EOF
 }
 
+LISTVERSIONS=false
 for arg; do
   case "$arg" in
     --help | -h)
@@ -54,6 +55,9 @@ for arg; do
       ;;
     --build-libversions=*)
       BUILDLIBVERSIONS=$(echo $arg | sed -e 's,.*=,,' | tr ',' '\n' | sort -V)
+      ;;
+    --list-versions)
+      LISTVERSIONS=true
       ;;
   esac
 done
@@ -106,6 +110,12 @@ VERSION=`@XSLTPROC@ --stringparam type version @prefix@/lib/bindinator/preproces
 INCLUDES=`@XSLTPROC@ --stringparam type include @prefix@/lib/bindinator/preprocess.xslt $FULLGIRFILE|tr ' ' ','`
 GAPI=`@XSLTPROC@ --stringparam type gapi @prefix@/lib/bindinator/preprocess.xslt $FULLGIRFILE`
 LIBVERSIONS=`@XSLTPROC@ --stringparam type libversions @prefix@/lib/bindinator/preprocess.xslt $FULLGIRFILE | tr ' ' '\n' | sort -V`
+
+if $LISTVERSIONS; then
+echo $LIBVERSIONS | tr '\n' ' '
+echo
+exit 0
+fi
 
 PROFILES=
 DLLS=
