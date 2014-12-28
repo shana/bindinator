@@ -10,8 +10,9 @@ Usage: bindinate [--package=PACKAGE --name=NAME --out=PATH --windowslibraryname=
     --out=PATH                 Directory to place the generated bindings. default: $(pwd)/[Name of gir file]
     --windowslibraryname=NAME  Windows library file name, this is helpful when generating bindings targeting windows
     -d --dependency            Adds a dependency. Usage: '-d=DEP_VAR,dep_pkg_name', e.g.: '-d=GLIB_SHARP,glib-sharp-3.0'. This argument can be used multiple times.
-    --merge-with	       A comma seperated list of gir files to merge in
+    --merge-with	       A comma separated list of gir files to merge in
     --regenerate	       Only regenerate the API xml, must be called from inside of the bindings directory
+    --build-libversions    A comma separated list of version strings to create build profiles should for. E.g.: 2.2,2.4,2.10. If this argument is omitted, one build profile for the latest library version found in the GIR file is created. If the argument is 'all', a profile for each library version found is created.
 EOF
 }
 
@@ -50,6 +51,9 @@ for arg; do
       ;;
     --gir=*) 
       GIRFILE=$(echo $arg|sed -e 's,.*=,,')
+      ;;
+    --build-libversions=*)
+      BUILDLIBVERSIONS=$(echo $arg | sed -e 's,.*=,,' | tr ',' '\n' | sort -V)
       ;;
   esac
 done
@@ -101,9 +105,56 @@ NS=`@XSLTPROC@ --stringparam type namespace @prefix@/lib/bindinator/preprocess.x
 VERSION=`@XSLTPROC@ --stringparam type version @prefix@/lib/bindinator/preprocess.xslt $FULLGIRFILE`
 INCLUDES=`@XSLTPROC@ --stringparam type include @prefix@/lib/bindinator/preprocess.xslt $FULLGIRFILE|tr ' ' ','`
 GAPI=`@XSLTPROC@ --stringparam type gapi @prefix@/lib/bindinator/preprocess.xslt $FULLGIRFILE`
+LIBVERSIONS=`@XSLTPROC@ --stringparam type libversions @prefix@/lib/bindinator/preprocess.xslt $FULLGIRFILE | tr ' ' '\n' | sort -V`
+
+if [ -z "$BUILDLIBVERSIONS" ]; then
+	EFFECTIVEBUILDLIBVERSIONS=$(echo "$LIBVERSIONS" | tail -n1)
+elif [ "$BUILDLIBVERSIONS" = "all" ]; then
+	EFFECTIVEBUILDLIBVERSIONS=$LIBVERSIONS
+else
+	EFFECTIVEBUILDLIBVERSIONS=
+	for buildLibVersion in $BUILDLIBVERSIONS; do
+		
+		# prevent duplicates
+		isDuplicate=false
+		for effectiveBuildLibVersion in $EFFECTIVEBUILDLIBVERSIONS; do
+			if [ "$buildLibVersion" = "$effectiveBuildLibVersion" ]; then
+				isDuplicate=true
+			fi
+		done
+		
+		if $isDuplicate; then
+			echo "Warning: Ignoring duplicate build library version '${buildLibVersion}'."
+			continue
+		fi
+		
+		# discard build lib versions that have no matching library version in the GIR file
+		match=false
+		for libVersion in $LIBVERSIONS; do
+			if [ "$buildLibVersion" = "$libVersion" ]; then
+				match=true
+				break
+			fi
+		done
+		
+		if ! $match; then
+			echo "Warning: Ignoring build library version '${buildLibVersion}', because no matching library version has been found in the GIR file."
+			continue
+		fi
+		
+		if [ -z "$EFFECTIVEBUILDLIBVERSIONS" ]; then
+			EFFECTIVEBUILDLIBVERSIONS="${buildLibVersion}"
+		else
+			EFFECTIVEBUILDLIBVERSIONS="${EFFECTIVEBUILDLIBVERSIONS}\n${buildLibVersion}"
+		fi
+		
+	done
+fi
 
 echo "PACKAGE: $PACKAGE"
 echo "LIBS: $LIBS"
+echo "LIBVERSIONS: $(echo ${LIBVERSIONS} | tr '\n' ' ')"
+echo "BUILDLIBVERSIONS: $(echo ${EFFECTIVEBUILDLIBVERSIONS} | tr '\n' ' ')"
 
 if ! $(@PKG_CONFIG@ --exists $PACKAGE); then
 	echo "Package $PACKAGE not found, exiting"
