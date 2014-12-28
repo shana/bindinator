@@ -26,8 +26,6 @@ EXTRA_DIST = \
 	AssemblyInfo.cs.in \
 	$(ASSEMBLY_NAME).snk
 
-all: generated.sources $(ASSEMBLY)
-
 $(API): $(srcdir)/$(RAW_API) $(srcdir)/$(METADATA)
 	cp $(srcdir)/$(RAW_API) $(API)
 	chmod u+w $(API)
