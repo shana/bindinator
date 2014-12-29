@@ -190,6 +190,11 @@
 								</xsl:with-param>
 							</xsl:call-template>
 						</xsl:attribute>
+						<xsl:call-template name="set-version-and-deprecated">
+							<xsl:with-param name="version" select="@version"/>
+							<xsl:with-param name="deprecated" select="@deprecated"/>
+							<xsl:with-param name="deprecated-version" select="@deprecated-version"/>
+						</xsl:call-template>
 					</constant>
 				</xsl:for-each>
 			</object>
@@ -277,6 +282,12 @@
 					<xsl:value-of select="$parent"/>
 				</xsl:attribute>
 			</xsl:if>
+			
+			<xsl:call-template name="set-version-and-deprecated">
+				<xsl:with-param name="version" select="@version"/>
+				<xsl:with-param name="deprecated" select="@deprecated"/>
+				<xsl:with-param name="deprecated-version" select="@deprecated-version"/>
+			</xsl:call-template>
 
 			<xsl:if test="gir:implements">
 				<implements>
@@ -359,6 +370,11 @@
 		</xsl:variable>
 
 		<union name="{$name}" cname="{exsl:node-set($type)/type/@ctype}">
+			<xsl:call-template name="set-version-and-deprecated">
+				<xsl:with-param name="version" select="@version"/>
+				<xsl:with-param name="deprecated" select="@deprecated"/>
+				<xsl:with-param name="deprecated-version" select="@deprecated-version"/>
+			</xsl:call-template>
 			<xsl:apply-templates>
 				<xsl:with-param name="external" select="$external"/>
 			</xsl:apply-templates>
@@ -418,6 +434,11 @@
 					<xsl:attribute name="hidden">
 						<xsl:value-of select="$hidden"/>
 					</xsl:attribute>
+					<xsl:call-template name="set-version-and-deprecated">
+						<xsl:with-param name="version" select="@version"/>
+						<xsl:with-param name="deprecated" select="@deprecated"/>
+						<xsl:with-param name="deprecated-version" select="@deprecated-version"/>
+					</xsl:call-template>
 					<xsl:if test="$nodename='boxed'">
 						<method name="GetType" cname="{@glib:get-type}" shared="true">
 							<return-type type="GType"/>
@@ -433,6 +454,11 @@
 					<xsl:attribute name="cname">
 						<xsl:value-of select="@c:type"/>
 					</xsl:attribute>
+					<xsl:call-template name="set-version-and-deprecated">
+						<xsl:with-param name="version" select="@version"/>
+						<xsl:with-param name="deprecated" select="@deprecated"/>
+						<xsl:with-param name="deprecated-version" select="@deprecated-version"/>
+					</xsl:call-template>
 					<xsl:for-each select="gir:field">
 						<xsl:apply-templates select="current()">
 							<xsl:with-param name="external" select="$external"/>
@@ -572,6 +598,11 @@
 			<xsl:if test="$shared = 'true'">
 				<xsl:attribute name="shared">true</xsl:attribute>
 			</xsl:if>
+			<xsl:call-template name="set-version-and-deprecated">
+				<xsl:with-param name="version" select="@version"/>
+				<xsl:with-param name="deprecated" select="@deprecated"/>
+				<xsl:with-param name="deprecated-version" select="@deprecated-version"/>
+			</xsl:call-template>
 
 			<!-- xsl:if test="gir:return-value/gir:type/@name != 'none'" -->
 			<xsl:for-each select="gir:return-value">
@@ -665,6 +696,11 @@
 				test="count(gir:parameters/gir:parameter) = 1 and exsl:node-set($consttypes)/types/ctor/type[@name=$t]">
 				<xsl:attribute name="disable_raw_ctor"/>
 			</xsl:if>
+			<xsl:call-template name="set-version-and-deprecated">
+				<xsl:with-param name="version" select="@version"/>
+				<xsl:with-param name="deprecated" select="@deprecated"/>
+				<xsl:with-param name="deprecated-version" select="@deprecated-version"/>
+			</xsl:call-template>
 
 			<xsl:if test="gir:parameters">
 				<xsl:element name="parameters">
@@ -707,6 +743,11 @@
 					<xsl:value-of select="translate(current()/@name,'-','_')"/>
 				</xsl:attribute>
 			</xsl:if>
+			<xsl:call-template name="set-version-and-deprecated">
+				<xsl:with-param name="version" select="@version"/>
+				<xsl:with-param name="deprecated" select="@deprecated"/>
+				<xsl:with-param name="deprecated-version" select="@deprecated-version"/>
+			</xsl:call-template>
 
 			<!-- xsl:if test="gir:return-value/gir:type/@name != 'none'" -->
 			<xsl:for-each select="gir:return-value">
@@ -777,6 +818,12 @@
 					<xsl:value-of select="@glib:get-type"/>
 				</xsl:attribute>
 			</xsl:if>
+			<xsl:call-template name="set-version-and-deprecated">
+				<xsl:with-param name="version" select="@version"/>
+				<xsl:with-param name="deprecated" select="@deprecated"/>
+				<xsl:with-param name="deprecated-version" select="@deprecated-version"/>
+			</xsl:call-template>
+			
 			<xsl:for-each select="gir:member">
 				<xsl:sort select="@value" data-type="number"/>
 
@@ -830,6 +877,12 @@
 					<xsl:value-of select="@glib:get-type"/>
 				</xsl:attribute>
 			</xsl:if>
+			<xsl:call-template name="set-version-and-deprecated">
+				<xsl:with-param name="version" select="@version"/>
+				<xsl:with-param name="deprecated" select="@deprecated"/>
+				<xsl:with-param name="deprecated-version" select="@deprecated-version"/>
+			</xsl:call-template>
+			
 			<xsl:for-each select="gir:member">
 				<xsl:sort select="@value" data-type="number"/>
 
@@ -936,81 +989,87 @@
 
 	<xsl:template match="gir:property[not(@private)]">
 		<xsl:param name="external"/>
-			<xsl:variable name="name">
-				<xsl:call-template name="capitalize">
-					<xsl:with-param name="string">
-						<xsl:choose>
-							<xsl:when test="../gir:method[@name = translate(current()/@name,'-','_')] or ../gir:virtual-method[@name = translate(current()/@name,'-','_')]">
-								<xsl:value-of select="@name"/>Prop
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:value-of select="@name"/>
-							</xsl:otherwise>
-						</xsl:choose>
-					</xsl:with-param>
-					<xsl:with-param name="sep">-</xsl:with-param>
+		<xsl:variable name="name">
+			<xsl:call-template name="capitalize">
+				<xsl:with-param name="string">
+					<xsl:choose>
+						<xsl:when test="../gir:method[@name = translate(current()/@name,'-','_')] or ../gir:virtual-method[@name = translate(current()/@name,'-','_')]">
+							<xsl:value-of select="@name"/>Prop
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:value-of select="@name"/>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:with-param>
+				<xsl:with-param name="sep">-</xsl:with-param>
+			</xsl:call-template>
+		</xsl:variable>
+		<xsl:variable name="typemap">
+			<xsl:call-template name="map-type">
+				<xsl:with-param name="type" select="gir:type/@c:type"/>
+				<xsl:with-param name="name" select="gir:type/@name"/>
+				<xsl:with-param name="external" select="$external"/>
+			</xsl:call-template>
+		</xsl:variable>
+
+		<xsl:variable name="type">
+			<xsl:choose>
+				<xsl:when test="//*/gir:namespace/gir:enumeration[@c:type=gir:type/@c:type]">
+					<xsl:text>int</xsl:text>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="exsl:node-set($typemap)/type/@ctype"/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+
+		<xsl:variable name="construct">
+			<xsl:choose>
+				<xsl:when test="@construct and @construct=1">true</xsl:when>
+				<xsl:otherwise>false</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+
+		<xsl:variable name="construct-only">
+			<xsl:choose>
+				<xsl:when test="@construct-only and @construct-only=1">true</xsl:when>
+				<xsl:otherwise>false</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+
+		<xsl:variable name="writable">
+			<xsl:choose>
+				<xsl:when test="@writable=1">
+					<xsl:text>true</xsl:text>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:text>false</xsl:text>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+
+		<xsl:variable name="readable">
+			<xsl:choose>
+				<xsl:when test="@readable=0">
+					<xsl:text>false</xsl:text>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:text>true</xsl:text>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+
+		<xsl:if test="$type!=''">
+			<property name="{$name}" cname="{@name}" type="{$type}" readable="{$readable}"
+				writeable="{$writable}" construct="{$construct}"
+				construct-only="{$construct-only}">
+				<xsl:call-template name="set-version-and-deprecated">
+					<xsl:with-param name="version" select="@version"/>
+					<xsl:with-param name="deprecated" select="@deprecated"/>
+					<xsl:with-param name="deprecated-version" select="@deprecated-version"/>
 				</xsl:call-template>
-			</xsl:variable>
-			<xsl:variable name="typemap">
-				<xsl:call-template name="map-type">
-					<xsl:with-param name="type" select="gir:type/@c:type"/>
-					<xsl:with-param name="name" select="gir:type/@name"/>
-					<xsl:with-param name="external" select="$external"/>
-				</xsl:call-template>
-			</xsl:variable>
-
-			<xsl:variable name="type">
-				<xsl:choose>
-					<xsl:when test="//*/gir:namespace/gir:enumeration[@c:type=gir:type/@c:type]">
-						<xsl:text>int</xsl:text>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:value-of select="exsl:node-set($typemap)/type/@ctype"/>
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:variable>
-
-			<xsl:variable name="construct">
-				<xsl:choose>
-					<xsl:when test="@construct and @construct=1">true</xsl:when>
-					<xsl:otherwise>false</xsl:otherwise>
-				</xsl:choose>
-			</xsl:variable>
-
-			<xsl:variable name="construct-only">
-				<xsl:choose>
-					<xsl:when test="@construct-only and @construct-only=1">true</xsl:when>
-					<xsl:otherwise>false</xsl:otherwise>
-				</xsl:choose>
-			</xsl:variable>
-
-			<xsl:variable name="writable">
-				<xsl:choose>
-					<xsl:when test="@writable=1">
-						<xsl:text>true</xsl:text>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:text>false</xsl:text>
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:variable>
-
-			<xsl:variable name="readable">
-				<xsl:choose>
-					<xsl:when test="@readable=0">
-						<xsl:text>false</xsl:text>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:text>true</xsl:text>
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:variable>
-
-			<xsl:if test="$type!=''">
-				<property name="{$name}" cname="{@name}" type="{$type}" readable="{$readable}"
-					writeable="{$writable}" construct="{$construct}"
-					construct-only="{$construct-only}"/>
-			</xsl:if>
+			</property>
+		</xsl:if>
 		
 	</xsl:template>
 
@@ -1059,19 +1118,11 @@
 			<xsl:if test="@disguised = '1'">
 				<xsl:attribute name="opaque">true</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="@version">
-				<xsl:attribute name="version">
-					<xsl:value-of select="@version" />
-				</xsl:attribute>
-			</xsl:if>
-			<xsl:if test="@deprecated">
-				<xsl:attribute name="deprecated">true</xsl:attribute>
-			</xsl:if>
-			<xsl:if test="@deprecated-version">
-				<xsl:attribute name="deprecated-version">
-					<xsl:value-of select="@deprecated-version" />
-				</xsl:attribute>
-			</xsl:if>
+			<xsl:call-template name="set-version-and-deprecated">
+				<xsl:with-param name="version" select="@version"/>
+				<xsl:with-param name="deprecated" select="@deprecated"/>
+				<xsl:with-param name="deprecated-version" select="@deprecated-version"/>
+			</xsl:call-template>
 			<xsl:if test="$introspectable=0">
 				<xsl:attribute name="hidden">true</xsl:attribute>
 			</xsl:if>
@@ -1679,5 +1730,25 @@
 				<xsl:value-of select="$ctype"/>
 			</xsl:otherwise>
 		</xsl:choose>
+	</xsl:template>
+
+
+	<xsl:template name="set-version-and-deprecated">
+		<xsl:param name="version"/>
+		<xsl:param name="deprecated"/>
+		<xsl:param name="deprecated-version"/>
+		<xsl:if test="$version">
+			<xsl:attribute name="version">
+				<xsl:value-of select="$version" />
+			</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$deprecated">
+			<xsl:attribute name="deprecated">true</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$deprecated-version">
+			<xsl:attribute name="deprecated-version">
+				<xsl:value-of select="$deprecated-version" />
+			</xsl:attribute>
+		</xsl:if>
 	</xsl:template>
 </xsl:stylesheet>
