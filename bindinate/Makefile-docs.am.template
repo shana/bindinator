@@ -8,7 +8,7 @@ docsdir = $(datadir)
 docs_DATA =
 endif
 
-ASSEMBLIES = $(top_srcdir)/out/$(ASSEMBLY_NAME).dll
+ASSEMBLIES = $(top_srcdir)/out/*/$(ASSEMBLY_NAME).dll
 
 UPDATE_ASSEMBLIES = $(addprefix -assembly:, $(ASSEMBLIES))
 

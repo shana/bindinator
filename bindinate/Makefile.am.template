@@ -1,8 +1,9 @@
 RAW_API = $(ASSEMBLY_NAME)-api.raw
 API = $(ASSEMBLY_NAME)-api.xml
 METADATA = $(ASSEMBLY_NAME).metadata
-DLL = $(top_srcdir)/out/$(ASSEMBLY_NAME).dll
-DLLMAP = $(top_srcdir)/out/$(ASSEMBLY_NAME).dll.config
+ASSEMBLY = $(ASSEMBLY_NAME).dll
+ASSEMBLY_CONFIG = $(ASSEMBLY).config
+OUTDIR = $(top_srcdir)/out
 GLUEDIR = $(srcdir)/glue
 
 gapidir = $(GAPIXMLDIR)
@@ -13,18 +14,24 @@ sources =
 
 build_sources = AssemblyInfo.cs $(sources)
 
-CLEANFILES = $(DLL) $(API)
+#PROFILES#
 
-DISTCLEANFILES = AssemblyInfo.cs $(DLLMAP)
+DLLS =#DLLS#
+DLL_CONFIGS =#DLL_CONFIGS#
 
-noinst_DATA = $(DLL)
+CLEANFILES = $(DLLS) $(DLL_CONFIGS) $(API)
+
+DISTCLEANFILES = AssemblyInfo.cs
+
+noinst_DATA = $(DLLS) $(DLL_CONFIGS)
 
 EXTRA_DIST = \
 	$(RAW_API) \
 	$(sources) \
 	$(METADATA) \
 	AssemblyInfo.cs.in \
-	$(ASSEMBLY_NAME).snk
+	$(ASSEMBLY_NAME).snk \
+	$(ASSEMBLY_CONFIG)
 
 $(API): $(srcdir)/$(RAW_API) $(srcdir)/$(METADATA)
 	cp $(srcdir)/$(RAW_API) $(API)
@@ -39,18 +46,23 @@ generated.sources: $(API)
 	 	--assembly-name=$(ASSEMBLY_NAME) && \
 	find generated/ -type f -name "*.cs" > generated.sources
 
-$(DLL): $(build_sources) generated.sources
-	xargs $(CSC) -nowarn:169 -unsafe -target:library -out:$(DLL) \
-		#REFERENCES# $(build_sources) < generated.sources
+$(OUTDIR)/%/$(ASSEMBLY): $(build_sources) generated.sources
+	mkdir -p $(@D)
+	xargs $(CSC) -nowarn:169 -unsafe -target:library #REFERENCES# \
+		$(build_sources) -out:$@ -d:$($*_DEFINES) < generated.sources
+
+$(OUTDIR)/%/$(ASSEMBLY_CONFIG): $(srcdir)/$(ASSEMBLY_CONFIG)
+	mkdir -p $(@D)
+	cp $(srcdir)/$(ASSEMBLY_CONFIG) $@
 
 clean-local:
 	test -e generated.sources && xargs rm -f < generated.sources || true
 	rm -f generated.sources
 
 install-data-local:
-	echo "$(GACUTIL) /i $(DLL) /f $(GACUTIL_FLAGS)";  \
-        $(GACUTIL) /i $(DLL) /f $(GACUTIL_FLAGS) || exit 1;
+	echo "NOT IMPLEMENTED! ($(GACUTIL) /i assembly_path /f $(GACUTIL_FLAGS))"
+	exit 1
 
 uninstall-local:
-	echo "$(GACUTIL) /u $(ASSEMBLY_NAME) $(GACUTIL_FLAGS)"; \
-        $(GACUTIL) /u $(ASSEMBLY_NAME) $(GACUTIL_FLAGS) || exit 1;
+	echo "NOT IMPLEMENTED! ($(GACUTIL) /u assembly_name $(GACUTIL_FLAGS))"
+	exit 1
