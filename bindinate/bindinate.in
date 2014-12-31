@@ -13,6 +13,7 @@ Usage: bindinate [--package=PACKAGE --name=NAME --out=PATH --windowslibraryname=
     --merge-with	       A comma separated list of gir files to merge in
     --regenerate	       Only regenerate the API xml, must be called from inside of the bindings directory
     --build-libversions    A comma separated list of version strings to create build profiles should for. E.g.: 2.2,2.4,2.10. If this argument is omitted, one build profile for the latest library version found in the GIR file is created. If the argument is 'all', a profile for each library version found is created.
+    --list-versions        List all versions of a GIRFILE, e.g.: 'bindinate --gir=Atk-1.0 --list-versions'. This is a query-only operation. No files will be created/changed.
 EOF
 }
 
