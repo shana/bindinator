@@ -119,8 +119,7 @@ exit 0
 fi
 
 PROFILES=
-DLLS=
-DLL_CONFIGS=
+DEFINES=
 
 SanitizeVersion () {
    echo $1 | tr '.' '_' | tr '-' '_' | tr ':' '_' | tr '~' '_'
@@ -176,26 +175,19 @@ for buildLibVersion in $BUILDLIBVERSIONS; do
 		EFFECTIVEBUILDLIBVERSIONS="${EFFECTIVEBUILDLIBVERSIONS}\n${buildLibVersion}"
 	fi
 	
-	outdirVarRef='\$(OUTDIR)'
-	assemblyVarRef='\$(ASSEMBLY)'
-	assemblyConfigVarRef='\$(ASSEMBLY_CONFIG)'
-	
 	profileId=V_$(SanitizeVersion ${buildLibVersion})
-	dllVar=${profileId}_DLL
-	dllConfigVar=${dllVar}_CONFIG
 	definesVar=${profileId}_DEFINES
 	
-	profile="${dllVar} = ${outdirVarRef}/${profileId}/${assemblyVarRef}\\n${dllConfigVar} = ${outdirVarRef}/${profileId}/${assemblyConfigVarRef}\\n${definesVar} = ${defines}"
-	
 	# Add to build profiles
-	if [ -z "${PROFILES}" ]; then
-		PROFILES="$profile"
-	else
-		PROFILES="${PROFILES}\\n\\n${profile}"
-	fi
+	PROFILES="${PROFILES} ${profileId}"
 	
-	DLLS="${DLLS} \\\$(${dllVar})"
-	DLL_CONFIGS="${DLL_CONFIGS} \\\$(${dllConfigVar})"
+	# Add to define flags
+	define="${definesVar} = ${defines}"
+	if [ -z "${DEFINES}" ]; then
+		DEFINES="$define"
+	else
+		DEFINES="${DEFINES}\\n${define}"
+	fi
 done
 
 echo "PACKAGE: $PACKAGE"
@@ -361,7 +353,7 @@ EOF
 
 sed "s,#REFERENCES#,$REF,g" @prefix@/lib/bindinator/Makefile.am.template|sed "s,#GLUELIBNAME#,$GLUELIB,g"| \
 sed "s;#GLUEINCLUDES#;$INCLUDES;g" | sed "s,#REFAPIS#,$REFAPIS,g" | sed "s;#PROFILES#;$PROFILES;g" | \
-sed "s;#DLLS#;$DLLS;g" | sed "s;#DLL_CONFIGS#;$DLL_CONFIGS;g" > $OUTDIR/sources/Makefile.am
+sed "s;#DEFINES#;$DEFINES;g" > $OUTDIR/sources/Makefile.am
 
 sed "s,#GLUENAME#,$GLUENAME,g" @prefix@/lib/bindinator/Makefile-glue.am.template|sed "s,#GLUELIBNAME#,$GLUELIB,g"| \
 sed "s,#VERSION#,$GLUEVERSION,g"|sed "s,#MODVERSION#,$MODVERSION,g"|sed "s,#PREFIX#,$UNAME,g">$OUTDIR/sources/glue/Makefile.am

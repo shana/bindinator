@@ -14,10 +14,12 @@ sources =
 
 build_sources = AssemblyInfo.cs $(sources)
 
-#PROFILES#
+PROFILES =#PROFILES#
 
-DLLS =#DLLS#
-DLL_CONFIGS =#DLL_CONFIGS#
+#DEFINES#
+
+DLLS = $(foreach profile,$(PROFILES),$(OUTDIR)/$(profile)/$(ASSEMBLY))
+DLL_CONFIGS = $(foreach profile,$(PROFILES),$(OUTDIR)/$(profile)/$(ASSEMBLY_CONFIG))
 
 CLEANFILES = $(DLLS) $(DLL_CONFIGS) $(API)
 
