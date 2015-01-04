@@ -2,7 +2,8 @@
 usage()
 {
 cat <<EOF
-Usage: bindinate [--package=PACKAGE --name=NAME --out=PATH --windowslibraryname=NAME -d=DEP1_VAR,dep1_pkg -d=DEP2_VAR,dep2_pkg] --gir=GIRFILE
+Usage: bindinate [--package=PACKAGE --name=NAME --out=PATH --windowslibraryname=NAME -d=DEP1_VAR,dep1_pkg -d=DEP2_VAR,dep2_pkg --merge-with=GIRFILE1,GIRFILE2 --regenerate --build-libversions=[V1,V2|all]] --gir=GIRFILE
+       bindinate --list-versions --gir=GIRFILE
     --gir=GIRFILE              Gir filename to process (without path or extension. It will be picked up from /usr/share/gir-1.0)
     --package=PACKAGE          name of pc file (if the gir data with the package name is wrong)
     --name=NAME                Name for the assembly
@@ -10,10 +11,10 @@ Usage: bindinate [--package=PACKAGE --name=NAME --out=PATH --windowslibraryname=
     --out=PATH                 Directory to place the generated bindings. default: $(pwd)/[Name of gir file]
     --windowslibraryname=NAME  Windows library file name, this is helpful when generating bindings targeting windows
     -d --dependency            Adds a dependency. Usage: '-d=DEP_VAR,dep_pkg_name', e.g.: '-d=GLIB_SHARP,glib-sharp-3.0'. This argument can be used multiple times.
-    --merge-with	       A comma separated list of gir files to merge in
-    --regenerate	       Only regenerate the API xml, must be called from inside of the bindings directory
-    --build-libversions    A comma separated list of version strings to create build profiles should for. E.g.: 2.2,2.4,2.10. If this argument is omitted, one build profile for the latest library version found in the GIR file is created. If the argument is 'all', a profile for each library version found is created.
-    --list-versions        List all versions of a GIRFILE, e.g.: 'bindinate --gir=Atk-1.0 --list-versions'. This is a query-only operation. No files will be created/changed.
+    --merge-with               A comma separated list of gir files to merge in
+    --regenerate               Only regenerate the API xml, must be called from inside of the bindings directory
+    --build-libversions        A comma separated list of version strings to create build profiles should for. E.g.: 2.2,2.4,2.10. If this argument is omitted, one build profile for the latest library version found in the GIR file is created. If the argument is 'all', a profile for each library version found is created.
+    --list-versions            List all versions of a GIRFILE, e.g.: 'bindinate --gir=Atk-1.0 --list-versions'. This is a query-only operation. No files will be created/changed.
 EOF
 }
 
