@@ -1,0 +1,2 @@
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "#NAME#", "sources\\#NAME#.csproj", "{#PROJECT_GUID#}"
+EndProject

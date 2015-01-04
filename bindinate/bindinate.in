@@ -121,6 +121,7 @@ fi
 
 PROFILES=
 DEFINES=
+DEFINES_VALS=
 
 SanitizeVersion () {
    echo $1 | tr '.' '_' | tr '-' '_' | tr ':' '_' | tr '~' '_'
@@ -185,8 +186,10 @@ for buildLibVersion in $BUILDLIBVERSIONS; do
 	# Add to define flags
 	define="${definesVar} = ${defines}"
 	if [ -z "${DEFINES}" ]; then
+		DEFINES_VALS="$defines"
 		DEFINES="$define"
 	else
+		DEFINES_VALS="${DEFINES_VALS} ${defines}"
 		DEFINES="${DEFINES}\\n${define}"
 	fi
 done
@@ -405,19 +408,43 @@ if [ ! -e $OUTDIR/sources/$NAME-sharp-api.raw ]; then
 fi
 
 # Create xbuild files (sln and csproj)
-PROJ_GUID="$(@UUIDGEN@ | tr [:lower:] [:upper:])"
-if [ ! -e "${OUTDIR}/${NAME}-sharp.sln" ]; then
-	cat @prefix@/lib/bindinator/Bindings.sln.template | \
-		sed "s,#NAME#,${NAME}-sharp,g" | \
-		sed "s,#PROJECT_GUID#,${PROJ_GUID},g" \
-		> "${OUTDIR}/${NAME}-sharp.sln"
-fi
-
-if [ ! -e "${OUTDIR}/sources/${NAME}-sharp.csproj" ]; then
+PROJ_DEFS=
+BUILD_CONFIGS=
+i=1
+for profile in $PROFILES; do
+	guid="$(@UUIDGEN@ | tr [:lower:] [:upper:])"
+	
+	projDef=$(cat @prefix@/lib/bindinator/Bindings.sln.ProjDefs.template | \
+		sed "s,#NAME#,${NAME}-sharp-${profile},g" | \
+		sed "s,#PROJECT_GUID#,${guid},g")
+	if [ -z "$PROJ_DEFS" ]; then
+		PROJ_DEFS="${projDef}"
+	else
+		PROJ_DEFS="${PROJ_DEFS}\n${projDef}"
+	fi
+	
+	buildConfig=$(cat @prefix@/lib/bindinator/Bindings.sln.BuildConfigs.template | \
+		sed "s,#PROJECT_GUID#,${guid},g")
+	if [ -z "$BUILD_CONFIGS" ]; then
+		BUILD_CONFIGS="${buildConfig}"
+	else
+		BUILD_CONFIGS="${BUILD_CONFIGS}\n${buildConfig}"
+	fi
+	
+	defines=$(echo $DEFINES_VALS | cut -d' ' -f$i | tr ',' ';')
 	cat @prefix@/lib/bindinator/Bindings.csproj.template | \
 		sed "s,#NAME#,${NAME}-sharp,g" | \
-		sed "s,#PROJECT_GUID#,${PROJ_GUID},g" | \
-		sed "s,#NAMESPACE#,${NS},g" \
-		> "${OUTDIR}/sources/${NAME}-sharp.csproj"
-fi
+		sed "s,#PROJECT_GUID#,${guid},g" | \
+		sed "s,#NAMESPACE#,${NS},g" | \
+		sed "s,#PROFILE#,${profile},g" | \
+		sed "s,#DEFINES#,${defines},g" | \
+		@UNIX2DOS@ > "${OUTDIR}/sources/${NAME}-sharp-${profile}.csproj"
+	
+	i=$((i+1))
+done
+
+cat @prefix@/lib/bindinator/Bindings.sln.template | \
+	@PERL@ -pe "s|#PROJECT_DEFS#|${PROJ_DEFS}|g" | \
+	@PERL@ -pe "s,#BUILD_CONFIGS#,${BUILD_CONFIGS},g" | \
+	@UNIX2DOS@ > "${OUTDIR}/${NAME}-sharp.sln"
 
