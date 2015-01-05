@@ -194,16 +194,31 @@ AC_SUBST($PCFLAGS)
 
 EOF
 
-if [ -n "$DEPENDENCIES" ]; then
-	echo $DEPENDENCIES | sed 's/,/\n/g' >> $OUTDIR/m4.custom
-fi
+# Apply special handling to eventual GTK_SHARP dependency
+EFFECTIVE_DEPS=
+REF=
+REFAPIS=
+for dep in $(echo $DEPENDENCIES | tr ',' ' '); do
+	REF="$REF $""("$dep"_LIBS"")"
+	REFAPIS="$REFAPIS $""("$dep"_CFLAGS"")"
+	if [ "$dep" = "GTK_SHARP" ]; then
+		echo "GTK"
+	else
+		if [ -z "$EFFECTIVE_DEPS" ]; then
+			EFFECTIVE_DEPS=$dep
+		else
+			EFFECTIVE_DEPS="${EFFECTIVE_DEPS}\n$dep"
+		fi
+	fi
+done
 
-if [ -e $OUTDIR/m4.custom ]; then
+if [ -n "$EFFECTIVE_DEPS" ]; then
+	echo "$EFFECTIVE_DEPS" >> $OUTDIR/m4.custom
+	
 	cat >>$OUTDIR/$CONFIGURE <<EOF
 dnl extra m4 calls
 EOF
 	while read l;do
-		REF="$REF $""("$l"_LIBS"")"
 		echo "CHECK_$l" >>$OUTDIR/$CONFIGURE
 	done <$OUTDIR/m4.custom
 fi
@@ -244,7 +259,7 @@ DISTCLEANFILES = $NAME-sharp-$VERSION.pc
 EOF
 
 sed "s,#REFERENCES#,$REF,g" @prefix@/lib/bindinator/Makefile.am.template|sed "s,#GLUELIBNAME#,$GLUELIB,g"| \
-sed "s;#GLUEINCLUDES#;$INCLUDES;g">$OUTDIR/sources/Makefile.am
+sed "s;#GLUEINCLUDES#;$INCLUDES;g" | sed "s,#REFAPIS#,$REFAPIS,g">$OUTDIR/sources/Makefile.am
 
 sed "s,#GLUENAME#,$GLUENAME,g" @prefix@/lib/bindinator/Makefile-glue.am.template|sed "s,#GLUELIBNAME#,$GLUELIB,g"| \
 sed "s,#VERSION#,$GLUEVERSION,g"|sed "s,#MODVERSION#,$MODVERSION,g"|sed "s,#PREFIX#,$UNAME,g">$OUTDIR/sources/glue/Makefile.am

@@ -34,7 +34,7 @@ $(API): $(srcdir)/$(RAW_API) $(srcdir)/$(METADATA)
 	$(GAPI_FIXUP) --api=$(srcdir)/$(API) --metadata=$(srcdir)/$(METADATA)
 
 generated.sources: $(API)
-	 $(GAPI_CODEGEN) --generate $(srcdir)/$(API) $(GTK_SHARP_CFLAGS) \
+	 $(GAPI_CODEGEN) --generate $(srcdir)/$(API) #REFAPIS# \
 		--outdir=generated \
 		--glue-filename=$(GLUEDIR)/generated.c --gluelib-name=#GLUELIBNAME# \
 		--glue-includes=#GLUEINCLUDES# --gapidir=$(gapidir) \
@@ -43,7 +43,7 @@ generated.sources: $(API)
 
 $(DLL): $(build_sources) generated.sources
 	xargs $(CSC) -nowarn:169 -unsafe -target:library -out:$(DLL) \
-		$(GTK_SHARP_LIBS) #REFERENCES# $(build_sources) < generated.sources
+		#REFERENCES# $(build_sources) < generated.sources
 
 clean-local:
 	test -e generated.sources && xargs rm -f < generated.sources || true
