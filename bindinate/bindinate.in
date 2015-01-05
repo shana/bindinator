@@ -348,14 +348,14 @@ cat >$OUTDIR/Makefile.am <<EOF
 SUBDIRS = sources sources/glue doc
 
 pkgconfigdir = \$(libdir)/pkgconfig
-pkgconfig_DATA = $NAME-sharp-$VERSION.pc
+pkgconfig_DATA = \$(srcdir)/$NAME-sharp-$VERSION.pc
 
-EXTRA_DIST = $NAME-sharp-$VERSION.pc.in
-DISTCLEANFILES = $NAME-sharp-$VERSION.pc
+EXTRA_DIST = \$(srcdir)/$NAME-sharp-$VERSION.pc.in
+DISTCLEANFILES = \$(srcdir)/$NAME-sharp-$VERSION.pc
 
 .PHONY: csproj
 csproj:
-	\$(MAKE) -C sources csproj
+	\$(MAKE) -C \$(srcdir)/sources csproj
 
 EOF
 
