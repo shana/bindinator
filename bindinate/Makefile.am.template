@@ -5,6 +5,8 @@ ASSEMBLY = $(ASSEMBLY_NAME).dll
 ASSEMBLY_CONFIG = $(ASSEMBLY).config
 OUTDIR = $(top_srcdir)/out
 GLUEDIR = $(srcdir)/glue
+SRC_FILES_XML = $(srcdir)/src_files.xml
+CSPROJ_XSLT = $(srcdir)/csproj.xslt
 
 gapidir = $(GAPIXMLDIR)
 gapi_DATA = $(API)
@@ -20,8 +22,9 @@ PROFILES =#PROFILES#
 
 DLLS = $(foreach profile,$(PROFILES),$(OUTDIR)/$(profile)/$(ASSEMBLY))
 DLL_CONFIGS = $(foreach profile,$(PROFILES),$(OUTDIR)/$(profile)/$(ASSEMBLY_CONFIG))
+CS_PROJECTS = $(foreach profile,$(PROFILES),$(srcdir)/$(ASSEMBLY_NAME)-$(profile).csproj)
 
-CLEANFILES = $(DLLS) $(DLL_CONFIGS) $(API)
+CLEANFILES = $(DLLS) $(DLL_CONFIGS) $(API) $(SRC_FILES_XML)
 
 DISTCLEANFILES = AssemblyInfo.cs
 
@@ -47,6 +50,22 @@ generated.sources: $(API)
 		--glue-includes=#GLUEINCLUDES# --gapidir=$(gapidir) \
 	 	--assembly-name=$(ASSEMBLY_NAME) && \
 	find generated/ -type f -name "*.cs" > generated.sources
+
+$(SRC_FILES_XML): generated.sources
+	echo "<SourceFiles>" > $(SRC_FILES_XML)
+	cat generated.sources | sed 's|\/|\\|g' | \
+		sed 's|\(.*\)|  \<Compile Include="\1" \/\>|g' >> $(SRC_FILES_XML)
+	echo "</SourceFiles>" >> $(SRC_FILES_XML)
+
+$(srcdir)/$(ASSEMBLY_NAME)-%.csproj: $(SRC_FILES_XML) $(CSPROJ_XSLT)
+	cp $@ $@.tmp
+	$(XSLTPROC) --stringparam srcListPath $(SRC_FILES_XML) $(CSPROJ_XSLT) $@.tmp | \
+		$(UNIX2DOS) > $@
+	$(MDTOOL) project-export -f:'MSBuild (Visual Studio 2012)' $@
+	rm $@.tmp
+
+.PHONY: csproj
+csproj: $(CS_PROJECTS)
 
 $(OUTDIR)/%/$(ASSEMBLY): $(build_sources) generated.sources
 	mkdir -p $(@D)

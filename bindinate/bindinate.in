@@ -353,6 +353,10 @@ pkgconfig_DATA = $NAME-sharp-$VERSION.pc
 EXTRA_DIST = $NAME-sharp-$VERSION.pc.in
 DISTCLEANFILES = $NAME-sharp-$VERSION.pc
 
+.PHONY: csproj
+csproj:
+	\$(MAKE) -C sources csproj
+
 EOF
 
 sed "s,#REFERENCES#,$REF,g" @prefix@/lib/bindinator/Makefile.am.template|sed "s,#GLUELIBNAME#,$GLUELIB,g"| \
@@ -447,4 +451,6 @@ cat @prefix@/lib/bindinator/Bindings.sln.template | \
 	@PERL@ -pe "s|#PROJECT_DEFS#|${PROJ_DEFS}|g" | \
 	@PERL@ -pe "s,#BUILD_CONFIGS#,${BUILD_CONFIGS},g" | \
 	@UNIX2DOS@ > "${OUTDIR}/${NAME}-sharp.sln"
+
+cp @prefix@/lib/bindinator/csproj.xslt "${OUTDIR}/sources/csproj.xslt"
 
