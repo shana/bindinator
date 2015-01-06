@@ -2,14 +2,14 @@
 usage()
 {
 cat <<EOF
-Usage: bindinate [--package=PACKAGE --name=NAME --out=PATH --windowslibraryname=NAME --dependencies=DEP1,DEP2] --gir=GIRFILE
+Usage: bindinate [--package=PACKAGE --name=NAME --out=PATH --windowslibraryname=NAME -d=DEP1_VAR,dep1_pkg -d=DEP2_VAR,dep2_pkg] --gir=GIRFILE
     --gir=GIRFILE              Gir filename to process (without path or extension. It will be picked up from /usr/share/gir-1.0)
     --package=PACKAGE          name of pc file (if the gir data with the package name is wrong)
     --name=NAME                Name for the assembly
                                If this argument is not given, it will be generated automatically from the namespace set in the gir file
     --out=PATH                 Directory to place the generated bindings. default: $(pwd)/[Name of gir file]
     --windowslibraryname=NAME  Windows library file name, this is helpful when generating bindings targeting windows
-    --dependencies	       Add dependencies seperated by a ',' like MONOCAIRO,SOUPSHARP
+    -d --dependency            Adds a dependency. Usage: '-d=DEP_VAR,dep_pkg_name', e.g.: '-d=GLIB_SHARP,glib-sharp-3.0'. This argument can be used multiple times.
     --merge-with	       A comma seperated list of gir files to merge in
     --regenerate	       Only regenerate the API xml, must be called from inside of the bindings directory
 EOF
@@ -33,8 +33,13 @@ for arg; do
     --out=* )
       OUTDIR=$(echo $arg|sed -e 's,.*=,,')
       ;;
-    --dependencies=* )
-      DEPENDENCIES=$(echo $arg|sed -e 's,.*=,,')
+    --dependency=* | -d=* )
+      dep=$(echo $arg|sed -e 's|.*=||')
+      if [ -z "$DEPENDENCIES" ]; then
+      	DEPENDENCIES=$dep
+      else
+      	DEPENDENCIES="${DEPENDENCIES} ${dep}"
+      fi
       ;;
     --merge-with=* )
       MERGEWITH=$(echo $arg|sed -e 's,.*=,,')
@@ -194,34 +199,32 @@ AC_SUBST($PCFLAGS)
 
 EOF
 
-# Apply special handling to eventual GTK_SHARP dependency
-EFFECTIVE_DEPS=
+# Handle dependencies
 REF=
 REFAPIS=
-for dep in $(echo $DEPENDENCIES | tr ',' ' '); do
-	REF="$REF $""("$dep"_LIBS"")"
-	REFAPIS="$REFAPIS $""("$dep"_CFLAGS"")"
-	if [ "$dep" = "GTK_SHARP" ]; then
-		echo "GTK"
-	else
-		if [ -z "$EFFECTIVE_DEPS" ]; then
-			EFFECTIVE_DEPS=$dep
-		else
-			EFFECTIVE_DEPS="${EFFECTIVE_DEPS}\n$dep"
+writeDepComment=true
+for dep in $(echo $DEPENDENCIES); do
+	depVar=$(echo $dep | cut -d',' -f1)
+	depPkg=$(echo $dep | cut -d',' -f2)
+	REF="$REF $""("$depVar"_LIBS"")"
+	REFAPIS="$REFAPIS $""("$depVar"_CFLAGS"")"
+	
+	# Don't create GTK_SHARP m4 file, because it's already being checked in configure due to GAPI
+	if [ "$depVar" != "GTK_SHARP" ]; then
+		if $writeDepComment; then
+			echo "dnl extra m4 calls" >> $OUTDIR/$CONFIGURE
+			writeDepComment=false
 		fi
+		
+		echo "CHECK_$depVar" >> $OUTDIR/$CONFIGURE
+		echo "$depVar" >> $OUTDIR/m4.custom
+		
+		mkdir -p $OUTDIR/m4
+		cat @prefix@/lib/bindinator/dependency.m4.template | \
+			sed "s|#DEP#|$depVar|g" | sed "s|#DEP_PKG#|$depPkg|g" \
+			> $OUTDIR/m4/${depVar}.m4
 	fi
 done
-
-if [ -n "$EFFECTIVE_DEPS" ]; then
-	echo "$EFFECTIVE_DEPS" >> $OUTDIR/m4.custom
-	
-	cat >>$OUTDIR/$CONFIGURE <<EOF
-dnl extra m4 calls
-EOF
-	while read l;do
-		echo "CHECK_$l" >>$OUTDIR/$CONFIGURE
-	done <$OUTDIR/m4.custom
-fi
 
 cat >>$OUTDIR/$CONFIGURE <<EOF
 

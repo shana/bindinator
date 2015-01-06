@@ -30,23 +30,23 @@ gir file name and produces the needed files for compiling a binding.
 Customization of the gapi output can be done via the usual metadata file.
 
 If the build requires checking for extra packages and getting assembly
-references, call bindinate with the `--dependencies` option. E.g.:
+references, call bindinate with `--dependency` or `-d` options. E.g.:
 
-> `bindinate --gir=DBusGLib-1.0 --dependencies=GLIBSHARP,DBUSSHARP`
+> `bindinate --gir=Pango-1.0 -d=GLIB_SHARP,glib-sharp-3.0 -d=MONO_CAIRO,mono-cairo`
 
-Additionally, you'll need to create an m4 file for each dependency you
-have. If you had a dependency `MONOCAIRO`, you'd create a file `m4/cairo.m4`
-like this:
+This will create an m4 file for each dependency you have. E.g. for
+`MONO_CAIRO`, you'll get a file `m4/MONO_CAIRO.m4` containing:
 
 >
 ```
-AC_DEFUN([CHECK_MONOCAIRO],
+AC_DEFUN([CHECK_MONO_CAIRO],
 [
-	PKG_CHECK_MODULES(MONOCAIRO, mono-cairo)
-	AC_SUBST(MONOCAIRO_LIBS)
+	PKG_CHECK_MODULES(MONO_CAIRO, mono-cairo)
+	AC_SUBST(MONO_CAIRO_CFLAGS)
+	AC_SUBST(MONO_CAIRO_LIBS)
 ])
 ```
 
-The bindinate tool would create an `m4.custom` file with `MONOCAIRO`, add a
-`CHECK_MONOCAIRO` call to `configure.ac` and `$(MONOCAIRO_LIBS)` will be added
-to the assembly build line automatically.
+A `CHECK_MONO_CAIRO` call will be added to `configure.ac` automatically.
+`$(MONO_CAIRO_CFLAGS)` will be added to the code generation command and
+`$(MONO_CAIRO_LIBS)` will be added to the assembly build command.
