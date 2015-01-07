@@ -2,14 +2,14 @@
 usage()
 {
 cat <<EOF
-Usage: bindinate [--package=PACKAGE --name=NAME --out=PATH --windowslibraryname=NAME --dependencies=DEP1,DEP2] --gir=GIRFILE
+Usage: bindinate [--package=PACKAGE --name=NAME --out=PATH --windowslibraryname=NAME -d=DEP1_VAR,dep1_pkg -d=DEP2_VAR,dep2_pkg] --gir=GIRFILE
     --gir=GIRFILE              Gir filename to process (without path or extension. It will be picked up from /usr/share/gir-1.0)
     --package=PACKAGE          name of pc file (if the gir data with the package name is wrong)
     --name=NAME                Name for the assembly
                                If this argument is not given, it will be generated automatically from the namespace set in the gir file
     --out=PATH                 Directory to place the generated bindings. default: $(pwd)/[Name of gir file]
     --windowslibraryname=NAME  Windows library file name, this is helpful when generating bindings targeting windows
-    --dependencies	       Add dependencies seperated by a ',' like MONOCAIRO,SOUPSHARP
+    -d --dependency            Adds a dependency. Usage: '-d=DEP_VAR,dep_pkg_name', e.g.: '-d=GLIB_SHARP,glib-sharp-3.0'. This argument can be used multiple times.
     --merge-with	       A comma seperated list of gir files to merge in
     --regenerate	       Only regenerate the API xml, must be called from inside of the bindings directory
 EOF
@@ -28,13 +28,18 @@ for arg; do
       NAME=$(echo $arg|sed -e 's,.*=,,')
       ;;
     --windowslibraryname=* )
-      LIBRARYNAME=$(echo $arg|sed -e 's,.*=,,')
+      WINLIBRARYNAME=$(echo $arg|sed -e 's,.*=,,')
       ;;
     --out=* )
       OUTDIR=$(echo $arg|sed -e 's,.*=,,')
       ;;
-    --dependencies=* )
-      DEPENDENCIES=$(echo $arg|sed -e 's,.*=,,')
+    --dependency=* | -d=* )
+      dep=$(echo $arg|sed -e 's|.*=||')
+      if [ -z "$DEPENDENCIES" ]; then
+      	DEPENDENCIES=$dep
+      else
+      	DEPENDENCIES="${DEPENDENCIES} ${dep}"
+      fi
       ;;
     --merge-with=* )
       MERGEWITH=$(echo $arg|sed -e 's,.*=,,')
@@ -137,9 +142,9 @@ echo "LIB: $LIB"
 echo "SOLIB: $SOLIB"
 echo "GLUELIB: $GLUELIB"
 
-
+LIBRARYNAME=$WINLIBRARYNAME
 if [ -z "$LIBRARYNAME" ]; then
-	LIBNAME=$PACKAGE
+	LIBRARYNAME=$PACKAGE
 fi
 
 if [ -n "$REGENERATE" ]; then
@@ -153,7 +158,7 @@ fi
 
 cat >$OUTDIR/out/$DLLMAP <<EOF
 <configuration>
-  <dllmap dll="$LIBNAME" target="$SOLIB"/>
+  <dllmap dll="$LIBRARYNAME" target="$SOLIB"/>
 </configuration>
 EOF
 
@@ -194,19 +199,32 @@ AC_SUBST($PCFLAGS)
 
 EOF
 
-if [ -n "$DEPENDENCIES" ]; then
-	echo $DEPENDENCIES | sed 's/,/\n/g' >> $OUTDIR/m4.custom
-fi
-
-if [ -e $OUTDIR/m4.custom ]; then
-	cat >>$OUTDIR/$CONFIGURE <<EOF
-dnl extra m4 calls
-EOF
-	while read l;do
-		REF="$REF $""("$l"_LIBS"")"
-		echo "CHECK_$l" >>$OUTDIR/$CONFIGURE
-	done <$OUTDIR/m4.custom
-fi
+# Handle dependencies
+REF=
+REFAPIS=
+writeDepComment=true
+for dep in $(echo $DEPENDENCIES); do
+	depVar=$(echo $dep | cut -d',' -f1)
+	depPkg=$(echo $dep | cut -d',' -f2)
+	REF="$REF $""("$depVar"_LIBS"")"
+	REFAPIS="$REFAPIS $""("$depVar"_CFLAGS"")"
+	
+	# Don't create GTK_SHARP m4 file, because it's already being checked in configure due to GAPI
+	if [ "$depVar" != "GTK_SHARP" ]; then
+		if $writeDepComment; then
+			echo "dnl extra m4 calls" >> $OUTDIR/$CONFIGURE
+			writeDepComment=false
+		fi
+		
+		echo "CHECK_$depVar" >> $OUTDIR/$CONFIGURE
+		echo "$depVar" >> $OUTDIR/m4.custom
+		
+		mkdir -p $OUTDIR/m4
+		cat @prefix@/lib/bindinator/dependency.m4.template | \
+			sed "s|#DEP#|$depVar|g" | sed "s|#DEP_PKG#|$depPkg|g" \
+			> $OUTDIR/m4/${depVar}.m4
+	fi
+done
 
 cat >>$OUTDIR/$CONFIGURE <<EOF
 
@@ -244,7 +262,7 @@ DISTCLEANFILES = $NAME-sharp-$VERSION.pc
 EOF
 
 sed "s,#REFERENCES#,$REF,g" @prefix@/lib/bindinator/Makefile.am.template|sed "s,#GLUELIBNAME#,$GLUELIB,g"| \
-sed "s;#GLUEINCLUDES#;$INCLUDES;g">$OUTDIR/sources/Makefile.am
+sed "s;#GLUEINCLUDES#;$INCLUDES;g" | sed "s,#REFAPIS#,$REFAPIS,g">$OUTDIR/sources/Makefile.am
 
 sed "s,#GLUENAME#,$GLUENAME,g" @prefix@/lib/bindinator/Makefile-glue.am.template|sed "s,#GLUELIBNAME#,$GLUELIB,g"| \
 sed "s,#VERSION#,$GLUEVERSION,g"|sed "s,#MODVERSION#,$MODVERSION,g"|sed "s,#PREFIX#,$UNAME,g">$OUTDIR/sources/glue/Makefile.am
@@ -255,7 +273,7 @@ chmod +x $OUTDIR/autogen.sh
 mkdir -p $OUTDIR/m4
 
 if [ ! -e $OUTDIR/sources/$NAME-sharp.metadata ]; then
-	if [ -z "$LIBRARYNAME" ]; then	
+	if [ -z "$WINLIBRARYNAME" ]; then
 cat >$OUTDIR/sources/$NAME-sharp.metadata <<EOF
 <?xml version="1.0"?>
 <metadata>
@@ -265,7 +283,7 @@ EOF
 cat >$OUTDIR/sources/$NAME-sharp.metadata <<EOF
 <?xml version="1.0"?>
 <metadata>
-	<attr path="/api/namespace" name="library">$LIBRARYNAME</attr>
+	<attr path="/api/namespace" name="library">$WINLIBRARYNAME</attr>
 </metadata>
 EOF
 	fi
