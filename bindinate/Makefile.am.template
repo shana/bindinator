@@ -1,9 +1,14 @@
-RAW_API = $(ASSEMBLY_NAME)-api.raw
-API = $(ASSEMBLY_NAME)-api.xml
-METADATA = $(ASSEMBLY_NAME).metadata
-DLL = $(top_srcdir)/out/$(ASSEMBLY_NAME).dll
-DLLMAP = $(top_srcdir)/out/$(ASSEMBLY_NAME).dll.config
+RAW_API = $(srcdir)/$(ASSEMBLY_NAME)-api.raw
+API = $(srcdir)/$(ASSEMBLY_NAME)-api.xml
+METADATA = $(srcdir)/$(ASSEMBLY_NAME).metadata
+ASSEMBLY_DLL_NAME = $(ASSEMBLY_NAME).dll
+ASSEMBLY_CONFIG_NAME = $(ASSEMBLY_DLL_NAME).config
+ASSEMBLY_CONFIG = $(srcdir)/$(ASSEMBLY_CONFIG_NAME)
+OUTDIR = $(top_srcdir)/out
 GLUEDIR = $(srcdir)/glue
+SRC_FILES_XML = $(srcdir)/src_files.xml
+CSPROJ_XSLT = $(srcdir)/csproj.xslt
+GEN_SOURCES = $(srcdir)/generated.sources
 
 gapidir = $(GAPIXMLDIR)
 gapi_DATA = $(API)
@@ -11,48 +16,75 @@ gapi_DATA = $(API)
 # Add any extra source files you need here
 sources =
 
-build_sources = AssemblyInfo.cs $(sources)
+build_sources = $(srcdir)/AssemblyInfo.cs $(sources)
 
-CLEANFILES = $(DLL) $(API)
+PROFILES =#PROFILES#
 
-DISTCLEANFILES = AssemblyInfo.cs $(DLLMAP)
+#DEFINES#
 
-noinst_DATA = $(DLL)
+DLLS = $(foreach profile,$(PROFILES),$(OUTDIR)/$(profile)/$(ASSEMBLY_DLL_NAME))
+DLL_CONFIGS = $(foreach profile,$(PROFILES),$(OUTDIR)/$(profile)/$(ASSEMBLY_CONFIG_NAME))
+CS_PROJECTS = $(foreach profile,$(PROFILES),$(srcdir)/$(ASSEMBLY_NAME)-$(profile).csproj)
+
+CLEANFILES = $(DLLS) $(DLL_CONFIGS) $(API) $(GEN_SOURCES) $(SRC_FILES_XML)
+
+DISTCLEANFILES = $(srcdir)/AssemblyInfo.cs
+
+noinst_DATA = $(DLLS) $(DLL_CONFIGS)
 
 EXTRA_DIST = \
 	$(RAW_API) \
 	$(sources) \
 	$(METADATA) \
-	AssemblyInfo.cs.in \
-	$(ASSEMBLY_NAME).snk
+	$(srcdir)/AssemblyInfo.cs.in \
+	$(srcdir)/$(ASSEMBLY_NAME).snk \
+	$(ASSEMBLY_CONFIG)
 
-all: generated.sources $(ASSEMBLY)
-
-$(API): $(srcdir)/$(RAW_API) $(srcdir)/$(METADATA)
-	cp $(srcdir)/$(RAW_API) $(API)
+$(API): $(RAW_API) $(METADATA)
+	cp $(RAW_API) $(API)
 	chmod u+w $(API)
-	$(GAPI_FIXUP) --api=$(srcdir)/$(API) --metadata=$(srcdir)/$(METADATA)
+	$(GAPI_FIXUP) --api=$(API) --metadata=$(METADATA)
 
-generated.sources: $(API)
-	 $(GAPI_CODEGEN) --generate $(srcdir)/$(API) #REFAPIS# \
-		--outdir=generated \
+$(GEN_SOURCES): $(API)
+	$(GAPI_CODEGEN) --generate $(API) #REFAPIS# \
+		--outdir=$(srcdir)/generated \
 		--glue-filename=$(GLUEDIR)/generated.c --gluelib-name=#GLUELIBNAME# \
 		--glue-includes=#GLUEINCLUDES# --gapidir=$(gapidir) \
 	 	--assembly-name=$(ASSEMBLY_NAME) && \
-	find generated/ -type f -name "*.cs" > generated.sources
+	find $(srcdir)/generated/ -type f -name "*.cs" > $(GEN_SOURCES)
 
-$(DLL): $(build_sources) generated.sources
-	xargs $(CSC) -nowarn:169 -unsafe -target:library -out:$(DLL) \
-		#REFERENCES# $(build_sources) < generated.sources
+$(SRC_FILES_XML): $(GEN_SOURCES)
+	echo "<SourceFiles>" > $(SRC_FILES_XML)
+	cat $(GEN_SOURCES) | sed 's|\/|\\|g' | \
+		sed 's|\(.*\)|  \<Compile Include="\1" \/\>|g' >> $(SRC_FILES_XML)
+	echo "</SourceFiles>" >> $(SRC_FILES_XML)
+
+$(srcdir)/$(ASSEMBLY_NAME)-%.csproj: $(SRC_FILES_XML) $(CSPROJ_XSLT)
+	cp $@ $@.tmp
+	$(XSLTPROC) --stringparam srcListPath $(SRC_FILES_XML) $(CSPROJ_XSLT) $@.tmp | \
+		$(UNIX2DOS) > $@
+	$(MDTOOL) project-export -f:'MSBuild (Visual Studio 2012)' $@
+	rm $@.tmp
+
+.PHONY: csproj
+csproj: $(CS_PROJECTS)
+
+$(OUTDIR)/%/$(ASSEMBLY_DLL_NAME): $(build_sources) $(GEN_SOURCES)
+	mkdir -p $(@D)
+	xargs $(CSC) -nowarn:169 -unsafe -target:library #REFERENCES# \
+		$(build_sources) -out:$@ -d:$($*_DEFINES) < $(GEN_SOURCES)
+
+$(OUTDIR)/%/$(ASSEMBLY_CONFIG_NAME): $(ASSEMBLY_CONFIG)
+	mkdir -p $(@D)
+	cp $(ASSEMBLY_CONFIG) $@
 
 clean-local:
-	test -e generated.sources && xargs rm -f < generated.sources || true
-	rm -f generated.sources
+	test -e $(GEN_SOURCES) && xargs rm -f < $(GEN_SOURCES) || true
 
 install-data-local:
-	echo "$(GACUTIL) /i $(DLL) /f $(GACUTIL_FLAGS)";  \
-        $(GACUTIL) /i $(DLL) /f $(GACUTIL_FLAGS) || exit 1;
+	echo "NOT IMPLEMENTED! ($(GACUTIL) /i assembly_path /f $(GACUTIL_FLAGS))"
+	exit 1
 
 uninstall-local:
-	echo "$(GACUTIL) /u $(ASSEMBLY_NAME) $(GACUTIL_FLAGS)"; \
-        $(GACUTIL) /u $(ASSEMBLY_NAME) $(GACUTIL_FLAGS) || exit 1;
+	echo "NOT IMPLEMENTED! ($(GACUTIL) /u assembly_name $(GACUTIL_FLAGS))"
+	exit 1

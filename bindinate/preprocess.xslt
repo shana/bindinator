@@ -46,6 +46,8 @@ exclude-result-prefixes="xsl exsl gir c glib"
 	<xsl:strip-space elements="*" />
 
 	<xsl:param name="type" />
+	
+	<xsl:key name="version" match="/gir:repository/gir:namespace/*//@version" use="." />
 
 	<xsl:template match="/">
 		<xsl:choose>
@@ -71,6 +73,14 @@ exclude-result-prefixes="xsl exsl gir c glib"
 					<xsl:when test="gir:repository/gir:include[@name='Gdk']/@version='2.0'">2</xsl:when>
 					<xsl:otherwise>3</xsl:otherwise>
 				</xsl:choose>
+			</xsl:when>
+			
+			<!-- Using 'key' and 'generate-id' function to select version numbers distinctly. -->
+			<xsl:when test="$type='libversions'">
+				<xsl:for-each select="/gir:repository/gir:namespace/*//@version[generate-id() = generate-id(key('version', .)[1])]">
+					<xsl:value-of select="." />
+					<xsl:text> </xsl:text>
+				</xsl:for-each>
 			</xsl:when>
 		</xsl:choose>
 	</xsl:template>

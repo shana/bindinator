@@ -2,7 +2,8 @@
 usage()
 {
 cat <<EOF
-Usage: bindinate [--package=PACKAGE --name=NAME --out=PATH --windowslibraryname=NAME -d=DEP1_VAR,dep1_pkg -d=DEP2_VAR,dep2_pkg] --gir=GIRFILE
+Usage: bindinate [--package=PACKAGE --name=NAME --out=PATH --windowslibraryname=NAME -d=DEP1_VAR,dep1_pkg -d=DEP2_VAR,dep2_pkg --merge-with=GIRFILE1,GIRFILE2 --regenerate --build-libversions=[V1,V2|all]] --gir=GIRFILE
+       bindinate --list-versions --gir=GIRFILE
     --gir=GIRFILE              Gir filename to process (without path or extension. It will be picked up from /usr/share/gir-1.0)
     --package=PACKAGE          name of pc file (if the gir data with the package name is wrong)
     --name=NAME                Name for the assembly
@@ -10,11 +11,14 @@ Usage: bindinate [--package=PACKAGE --name=NAME --out=PATH --windowslibraryname=
     --out=PATH                 Directory to place the generated bindings. default: $(pwd)/[Name of gir file]
     --windowslibraryname=NAME  Windows library file name, this is helpful when generating bindings targeting windows
     -d --dependency            Adds a dependency. Usage: '-d=DEP_VAR,dep_pkg_name', e.g.: '-d=GLIB_SHARP,glib-sharp-3.0'. This argument can be used multiple times.
-    --merge-with	       A comma seperated list of gir files to merge in
-    --regenerate	       Only regenerate the API xml, must be called from inside of the bindings directory
+    --merge-with               A comma separated list of gir files to merge in
+    --regenerate               Only regenerate the API xml, must be called from inside of the bindings directory
+    --build-libversions        A comma separated list of version strings to create build profiles should for. E.g.: 2.2,2.4,2.10. If this argument is omitted, one build profile for the latest library version found in the GIR file is created. If the argument is 'all', a profile for each library version found is created.
+    --list-versions            List all versions of a GIRFILE, e.g.: 'bindinate --gir=Atk-1.0 --list-versions'. This is a query-only operation. No files will be created/changed.
 EOF
 }
 
+LISTVERSIONS=false
 for arg; do
   case "$arg" in
     --help | -h)
@@ -50,6 +54,12 @@ for arg; do
       ;;
     --gir=*) 
       GIRFILE=$(echo $arg|sed -e 's,.*=,,')
+      ;;
+    --build-libversions=*)
+      BUILDLIBVERSIONS=$(echo $arg | sed -e 's,.*=,,' | tr ',' '\n' | sort -V)
+      ;;
+    --list-versions)
+      LISTVERSIONS=true
       ;;
   esac
 done
@@ -101,9 +111,93 @@ NS=`@XSLTPROC@ --stringparam type namespace @prefix@/lib/bindinator/preprocess.x
 VERSION=`@XSLTPROC@ --stringparam type version @prefix@/lib/bindinator/preprocess.xslt $FULLGIRFILE`
 INCLUDES=`@XSLTPROC@ --stringparam type include @prefix@/lib/bindinator/preprocess.xslt $FULLGIRFILE|tr ' ' ','`
 GAPI=`@XSLTPROC@ --stringparam type gapi @prefix@/lib/bindinator/preprocess.xslt $FULLGIRFILE`
+LIBVERSIONS=`@XSLTPROC@ --stringparam type libversions @prefix@/lib/bindinator/preprocess.xslt $FULLGIRFILE | tr ' ' '\n' | sort -V`
+
+if $LISTVERSIONS; then
+echo $LIBVERSIONS | tr '\n' ' '
+echo
+exit 0
+fi
+
+PROFILES=
+DEFINES=
+DEFINES_VALS=
+
+SanitizeVersion () {
+   echo $1 | tr '.' '_' | tr '-' '_' | tr ':' '_' | tr '~' '_'
+}
+
+EFFECTIVEBUILDLIBVERSIONS=
+if [ -z "$BUILDLIBVERSIONS" ]; then
+	BUILDLIBVERSIONS=$(echo "$LIBVERSIONS" | tail -n1)
+elif [ "$BUILDLIBVERSIONS" = "all" ]; then
+	BUILDLIBVERSIONS=$LIBVERSIONS
+fi
+
+for buildLibVersion in $BUILDLIBVERSIONS; do
+	# prevent duplicates
+	isDuplicate=false
+	for effectiveBuildLibVersion in $EFFECTIVEBUILDLIBVERSIONS; do
+		if [ "$buildLibVersion" = "$effectiveBuildLibVersion" ]; then
+			isDuplicate=true
+		fi
+	done
+	
+	if $isDuplicate; then
+		echo "Warning: Ignoring duplicate build library version '${buildLibVersion}'."
+		continue
+	fi
+	
+	# discard build lib versions that have no matching library version in the GIR file
+	# and construct DEFINES flags
+	match=false
+	defines=
+	for libVersion in $LIBVERSIONS; do
+		versionStr=V_$(SanitizeVersion ${libVersion})
+		if [ -z "$defines" ]; then
+			defines=${versionStr}
+		else
+			defines=${defines},${versionStr}
+		fi
+		
+		if [ "$buildLibVersion" = "$libVersion" ]; then
+			match=true
+			break
+		fi
+	done
+	
+	if ! $match; then
+		echo "Warning: Ignoring build library version '${buildLibVersion}', because no matching library version has been found in the GIR file."
+		continue
+	fi
+	
+	if [ -z "$EFFECTIVEBUILDLIBVERSIONS" ]; then
+		EFFECTIVEBUILDLIBVERSIONS="${buildLibVersion}"
+	else
+		EFFECTIVEBUILDLIBVERSIONS="${EFFECTIVEBUILDLIBVERSIONS}\n${buildLibVersion}"
+	fi
+	
+	profileId=V_$(SanitizeVersion ${buildLibVersion})
+	definesVar=${profileId}_DEFINES
+	
+	# Add to build profiles
+	PROFILES="${PROFILES} ${profileId}"
+	
+	# Add to define flags
+	define="${definesVar} = ${defines}"
+	if [ -z "${DEFINES}" ]; then
+		DEFINES_VALS="$defines"
+		DEFINES="$define"
+	else
+		DEFINES_VALS="${DEFINES_VALS} ${defines}"
+		DEFINES="${DEFINES}\\n${define}"
+	fi
+done
 
 echo "PACKAGE: $PACKAGE"
 echo "LIBS: $LIBS"
+echo "LIBVERSIONS: $(echo ${LIBVERSIONS} | tr '\n' ' ')"
+echo "BUILDLIBVERSIONS: $(echo ${EFFECTIVEBUILDLIBVERSIONS} | tr '\n' ' ')"
 
 if ! $(@PKG_CONFIG@ --exists $PACKAGE); then
 	echo "Package $PACKAGE not found, exiting"
@@ -156,7 +250,7 @@ if [ -n "$REGENERATE" ]; then
 	exit 0
 fi
 
-cat >$OUTDIR/out/$DLLMAP <<EOF
+cat >$OUTDIR/sources/$DLLMAP <<EOF
 <configuration>
   <dllmap dll="$LIBRARYNAME" target="$SOLIB"/>
 </configuration>
@@ -254,15 +348,20 @@ cat >$OUTDIR/Makefile.am <<EOF
 SUBDIRS = sources sources/glue doc
 
 pkgconfigdir = \$(libdir)/pkgconfig
-pkgconfig_DATA = $NAME-sharp-$VERSION.pc
+pkgconfig_DATA = \$(srcdir)/$NAME-sharp-$VERSION.pc
 
-EXTRA_DIST = $NAME-sharp-$VERSION.pc.in
-DISTCLEANFILES = $NAME-sharp-$VERSION.pc
+EXTRA_DIST = \$(srcdir)/$NAME-sharp-$VERSION.pc.in
+DISTCLEANFILES = \$(srcdir)/$NAME-sharp-$VERSION.pc
+
+.PHONY: csproj
+csproj:
+	\$(MAKE) -C \$(srcdir)/sources csproj
 
 EOF
 
 sed "s,#REFERENCES#,$REF,g" @prefix@/lib/bindinator/Makefile.am.template|sed "s,#GLUELIBNAME#,$GLUELIB,g"| \
-sed "s;#GLUEINCLUDES#;$INCLUDES;g" | sed "s,#REFAPIS#,$REFAPIS,g">$OUTDIR/sources/Makefile.am
+sed "s;#GLUEINCLUDES#;$INCLUDES;g" | sed "s,#REFAPIS#,$REFAPIS,g" | sed "s;#PROFILES#;$PROFILES;g" | \
+sed "s;#DEFINES#;$DEFINES;g" > $OUTDIR/sources/Makefile.am
 
 sed "s,#GLUENAME#,$GLUENAME,g" @prefix@/lib/bindinator/Makefile-glue.am.template|sed "s,#GLUELIBNAME#,$GLUELIB,g"| \
 sed "s,#VERSION#,$GLUEVERSION,g"|sed "s,#MODVERSION#,$MODVERSION,g"|sed "s,#PREFIX#,$UNAME,g">$OUTDIR/sources/glue/Makefile.am
@@ -313,19 +412,45 @@ if [ ! -e $OUTDIR/sources/$NAME-sharp-api.raw ]; then
 fi
 
 # Create xbuild files (sln and csproj)
-PROJ_GUID="$(@UUIDGEN@ | tr [:lower:] [:upper:])"
-if [ ! -e "${OUTDIR}/${NAME}-sharp.sln" ]; then
-	cat @prefix@/lib/bindinator/Bindings.sln.template | \
-		sed "s,#NAME#,${NAME}-sharp,g" | \
-		sed "s,#PROJECT_GUID#,${PROJ_GUID},g" \
-		> "${OUTDIR}/${NAME}-sharp.sln"
-fi
-
-if [ ! -e "${OUTDIR}/sources/${NAME}-sharp.csproj" ]; then
+PROJ_DEFS=
+BUILD_CONFIGS=
+i=1
+for profile in $PROFILES; do
+	guid="$(@UUIDGEN@ | tr [:lower:] [:upper:])"
+	
+	projDef=$(cat @prefix@/lib/bindinator/Bindings.sln.ProjDefs.template | \
+		sed "s,#NAME#,${NAME}-sharp-${profile},g" | \
+		sed "s,#PROJECT_GUID#,${guid},g")
+	if [ -z "$PROJ_DEFS" ]; then
+		PROJ_DEFS="${projDef}"
+	else
+		PROJ_DEFS="${PROJ_DEFS}\n${projDef}"
+	fi
+	
+	buildConfig=$(cat @prefix@/lib/bindinator/Bindings.sln.BuildConfigs.template | \
+		sed "s,#PROJECT_GUID#,${guid},g")
+	if [ -z "$BUILD_CONFIGS" ]; then
+		BUILD_CONFIGS="${buildConfig}"
+	else
+		BUILD_CONFIGS="${BUILD_CONFIGS}\n${buildConfig}"
+	fi
+	
+	defines=$(echo $DEFINES_VALS | cut -d' ' -f$i | tr ',' ';')
 	cat @prefix@/lib/bindinator/Bindings.csproj.template | \
 		sed "s,#NAME#,${NAME}-sharp,g" | \
-		sed "s,#PROJECT_GUID#,${PROJ_GUID},g" | \
-		sed "s,#NAMESPACE#,${NS},g" \
-		> "${OUTDIR}/sources/${NAME}-sharp.csproj"
-fi
+		sed "s,#PROJECT_GUID#,${guid},g" | \
+		sed "s,#NAMESPACE#,${NS},g" | \
+		sed "s,#PROFILE#,${profile},g" | \
+		sed "s,#DEFINES#,${defines},g" | \
+		@UNIX2DOS@ > "${OUTDIR}/sources/${NAME}-sharp-${profile}.csproj"
+	
+	i=$((i+1))
+done
+
+cat @prefix@/lib/bindinator/Bindings.sln.template | \
+	@PERL@ -pe "s|#PROJECT_DEFS#|${PROJ_DEFS}|g" | \
+	@PERL@ -pe "s,#BUILD_CONFIGS#,${BUILD_CONFIGS},g" | \
+	@UNIX2DOS@ > "${OUTDIR}/${NAME}-sharp.sln"
+
+cp @prefix@/lib/bindinator/csproj.xslt "${OUTDIR}/sources/csproj.xslt"
 

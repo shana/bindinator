@@ -37,6 +37,17 @@ if test "x$UUIDGEN" = "xno" ; then
 fi
 AC_SUBST(UUIDGEN)
 
+AC_PATH_PROG(PERL, perl, no)
+if test "x$PERL" = "xno" ; then
+	AC_MSG_ERROR([perl not found])
+fi
+AC_SUBST(PERL)
+
+AC_PATH_PROG(UNIX2DOS, unix2dos, no)
+if test "x$UNIX2DOS" = "xno" ; then
+	AC_MSG_ERROR([dos2unix and unix2dos not found])
+fi
+AC_SUBST(UNIX2DOS)
 
 AC_CONFIG_FILES([
 	Makefile
