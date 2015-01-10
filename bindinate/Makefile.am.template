@@ -55,7 +55,8 @@ $(GEN_SOURCES): $(API)
 
 $(SRC_FILES_XML): $(GEN_SOURCES)
 	echo "<SourceFiles>" > $(SRC_FILES_XML)
-	cat $(GEN_SOURCES) | sed 's|\/|\\|g' | \
+	echo $(build_sources) | tr '[:blank:]' '\n' | cat - $(GEN_SOURCES) | \
+		grep -Ev '^[[:blank:]]*$$' | sed 's|\/|\\|g' | sed 's|^\.\\||g' | \
 		sed 's|\(.*\)|  \<Compile Include="\1" \/\>|g' >> $(SRC_FILES_XML)
 	echo "</SourceFiles>" >> $(SRC_FILES_XML)
 
