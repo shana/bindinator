@@ -367,6 +367,8 @@ sed "s,#GLUENAME#,$GLUENAME,g" @prefix@/lib/bindinator/Makefile-glue.am.template
 sed "s,#VERSION#,$GLUEVERSION,g"|sed "s,#MODVERSION#,$MODVERSION,g"|sed "s,#PREFIX#,$UNAME,g">$OUTDIR/sources/glue/Makefile.am
 
 cp @prefix@/lib/bindinator/AssemblyInfo.cs.in $OUTDIR/sources/.
+cp @prefix@/lib/bindinator/custom.sources $OUTDIR/sources/.
+
 cp @prefix@/lib/bindinator/autogen.sh $OUTDIR/.
 chmod +x $OUTDIR/autogen.sh
 mkdir -p $OUTDIR/m4
