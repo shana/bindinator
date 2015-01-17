@@ -25,7 +25,7 @@ DLLS = $(foreach profile,$(PROFILES),$(OUTDIR)/$(profile)/$(ASSEMBLY_DLL_NAME))
 DLL_CONFIGS = $(foreach profile,$(PROFILES),$(OUTDIR)/$(profile)/$(ASSEMBLY_CONFIG_NAME))
 CS_PROJECTS = $(foreach profile,$(PROFILES),$(srcdir)/$(ASSEMBLY_NAME)-$(profile).csproj)
 
-CLEANFILES = $(DLLS) $(DLL_CONFIGS) $(API) $(GEN_SOURCES) $(SRC_FILES_XML)
+CLEANFILES = $(DLLS) $(DLL_CONFIGS) $(API) $(SRC_FILES_XML)
 
 DISTCLEANFILES = $(srcdir)/AssemblyInfo.cs
 
@@ -81,6 +81,7 @@ $(OUTDIR)/%/$(ASSEMBLY_CONFIG_NAME): $(ASSEMBLY_CONFIG)
 
 clean-local:
 	test -e $(GEN_SOURCES) && xargs rm -f < $(GEN_SOURCES) || true
+	rm -f $(GEN_SOURCES)
 
 install-data-local:
 	echo "NOT IMPLEMENTED! ($(GACUTIL) /i assembly_path /f $(GACUTIL_FLAGS))"
