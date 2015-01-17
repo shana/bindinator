@@ -418,7 +418,14 @@ PROJ_DEFS=
 BUILD_CONFIGS=
 i=1
 for profile in $PROFILES; do
-	guid="$(@UUIDGEN@ | tr [:lower:] [:upper:])"
+	projPath="${OUTDIR}/sources/${NAME}-sharp-${profile}.csproj"
+	
+	guid=
+	if guidNodeVal=$(@XMLLINT@ --xpath "//*[local-name() = 'ProjectGuid']/text()" $projPath 2>/dev/null) ; then
+		guid=$(echo $guidNodeVal | sed 's|{*||g' | sed 's|}*||g')
+	else
+		guid="$(@UUIDGEN@ | tr [:lower:] [:upper:])"
+	fi
 	
 	projDef=$(cat @prefix@/lib/bindinator/Bindings.sln.ProjDefs.template | \
 		sed "s,#NAME#,${NAME}-sharp-${profile},g" | \
@@ -444,7 +451,7 @@ for profile in $PROFILES; do
 		sed "s,#NAMESPACE#,${NS},g" | \
 		sed "s,#PROFILE#,${profile},g" | \
 		sed "s,#DEFINES#,${defines},g" | \
-		@UNIX2DOS@ > "${OUTDIR}/sources/${NAME}-sharp-${profile}.csproj"
+		@UNIX2DOS@ > $projPath
 	
 	i=$((i+1))
 done
