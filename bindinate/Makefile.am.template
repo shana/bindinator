@@ -72,8 +72,8 @@ csproj: $(CS_PROJECTS)
 
 $(OUTDIR)/%/$(ASSEMBLY_DLL_NAME): $(build_sources) $(GEN_SOURCES)
 	mkdir -p $(@D)
-	xargs $(CSC) -nowarn:169 -unsafe -target:library #REFERENCES# \
-		$(build_sources) -out:$@ -d:$($*_DEFINES) < $(GEN_SOURCES)
+	$(CSC) -nowarn:169 -unsafe -target:library #REFERENCES# \
+		$(build_sources) -out:$@ -d:$($*_DEFINES) @$(GEN_SOURCES)
 
 $(OUTDIR)/%/$(ASSEMBLY_CONFIG_NAME): $(ASSEMBLY_CONFIG)
 	mkdir -p $(@D)
