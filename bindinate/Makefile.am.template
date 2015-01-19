@@ -14,7 +14,7 @@ CUSTOM_SOURCES = $(srcdir)/custom.sources
 gapidir = $(GAPIXMLDIR)
 gapi_DATA = $(API)
 
-sources = $(shell grep -Ev '\#.*$$' $(CUSTOM_SOURCES))
+sources = $(shell sed 's|\#.*$$||g' $(CUSTOM_SOURCES) | grep -Ev '^[[:blank:]]*$$')
 build_sources = $(srcdir)/AssemblyInfo.cs $(sources)
 
 PROFILES =#PROFILES#
