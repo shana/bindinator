@@ -11,6 +11,12 @@ if test "x$XSLTPROC" = "xno" ; then
 fi
 AC_SUBST(XSLTPROC)
 
+AC_PATH_PROG(XMLLINT, xmllint, no)
+if test "x$XMLLINT" = "xno" ; then
+	AC_MSG_ERROR([xmllint not found])
+fi
+AC_SUBST(XMLLINT)
+
 PKG_CHECK_MODULES(GIR, gobject-introspection-1.0, has_gir=true, has_gir=false)
 if test "x$has_gir" = "xfalse"; then
 	AC_MSG_ERROR([gobject-introspection not found, cannot determine gir directory])

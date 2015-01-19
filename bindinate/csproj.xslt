@@ -18,11 +18,7 @@
 	
 	<xsl:template match="/msb:Project/msb:ItemGroup[msb:Compile]">
 		<xsl:element name="ItemGroup" namespace="{$msbUri}">
-			<xsl:apply-templates select="node()" />
-			
-			<xsl:variable name="existingCompiles" select="msb:Compile/@Include" />
-			<xsl:variable name="compiles" select="$srcList/SourceFiles/Compile/@Include" />
-			<xsl:for-each select="$compiles[not(.=$existingCompiles)]">
+			<xsl:for-each select="$srcList/SourceFiles/Compile/@Include">
 				<xsl:element name="Compile" namespace="{$msbUri}">
 					<xsl:attribute name="Include">
 						<xsl:value-of select="." />
