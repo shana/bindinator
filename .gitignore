@@ -12,6 +12,9 @@ Makefile.in
 /install-sh
 /missing
 /stamp-h
+/compile
+/depcomp
+/ltmain.sh
 
 /bindinate/bindinate
 /bindinate/gir2gapi.xslt
