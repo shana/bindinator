@@ -13,13 +13,13 @@ AC_SUBST(XSLTPROC)
 
 AC_PATH_PROG(XMLLINT, xmllint, no)
 if test "x$XMLLINT" = "xno" ; then
-	AC_MSG_ERROR([xmllint not found])
+	AC_MSG_ERROR([xmllint not found. Install libxml2-utils to get it.])
 fi
 AC_SUBST(XMLLINT)
 
 PKG_CHECK_MODULES(GIR, gobject-introspection-1.0, has_gir=true, has_gir=false)
 if test "x$has_gir" = "xfalse"; then
-	AC_MSG_ERROR([gobject-introspection not found, cannot determine gir directory])
+	AC_MSG_ERROR([gobject-introspection not found, cannot determine gir directory. Install libgirepository1.0-dev to get it.])
 fi
 
 GIRDIR=`pkg-config --variable=girdir gobject-introspection-1.0`/
@@ -39,19 +39,13 @@ AC_SUBST(GAPIFIXUP)
 
 AC_PATH_PROG(UUIDGEN, uuidgen, no)
 if test "x$UUIDGEN" = "xno" ; then
-	AC_MSG_ERROR([uuidgen not found])
+	AC_MSG_ERROR([uuidgen not found. Install uuid-runtime to get it.])
 fi
 AC_SUBST(UUIDGEN)
 
-AC_PATH_PROG(PERL, perl, no)
-if test "x$PERL" = "xno" ; then
-	AC_MSG_ERROR([perl not found])
-fi
-AC_SUBST(PERL)
-
-AC_PATH_PROG(UNIX2DOS, unix2dos, no)
-if test "x$UNIX2DOS" = "xno" ; then
-	AC_MSG_ERROR([dos2unix and unix2dos not found])
+AC_PATH_PROG(UNIX2DOS, unix2dos, [cat -])
+if test "x$UNIX2DOS" = "xcat -" ; then
+	AC_MSG_RESULT([unix2dos not found, using cat])
 fi
 AC_SUBST(UNIX2DOS)
 

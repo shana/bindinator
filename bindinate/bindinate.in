@@ -457,8 +457,8 @@ for profile in $PROFILES; do
 done
 
 cat @prefix@/lib/bindinator/Bindings.sln.template | \
-	@PERL@ -pe "s|#PROJECT_DEFS#|${PROJ_DEFS}|g" | \
-	@PERL@ -pe "s,#BUILD_CONFIGS#,${BUILD_CONFIGS},g" | \
+	sed 's|#PROJECT_DEFS#|${PROJ_DEFS}|g' | \
+	sed 's,#BUILD_CONFIGS#,${BUILD_CONFIGS},g' | \
 	@UNIX2DOS@ > "${OUTDIR}/${NAME}-sharp.sln"
 
 cp @prefix@/lib/bindinator/csproj.xslt "${OUTDIR}/sources/csproj.xslt"

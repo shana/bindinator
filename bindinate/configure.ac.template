@@ -94,15 +94,15 @@ if test "x$XSLTPROC" = "xno" ; then
 fi
 AC_SUBST(XSLTPROC)
 
-AC_PATH_PROG(UNIX2DOS, unix2dos, no)
-if test "x$UNIX2DOS" = "xno" ; then
-	AC_MSG_ERROR([dos2unix and unix2dos not found])
+AC_PATH_PROG(UNIX2DOS, unix2dos, [cat -])
+if test "x$UNIX2DOS" = "xcat -" ; then
+	AC_MSG_RESULT([unix2dos not found, using cat])
 fi
 AC_SUBST(UNIX2DOS)
 
-AC_PATH_PROG(MDTOOL, mdtool, no)
-if test "x$MDTOOL" = "xno" ; then
-	AC_MSG_ERROR([mdtool not found])
+AC_PATH_PROG(MDTOOL, mdtool, echo)
+if test "x$MDTOOL" = "xecho" ; then
+	AC_MSG_RESULT([mdtool not found, csproj conversion won't run])
 fi
 AC_SUBST(MDTOOL)
 
