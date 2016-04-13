@@ -83,10 +83,11 @@ clean-local:
 	test -e $(GEN_SOURCES) && xargs rm -f < $(GEN_SOURCES) || true
 	rm -f $(GEN_SOURCES)
 
-install-data-local:
-	echo "NOT IMPLEMENTED! ($(GACUTIL) /i assembly_path /f $(GACUTIL_FLAGS))"
-	exit 1
+install-data-local: $(DLLS)
+	@for p in $?; do \
+		$(GACUTIL) /i $$p /f $(GACUTIL_FLAGS) || exit 1; \
+	done;
 
 uninstall-local:
-	echo "NOT IMPLEMENTED! ($(GACUTIL) /u assembly_name $(GACUTIL_FLAGS))"
-	exit 1
+	$(GACUTIL) /u $(ASSEMBLY_NAME) /f $(GACUTIL_FLAGS) || exit 1;
+
