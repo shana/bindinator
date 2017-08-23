@@ -70,8 +70,6 @@ if [ ! -e @GIRDIR@/$GIRFILE.gir ]; then
 	exit 1
 fi
 
-echo "Processing $GIRFILE"
-
 if [ -z "$OUTDIR" ]; then
 	OUTDIR=$GIRFILE/
 fi
@@ -95,10 +93,39 @@ if [ ! -d $OUTDIR/doc ]; then
 	mkdir -p $OUTDIR/doc
 fi
 
-FULLGIRFILE=@GIRDIR@/$GIRFILE.gir
+function find_gir {
+    OLDIFS="$IFS"
+    IFS=':'; export IFS;
+    for dir in $2; do
+        TMPGIRFILE="$dir/$1.gir"
+        if [ -e "$TMPGIRFILE" ]; then
+            echo "$TMPGIRFILE"
+            return 0
+        fi
+    done
+    IFS=$OLDIFS; export IFS
+}
+
+GIRDIRS=$GI_TYPELIB_PATH:@GIRDIR@
+FULLGIRFILE=$(find_gir "$GIRFILE" "$GIRDIRS")
+
+OLDIFS="$IFS"
+IFS=','; export IFS;
+for MERGEFILE in $MERGEWITH; do
+    gir=$(find_gir $MERGEFILE $GIRDIRS)
+    if [ "$gir" == "" ]; then
+        echo "Could not find $MERGEFILE"
+    fi
+    FULLMERGEWITH="$FULLMERGEWITH:$gir"
+done
+
+IFS=$OLDIFS; export IFS
+
+echo "Processing: $FULLGIRFILE"
 
 if [ -n "$MERGEWITH" ]; then
-	`@XSLTPROC@ --stringparam files $MERGEWITH --stringparam girdir @GIRDIR@ -o $OUTDIR/sources/$GIRFILE-merged.gir @prefix@/lib/bindinator/merge.xslt $FULLGIRFILE`
+    echo "Merging with: $FULLMERGEWITH"
+	`@XSLTPROC@ --stringparam files $FULLMERGEWITH -o $OUTDIR/sources/$GIRFILE-merged.gir @prefix@/lib/bindinator/merge.xslt $FULLGIRFILE`
 	FULLGIRFILE=$OUTDIR/sources/$GIRFILE-merged.gir
 fi
 
