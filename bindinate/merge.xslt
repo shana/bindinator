@@ -54,8 +54,8 @@
     <xsl:template match="gir:repository">
         <xsl:copy>
             <xsl:apply-templates />
-            <xsl:for-each select="str:tokenize($files, ',')">
-                <xsl:copy-of select="document(concat($girdir, '/', ., '.gir'))/gir:repository/*" />
+            <xsl:for-each select="str:tokenize($files, ':')">
+                <xsl:copy-of select="document(.)/gir:repository/*" />
             </xsl:for-each>
         </xsl:copy>
     </xsl:template>
